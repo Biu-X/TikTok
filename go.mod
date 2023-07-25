@@ -1,4 +1,4 @@
-module hiif.ong/TikTok
+module biu-x.org/TikTok
 
 go 1.20
 

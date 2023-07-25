@@ -8,7 +8,7 @@ func NewApp() *cli.App {
 
 	// 子命令集
 	subCmdWithConfig := []*cli.Command{
-		CmdApi,
+		CmdAPI,
 	}
 
 	app.Commands = append(app.Commands, subCmdWithConfig...)

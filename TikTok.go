@@ -1,9 +1,10 @@
 package main
 
 import (
-	"hiif.ong/TikTok/cmd"
 	"log"
 	"os"
+
+	"biu-x.org/TikTok/cmd"
 )
 
 const version = "v0.1"
