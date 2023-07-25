@@ -4,7 +4,7 @@ import (
 	"github.com/urfave/cli/v2"
 )
 
-// CmdApi api 子命令
+// CmdAPI api 子命令
 var CmdAPI = &cli.Command{
 	Name:        "api",
 	Usage:       "Start TikTok api server",
