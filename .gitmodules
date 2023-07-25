@@ -1,3 +1,6 @@
 [submodule "apk"]
 	path = apk
 	url = git@github.com:Biu-X/TikTok-apk.git
+[submodule "docs"]
+	path = docs
+	url = git@github.com:Biu-X/TikTok-docs.git
