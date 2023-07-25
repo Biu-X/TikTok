@@ -5,11 +5,11 @@ import (
 )
 
 // CmdApi api 子命令
-var CmdApi = &cli.Command{
+var CmdAPI = &cli.Command{
 	Name:        "api",
 	Usage:       "Start TikTok api server",
 	Description: `Star TikTok api server`,
-	Action:      runApi,
+	Action:      runAPI,
 	Flags: []cli.Flag{
 		&cli.StringFlag{
 			Name:    "port",
@@ -20,6 +20,6 @@ var CmdApi = &cli.Command{
 	},
 }
 
-func runApi(ctx *cli.Context) error {
+func runAPI(ctx *cli.Context) error {
 	return nil
 }
