@@ -6,10 +6,11 @@
 
 
 ## 作者
-- @Tohrusky
-- @Zaire404
-- @resortHe
-- @KelinGoon
-- @1055373165
-- @dwe321
-- @Isaac03914
+- [@Tohrusky](https://github.com/Tohrusky)
+- [@Zaire404](https://github.com/Zaire404)
+- [@resortHe](https://github.com/resortHe)
+- [@KelinGoon](https://github.com/KelinGoon)
+- [@1055373165](https://github.com/1055373165)
+- [@dwe321](https://github.com/dwe321)
+- [@Isaac03914](https://github.com/Isaac03914)
+- [@hiifong](https://github.com/hiifong)
