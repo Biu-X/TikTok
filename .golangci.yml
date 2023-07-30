@@ -35,4 +35,6 @@ linters:
     - gofumpt
 
 run:
+  skip-dirs:
+    - models/gen
   timeout: 3m
