@@ -18,6 +18,7 @@
         <option value="dupl" />
         <option value="govet" />
         <option value="misspell" />
+        <option value="typecheck" />
         <option value="gochecknoinits" />
         <option value="lll" />
         <option value="bodyclose" />
@@ -28,6 +29,7 @@
         <option value="unused" />
         <option value="stylecheck" />
         <option value="whitespace" />
+        <option value="goimports" />
         <option value="goprintffuncname" />
         <option value="gosimple" />
         <option value="gocyclo" />

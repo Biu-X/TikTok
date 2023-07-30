@@ -14,7 +14,7 @@ type Querier interface {
 	FilterWithNameAndRole(name, role string) ([]gen.T, error)
 }
 
-// CmdWeb 子命令
+// CmdGen 子命令
 var CmdGen = &cli.Command{
 	Name:        "gen",
 	Usage:       "gen gorm code",
