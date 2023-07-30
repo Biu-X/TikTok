@@ -11,7 +11,6 @@
 
 从左到右，左边的包可以依赖右边的包，但是右边的包不能依赖左边的包。 同一级别的子包可以根据该级别的规则进行依赖。  
 
-
 ## 作者
 - [@Tohrusky](https://github.com/Tohrusky)
 - [@Zaire404](https://github.com/Zaire404)
