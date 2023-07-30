@@ -15,75 +15,75 @@ func NewAPI() *gin.Engine {
 		})
 	})
 
-	tiktok := r.Group("/douyin")
+	tiktok := r.Group("/douyin/")
 	{
 		// 视频流接口
-		tiktok.GET("/feed")
+		tiktok.GET("feed/")
 
-		user := tiktok.Group("/user")
+		user := tiktok.Group("user/")
 		{
 			// 用户注册
-			user.POST("/register")
+			user.POST("register/")
 			// 用户登录
-			user.POST("/login")
+			user.POST("login/")
 			// 用户信息
 			user.GET("")
 		}
 
-		publish := tiktok.Group("/publish")
+		publish := tiktok.Group("publish/")
 		{
 			// 投稿接口
-			publish.POST("/action")
+			publish.POST("action/")
 			// 发布列表
-			publish.GET("/list")
+			publish.GET("list/")
 		}
 
-		favorite := tiktok.Group("/favorite")
+		favorite := tiktok.Group("favorite/")
 		{
 			// 赞操作
-			favorite.POST("/action")
+			favorite.POST("action/")
 			// 喜欢列表
-			favorite.GET("/list")
+			favorite.GET("list/")
 		}
 
-		comment := tiktok.Group("/comment")
+		comment := tiktok.Group("comment/")
 		{
 			// 评论操作
-			comment.POST("/action")
+			comment.POST("action/")
 			// 评论列表
-			comment.GET("/list")
+			comment.GET("list/")
 		}
 
-		relation := tiktok.Group("/relation")
+		relation := tiktok.Group("relation/")
 		{
 			// 关注操作
-			relation.POST("/action")
+			relation.POST("action/")
 
-			follow := relation.Group("/follow")
+			follow := relation.Group("follow/")
 			{
 				// 关注列表
-				follow.GET("/list")
+				follow.GET("list/")
 			}
 
-			follower := relation.Group("/follower")
+			follower := relation.Group("follower/")
 			{
 				// 粉丝列表
-				follower.GET("/list")
+				follower.GET("list/")
 			}
 
-			friend := relation.Group("/friend")
+			friend := relation.Group("friend/")
 			{
 				// 好友列表
-				friend.GET("/list")
+				friend.GET("list/")
 			}
 		}
 
-		message := tiktok.Group("message")
+		message := tiktok.Group("message/")
 		{
 			// 发送消息
-			message.POST("/action")
+			message.POST("action/")
 			// 聊天记录
-			message.GET("/chat")
+			message.GET("chat/")
 		}
 	}
 
