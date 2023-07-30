@@ -1,15 +1,19 @@
 package cmd
 
 import (
+	"biu-x.org/TikTok/modules/config"
+	"biu-x.org/TikTok/routers"
+	"fmt"
+	"github.com/spf13/viper"
 	"github.com/urfave/cli/v2"
 )
 
-// CmdAPI api 子命令
-var CmdAPI = &cli.Command{
-	Name:        "api",
+// CmdWeb api 子命令
+var CmdWeb = &cli.Command{
+	Name:        "server",
 	Usage:       "Start TikTok api server",
 	Description: `Star TikTok api server`,
-	Action:      runAPI,
+	Action:      runWeb,
 	Flags: []cli.Flag{
 		&cli.StringFlag{
 			Name:    "port",
@@ -20,6 +24,9 @@ var CmdAPI = &cli.Command{
 	},
 }
 
-func runAPI(ctx *cli.Context) error {
+func runWeb(ctx *cli.Context) error {
+	config.InitConfig()
+	fmt.Println(viper.Get("server.port"))
+	routers.Init()
 	return nil
 }

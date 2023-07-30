@@ -1,0 +1,13 @@
+[Unit]
+Description=Gitea Action Runner
+After=network.target
+
+[Service]
+Type=simple
+User=git
+Group=git
+WorkingDirectory=/home/git/.app/action
+ExecStart=/home/git/.app/action/runner daemon
+
+[Install]
+WantedBy=multi-user.target
