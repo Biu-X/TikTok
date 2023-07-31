@@ -181,3 +181,6 @@ $RECYCLE.BIN/
 
 # Windows shortcuts
 *.lnk
+
+# Air
+tmp
