@@ -4,18 +4,17 @@ import (
 	"biu-x.org/TikTok/modules/config"
 	"biu-x.org/TikTok/routers"
 	"fmt"
-	"github.com/spf13/viper"
 	"github.com/urfave/cli/v2"
 )
 
 // CmdWeb api 子命令
-var CmdWeb = &cli.Command{
+var CmdWeb = &cli.Command{ //nolint:typecheck
 	Name:        "server",
 	Usage:       "Start TikTok api server",
 	Description: `Star TikTok api server`,
 	Action:      runWeb,
 	Flags: []cli.Flag{
-		&cli.StringFlag{
+		&cli.StringFlag{ //nolint:typecheck
 			Name:    "port",
 			Aliases: []string{"p"},
 			Value:   "3000",
@@ -24,9 +23,9 @@ var CmdWeb = &cli.Command{
 	},
 }
 
-func runWeb(ctx *cli.Context) error {
+func runWeb(ctx *cli.Context) error { //nolint:typecheck
 	config.InitConfig()
-	fmt.Println(viper.Get("server.port"))
+	fmt.Println(config.Get("redis"))
 	routers.Init()
 	return nil
 }
