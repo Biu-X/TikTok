@@ -9,32 +9,6 @@ import (
 
 var config *viper.Viper
 
-type Server struct {
-	Port int
-	Mode string
-}
-
-type Log struct {
-	Level string
-	Mode  []string
-	Path  string
-}
-
-type MySQL struct {
-	Host     string
-	Port     int
-	Username string
-	Password string
-	Database string
-}
-
-type Redis struct {
-	Host     string
-	Port     int
-	Password string
-	DB       int
-}
-
 func Init() {
 	config = viper.New()
 
