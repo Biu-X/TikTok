@@ -73,5 +73,10 @@ func Set(key string, value interface{}) {
 }
 
 func MySQLDSN() string {
-	return GetString("mysql.username") + ":" + GetString("mysql.password") + "@tcp(" + GetString("mysql.host") + ":" + GetString("mysql.port") + ")/" + GetString("mysql.database") + "?charset=utf8mb4&parseTime=True&loc=Local"
+	return GetString("mysql.username") + ":" +
+		GetString("mysql.password") + "@tcp(" +
+		GetString("mysql.host") + ":" +
+		GetString("mysql.port") + ")/" +
+		GetString("mysql.database") +
+		"?charset=utf8mb4&parseTime=True&loc=Local"
 }
