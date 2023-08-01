@@ -9,8 +9,42 @@ import (
 
 var config *viper.Viper
 
-func InitConfig() {
+type Server struct {
+	Port int
+	Mode string
+}
+
+type Log struct {
+	Level string
+	Mode  []string
+	Path  string
+}
+
+type MySQL struct {
+	Host     string
+	Port     int
+	Username string
+	Password string
+	Database string
+}
+
+type Redis struct {
+	Host     string
+	Port     int
+	Password string
+	DB       int
+}
+
+func Init() {
 	config = viper.New()
+
+	config.SetConfigName("tiktok")
+	config.AddConfigPath("./conf/")
+	config.AddConfigPath("./")
+	config.AddConfigPath("$HOME/.tiktok/")
+	config.AddConfigPath("/etc/tiktok/")
+	config.SetConfigType("yml")
+
 	config.SetDefault("server", map[string]interface{}{
 		"port": 8080,
 		"mode": "prod",
@@ -37,13 +71,6 @@ func InitConfig() {
 		"database": 0,
 	})
 
-	config.SetConfigName("tiktok")
-	config.AddConfigPath("./conf/")
-	config.AddConfigPath("./")
-	config.AddConfigPath("$HOME/.tiktok/")
-	config.AddConfigPath("/etc/tiktok/")
-	config.SetConfigType("yml")
-
 	if err := config.ReadInConfig(); err != nil {
 		var configFileNotFoundError viper.ConfigFileNotFoundError
 		if errors.As(err, &configFileNotFoundError) {
@@ -53,15 +80,24 @@ func InitConfig() {
 	}
 
 	config.WatchConfig()
-	config.WatchConfig()
 	config.OnConfigChange(func(e fsnotify.Event) {
 		// 配置文件发生变更之后会调用的回调函数
 		fmt.Println("Config file changed:", e.Name)
 	})
-
-	fmt.Println(config.Get("mysql"))
 }
 
 func Get(key string) interface{} {
 	return config.Get(key)
+}
+
+func GetString(key string) string {
+	return config.GetString(key)
+}
+
+func Set(key string, value interface{}) {
+	config.Set(key, value)
+}
+
+func MySQLDSN() string {
+	return GetString("mysql.username") + ":" + GetString("mysql.password") + "@tcp(" + GetString("mysql.host") + ":" + GetString("mysql.port") + ")/" + GetString("mysql.database") + "?charset=utf8mb4&parseTime=True&loc=Local"
 }

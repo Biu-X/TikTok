@@ -7,6 +7,7 @@ import (
 
 func NewAPI() *gin.Engine {
 	r := gin.New()
+	r.Use(pass)
 	r.Use(gin.Logger(), gin.Recovery())
 
 	r.GET("/", func(c *gin.Context) {
@@ -15,7 +16,7 @@ func NewAPI() *gin.Engine {
 		})
 	})
 
-	tiktok := r.Group("/douyin/")
+	tiktok := r.Group("/douyin/", pass)
 	{
 		// 视频流接口
 		tiktok.GET("feed/")
@@ -88,4 +89,11 @@ func NewAPI() *gin.Engine {
 	}
 
 	return r
+}
+
+func pass(c *gin.Context) {
+	c.JSON(http.StatusOK, gin.H{
+		"status_code": 0,
+		"status_msg":  "string",
+	})
 }

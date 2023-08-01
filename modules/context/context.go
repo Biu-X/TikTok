@@ -2,7 +2,7 @@ package context
 
 import (
 	"context"
-	"github.com/go-chi/chi/v5"
+	"github.com/gin-gonic/gin"
 	"net/http"
 	"time"
 )
@@ -14,7 +14,7 @@ type contextValuePair struct {
 
 type Context struct {
 	originCtx    context.Context
-	Chi          chi.Context
+	g            *gin.Context
 	contextValue []contextValuePair
 
 	Resp http.ResponseWriter
