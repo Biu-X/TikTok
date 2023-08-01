@@ -11,6 +11,10 @@ default: help
 build: ## build tiktok binary file
 	${GO} build -o tiktok .
 
+.PNONY: gen
+gen: build ## gen gorm code
+	./tiktok gen
+
 .PHONY: watch
 watch: ## live reload
 	${AIR} server

@@ -2,8 +2,8 @@ package cmd
 
 import (
 	"biu-x.org/TikTok/modules/config"
+	"biu-x.org/TikTok/modules/db"
 	"biu-x.org/TikTok/routers"
-	"fmt"
 	"github.com/urfave/cli/v2"
 )
 
@@ -12,7 +12,7 @@ var CmdWeb = &cli.Command{ //nolint:typecheck
 	Name:        "server",
 	Usage:       "Start TikTok api server",
 	Description: `Star TikTok api server`,
-	Action:      runWeb,
+	Action:      runWeb, //nolint:typecheck
 	Flags: []cli.Flag{
 		&cli.StringFlag{ //nolint:typecheck
 			Name:    "port",
@@ -24,8 +24,8 @@ var CmdWeb = &cli.Command{ //nolint:typecheck
 }
 
 func runWeb(ctx *cli.Context) error { //nolint:typecheck
-	config.InitConfig()
-	fmt.Println(config.Get("redis"))
+	config.Init()
+	db.Init()
 	routers.Init()
 	return nil
 }

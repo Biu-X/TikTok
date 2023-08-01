@@ -1,13 +1,13 @@
 [Unit]
-Description=Gitea Action Runner
+Description=Tiktok server
 After=network.target
 
 [Service]
 Type=simple
 User=git
 Group=git
-WorkingDirectory=/home/git/.app/action
-ExecStart=/home/git/.app/action/runner daemon
+WorkingDirectory=/home/git/usr/local/bin
+ExecStart=/home/git/usr/local/bin/tiktok server
 
 [Install]
 WantedBy=multi-user.target
