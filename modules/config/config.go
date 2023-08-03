@@ -5,9 +5,30 @@ import (
 	"fmt"
 	"github.com/fsnotify/fsnotify"
 	"github.com/spf13/viper"
+	"log"
 )
 
 var config *viper.Viper
+
+type MySQL struct {
+	Host     string `yaml:"host"`
+	Port     int    `yaml:"port"`
+	Username string `yaml:"username"`
+	Password string `yaml:"password"`
+	Database string `yaml:"database"`
+}
+
+type Redis struct {
+	Host     string `yaml:"host"`
+	Port     int    `yaml:"port"`
+	Password string `yaml:"password"`
+	Database int    `yaml:"database"`
+}
+
+var (
+	mysql MySQL
+	redis Redis
+)
 
 func Init() {
 	config = viper.New()
@@ -57,6 +78,14 @@ func Init() {
 			})
 		}
 	}
+	err := config.UnmarshalKey("mysql", &mysql)
+	if err != nil {
+		log.Fatalf("unable to decode into struct, %v", err)
+	}
+	err = config.UnmarshalKey("redis", &redis)
+	if err != nil {
+		log.Fatalf("unable to decode into struct, %v", err)
+	}
 }
 
 func Get(key string) interface{} {
@@ -72,10 +101,8 @@ func Set(key string, value interface{}) {
 }
 
 func MySQLDSN() string {
-	return GetString("mysql.username") + ":" +
-		GetString("mysql.password") + "@tcp(" +
-		GetString("mysql.host") + ":" +
-		GetString("mysql.port") + ")/" +
-		GetString("mysql.database") +
-		"?charset=utf8mb4&parseTime=True&loc=Local"
+	return fmt.Sprintf("%v:%v@tcp(%v:%v)/%v"+
+		"?charset=utf8mb4&parseTime=True&loc=Local",
+		mysql.Username, mysql.Password, mysql.Host,
+		mysql.Port, mysql.Database)
 }
