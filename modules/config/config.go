@@ -15,6 +15,7 @@ func Init() {
 	config.SetConfigName("tiktok")
 	config.AddConfigPath("./conf/")
 	config.AddConfigPath("./")
+	config.AddConfigPath("../../conf")
 	config.AddConfigPath("$HOME/.tiktok/")
 	config.AddConfigPath("/etc/tiktok/")
 	config.SetConfigType("yml")
