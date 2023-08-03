@@ -3,16 +3,19 @@ module biu-x.org/TikTok
 go 1.20
 
 require (
+	github.com/disintegration/imaging v1.6.2
 	github.com/fsnotify/fsnotify v1.6.0
 	github.com/gin-gonic/gin v1.9.1
 	github.com/golang-jwt/jwt/v5 v5.0.0
 	github.com/redis/go-redis/v9 v9.0.5
 	github.com/spf13/viper v1.16.0
 	github.com/urfave/cli/v2 v2.25.7
+	golang.org/x/crypto v0.11.0
 	gorm.io/driver/mysql v1.5.1
 	gorm.io/driver/sqlite v1.5.0
 	gorm.io/gen v0.3.23
 	gorm.io/gorm v1.25.2
+	gorm.io/plugin/dbresolver v1.4.2
 )
 
 require (
@@ -22,7 +25,6 @@ require (
 	github.com/chenzhuoyu/iasm v0.9.0 // indirect
 	github.com/cpuguy83/go-md2man/v2 v2.0.2 // indirect
 	github.com/dgryski/go-rendezvous v0.0.0-20200823014737-9f7001d12a5f // indirect
-	github.com/disintegration/imaging v1.6.2 // indirect
 	github.com/gabriel-vasile/mimetype v1.4.2 // indirect
 	github.com/gin-contrib/sse v0.1.0 // indirect
 	github.com/go-playground/locales v0.14.1 // indirect
@@ -53,7 +55,6 @@ require (
 	github.com/ugorji/go/codec v1.2.11 // indirect
 	github.com/xrash/smetrics v0.0.0-20201216005158-039620a65673 // indirect
 	golang.org/x/arch v0.4.0 // indirect
-	golang.org/x/crypto v0.11.0 // indirect
 	golang.org/x/image v0.10.0 // indirect
 	golang.org/x/mod v0.12.0 // indirect
 	golang.org/x/net v0.12.0 // indirect
@@ -65,5 +66,4 @@ require (
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 	gorm.io/datatypes v1.2.0 // indirect
 	gorm.io/hints v1.1.2 // indirect
-	gorm.io/plugin/dbresolver v1.4.2 // indirect
 )
