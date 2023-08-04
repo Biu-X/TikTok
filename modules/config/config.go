@@ -6,6 +6,7 @@ import (
 	"github.com/fsnotify/fsnotify"
 	"github.com/spf13/viper"
 	"log"
+	"strings"
 )
 
 var config *viper.Viper
@@ -39,6 +40,11 @@ func Init() {
 	config.AddConfigPath("$HOME/.tiktok/")
 	config.AddConfigPath("/etc/tiktok/")
 	config.SetConfigType("yml")
+
+	config.AutomaticEnv()
+	config.SetEnvPrefix("TK")
+	replacer := strings.NewReplacer(".", "_")
+	config.SetEnvKeyReplacer(replacer)
 
 	config.WatchConfig()
 	config.OnConfigChange(func(e fsnotify.Event) {
