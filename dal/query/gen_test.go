@@ -77,7 +77,12 @@ func Test_WithContext(t *testing.T) {
 	qCtx := query.WithContext(context.WithValue(context.Background(), key, value))
 
 	for _, ctx := range []context.Context{
+		qCtx.Comment.UnderlyingDB().Statement.Context,
+		qCtx.Favorite.UnderlyingDB().Statement.Context,
+		qCtx.Follow.UnderlyingDB().Statement.Context,
+		qCtx.Message.UnderlyingDB().Statement.Context,
 		qCtx.User.UnderlyingDB().Statement.Context,
+		qCtx.Video.UnderlyingDB().Statement.Context,
 	} {
 		if v := ctx.Value(key); v != value {
 			t.Errorf("get value from context fail, expect %q, got %q", value, v)

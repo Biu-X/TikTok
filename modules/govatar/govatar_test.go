@@ -1,14 +1,13 @@
-package govatar_test
+package govatar
 
 import (
-	"biu-x.org/TikTok/modules/govatar"
 	"image/png"
 	"os"
 	"testing"
 )
 
 func TestCreateAvatar(t *testing.T) {
-	avatar, err := govatar.CreateAvatarWithDefault("hiifong@qq.com")
+	avatar, err := CreateAvatarWithDefault("hiifong@qq.com")
 	if err != nil {
 		return
 	}

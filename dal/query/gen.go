@@ -16,34 +16,59 @@ import (
 )
 
 var (
-	Q    = new(Query)
-	User *user
+	Q        = new(Query)
+	Comment  *comment
+	Favorite *favorite
+	Follow   *follow
+	Message  *message
+	User     *user
+	Video    *video
 )
 
 func SetDefault(db *gorm.DB, opts ...gen.DOOption) {
 	*Q = *Use(db, opts...)
+	Comment = &Q.Comment
+	Favorite = &Q.Favorite
+	Follow = &Q.Follow
+	Message = &Q.Message
 	User = &Q.User
+	Video = &Q.Video
 }
 
 func Use(db *gorm.DB, opts ...gen.DOOption) *Query {
 	return &Query{
-		db:   db,
-		User: newUser(db, opts...),
+		db:       db,
+		Comment:  newComment(db, opts...),
+		Favorite: newFavorite(db, opts...),
+		Follow:   newFollow(db, opts...),
+		Message:  newMessage(db, opts...),
+		User:     newUser(db, opts...),
+		Video:    newVideo(db, opts...),
 	}
 }
 
 type Query struct {
 	db *gorm.DB
 
-	User user
+	Comment  comment
+	Favorite favorite
+	Follow   follow
+	Message  message
+	User     user
+	Video    video
 }
 
 func (q *Query) Available() bool { return q.db != nil }
 
 func (q *Query) clone(db *gorm.DB) *Query {
 	return &Query{
-		db:   db,
-		User: q.User.clone(db),
+		db:       db,
+		Comment:  q.Comment.clone(db),
+		Favorite: q.Favorite.clone(db),
+		Follow:   q.Follow.clone(db),
+		Message:  q.Message.clone(db),
+		User:     q.User.clone(db),
+		Video:    q.Video.clone(db),
 	}
 }
 
@@ -57,18 +82,33 @@ func (q *Query) WriteDB() *Query {
 
 func (q *Query) ReplaceDB(db *gorm.DB) *Query {
 	return &Query{
-		db:   db,
-		User: q.User.replaceDB(db),
+		db:       db,
+		Comment:  q.Comment.replaceDB(db),
+		Favorite: q.Favorite.replaceDB(db),
+		Follow:   q.Follow.replaceDB(db),
+		Message:  q.Message.replaceDB(db),
+		User:     q.User.replaceDB(db),
+		Video:    q.Video.replaceDB(db),
 	}
 }
 
 type queryCtx struct {
-	User *userDo
+	Comment  *commentDo
+	Favorite *favoriteDo
+	Follow   *followDo
+	Message  *messageDo
+	User     *userDo
+	Video    *videoDo
 }
 
 func (q *Query) WithContext(ctx context.Context) *queryCtx {
 	return &queryCtx{
-		User: q.User.WithContext(ctx),
+		Comment:  q.Comment.WithContext(ctx),
+		Favorite: q.Favorite.WithContext(ctx),
+		Follow:   q.Follow.WithContext(ctx),
+		Message:  q.Message.WithContext(ctx),
+		User:     q.User.WithContext(ctx),
+		Video:    q.Video.WithContext(ctx),
 	}
 }
 
