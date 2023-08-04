@@ -42,17 +42,13 @@ func newUser(db *gorm.DB, opts ...gen.DOOption) user {
 type user struct {
 	userDo
 
-	ALL       field.Asterisk
-	ID        field.Int64
-	Name      field.String // 用户名
-	Password  field.String // 密码
-	Signature field.String // 个人简介
-	Avatar    field.String // 头像
-	/*
-		用户个人页顶部大图
-
-	*/
-	BackgroundImage field.String
+	ALL             field.Asterisk
+	ID              field.Int64
+	Name            field.String // 用户名
+	Password        field.String // 密码
+	Signature       field.String // 个人简介
+	Avatar          field.String // 头像
+	BackgroundImage field.String // 用户个人页顶部大图
 
 	fieldMap map[string]field.Expr
 }

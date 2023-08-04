@@ -42,17 +42,13 @@ func newComment(db *gorm.DB, opts ...gen.DOOption) comment {
 type comment struct {
 	commentDo
 
-	ALL     field.Asterisk
-	ID      field.Int64
-	UserID  field.Int64 // 用户id
-	VideoID field.Int64 // 视频id
-	/*
-		评论内容
-
-	*/
-	Content    field.String
-	CreateDate field.Time // 评论发布日期
-	DeleteDate field.Time // 评论删除日期
+	ALL        field.Asterisk
+	ID         field.Int64
+	UserID     field.Int64  // 用户id
+	VideoID    field.Int64  // 视频id
+	Content    field.String // 评论内容
+	CreateDate field.Time   // 评论发布日期
+	DeleteDate field.Time   // 评论删除日期
 
 	fieldMap map[string]field.Expr
 }

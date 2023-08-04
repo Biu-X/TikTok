@@ -43,14 +43,10 @@ type message struct {
 
 	ALL        field.Asterisk
 	ID         field.Int64
-	ToUserID   field.Int64 // 消息接收者id
-	FromUserID field.Int64 // 消息发送者id
-	/*
-		消息内容
-
-	*/
-	Content    field.String
-	CreateTime field.Time // 消息发送时间
+	ToUserID   field.Int64  // 消息接收者id
+	FromUserID field.Int64  // 消息发送者id
+	Content    field.String // 消息内容
+	CreateTime field.Time   // 消息发送时间
 
 	fieldMap map[string]field.Expr
 }
