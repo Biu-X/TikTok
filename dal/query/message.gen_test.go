@@ -9,7 +9,7 @@ import (
 	"fmt"
 	"testing"
 
-	"biu-x.org/TikTok/models"
+	"biu-x.org/TikTok/model"
 	"gorm.io/gen"
 	"gorm.io/gen/field"
 	"gorm.io/gorm/clause"
@@ -17,9 +17,9 @@ import (
 
 func init() {
 	InitializeDB()
-	err := db.AutoMigrate(&models.Message{})
+	err := db.AutoMigrate(&model.Message{})
 	if err != nil {
-		fmt.Printf("Error: AutoMigrate(&models.Message{}) fail: %s", err)
+		fmt.Printf("Error: AutoMigrate(&model.Message{}) fail: %s", err)
 	}
 }
 
@@ -40,17 +40,17 @@ func Test_messageQuery(t *testing.T) {
 		t.Error("GetFieldByName(\"\") from message success")
 	}
 
-	err = _do.Create(&models.Message{})
+	err = _do.Create(&model.Message{})
 	if err != nil {
 		t.Error("create item in table <message> fail:", err)
 	}
 
-	err = _do.Save(&models.Message{})
+	err = _do.Save(&model.Message{})
 	if err != nil {
 		t.Error("create item in table <message> fail:", err)
 	}
 
-	err = _do.CreateInBatches([]*models.Message{{}, {}}, 10)
+	err = _do.CreateInBatches([]*model.Message{{}, {}}, 10)
 	if err != nil {
 		t.Error("create item in table <message> fail:", err)
 	}
@@ -75,7 +75,7 @@ func Test_messageQuery(t *testing.T) {
 		t.Error("FindInBatch() on table <message> fail:", err)
 	}
 
-	err = _do.Where(primaryKey.IsNotNull()).FindInBatches(&[]*models.Message{}, 10, func(tx gen.Dao, batch int) error { return nil })
+	err = _do.Where(primaryKey.IsNotNull()).FindInBatches(&[]*model.Message{}, 10, func(tx gen.Dao, batch int) error { return nil })
 	if err != nil {
 		t.Error("FindInBatches() on table <message> fail:", err)
 	}
@@ -110,7 +110,7 @@ func Test_messageQuery(t *testing.T) {
 		t.Error("FindByPage() on table <message> fail:", err)
 	}
 
-	_, err = _do.ScanByPage(&models.Message{}, 0, 1)
+	_, err = _do.ScanByPage(&model.Message{}, 0, 1)
 	if err != nil {
 		t.Error("ScanByPage() on table <message> fail:", err)
 	}

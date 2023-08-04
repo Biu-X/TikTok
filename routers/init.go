@@ -1,7 +1,7 @@
 package routers
 
 import (
-	"biu-x.org/TikTok/modules/config"
+	"biu-x.org/TikTok/module/config"
 	v1 "biu-x.org/TikTok/routers/api/v1"
 	"context"
 	"fmt"

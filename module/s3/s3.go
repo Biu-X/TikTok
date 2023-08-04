@@ -1,7 +1,7 @@
 package s3
 
 import (
-	"biu-x.org/TikTok/modules/config"
+	"biu-x.org/TikTok/module/config"
 	"github.com/eleven26/goss/v3"
 	"io"
 	"log"

@@ -1,7 +1,7 @@
 package db
 
 import (
-	"biu-x.org/TikTok/modules/config"
+	"biu-x.org/TikTok/module/config"
 	"fmt"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"

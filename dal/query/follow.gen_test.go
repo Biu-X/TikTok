@@ -9,7 +9,7 @@ import (
 	"fmt"
 	"testing"
 
-	"biu-x.org/TikTok/models"
+	"biu-x.org/TikTok/model"
 	"gorm.io/gen"
 	"gorm.io/gen/field"
 	"gorm.io/gorm/clause"
@@ -17,9 +17,9 @@ import (
 
 func init() {
 	InitializeDB()
-	err := db.AutoMigrate(&models.Follow{})
+	err := db.AutoMigrate(&model.Follow{})
 	if err != nil {
-		fmt.Printf("Error: AutoMigrate(&models.Follow{}) fail: %s", err)
+		fmt.Printf("Error: AutoMigrate(&model.Follow{}) fail: %s", err)
 	}
 }
 
@@ -40,17 +40,17 @@ func Test_followQuery(t *testing.T) {
 		t.Error("GetFieldByName(\"\") from follow success")
 	}
 
-	err = _do.Create(&models.Follow{})
+	err = _do.Create(&model.Follow{})
 	if err != nil {
 		t.Error("create item in table <follow> fail:", err)
 	}
 
-	err = _do.Save(&models.Follow{})
+	err = _do.Save(&model.Follow{})
 	if err != nil {
 		t.Error("create item in table <follow> fail:", err)
 	}
 
-	err = _do.CreateInBatches([]*models.Follow{{}, {}}, 10)
+	err = _do.CreateInBatches([]*model.Follow{{}, {}}, 10)
 	if err != nil {
 		t.Error("create item in table <follow> fail:", err)
 	}
@@ -75,7 +75,7 @@ func Test_followQuery(t *testing.T) {
 		t.Error("FindInBatch() on table <follow> fail:", err)
 	}
 
-	err = _do.Where(primaryKey.IsNotNull()).FindInBatches(&[]*models.Follow{}, 10, func(tx gen.Dao, batch int) error { return nil })
+	err = _do.Where(primaryKey.IsNotNull()).FindInBatches(&[]*model.Follow{}, 10, func(tx gen.Dao, batch int) error { return nil })
 	if err != nil {
 		t.Error("FindInBatches() on table <follow> fail:", err)
 	}
@@ -110,7 +110,7 @@ func Test_followQuery(t *testing.T) {
 		t.Error("FindByPage() on table <follow> fail:", err)
 	}
 
-	_, err = _do.ScanByPage(&models.Follow{}, 0, 1)
+	_, err = _do.ScanByPage(&model.Follow{}, 0, 1)
 	if err != nil {
 		t.Error("ScanByPage() on table <follow> fail:", err)
 	}

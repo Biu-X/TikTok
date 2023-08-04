@@ -16,14 +16,14 @@ import (
 
 	"gorm.io/plugin/dbresolver"
 
-	"biu-x.org/TikTok/models"
+	"biu-x.org/TikTok/model"
 )
 
 func newComment(db *gorm.DB, opts ...gen.DOOption) comment {
 	_comment := comment{}
 
 	_comment.commentDo.UseDB(db, opts...)
-	_comment.commentDo.UseModel(&models.Comment{})
+	_comment.commentDo.UseModel(&model.Comment{})
 
 	tableName := _comment.commentDo.TableName()
 	_comment.ALL = field.NewAsterisk(tableName)
@@ -208,57 +208,57 @@ func (c commentDo) Unscoped() *commentDo {
 	return c.withDO(c.DO.Unscoped())
 }
 
-func (c commentDo) Create(values ...*models.Comment) error {
+func (c commentDo) Create(values ...*model.Comment) error {
 	if len(values) == 0 {
 		return nil
 	}
 	return c.DO.Create(values)
 }
 
-func (c commentDo) CreateInBatches(values []*models.Comment, batchSize int) error {
+func (c commentDo) CreateInBatches(values []*model.Comment, batchSize int) error {
 	return c.DO.CreateInBatches(values, batchSize)
 }
 
 // Save : !!! underlying implementation is different with GORM
 // The method is equivalent to executing the statement: db.Clauses(clause.OnConflict{UpdateAll: true}).Create(values)
-func (c commentDo) Save(values ...*models.Comment) error {
+func (c commentDo) Save(values ...*model.Comment) error {
 	if len(values) == 0 {
 		return nil
 	}
 	return c.DO.Save(values)
 }
 
-func (c commentDo) First() (*models.Comment, error) {
+func (c commentDo) First() (*model.Comment, error) {
 	if result, err := c.DO.First(); err != nil {
 		return nil, err
 	} else {
-		return result.(*models.Comment), nil
+		return result.(*model.Comment), nil
 	}
 }
 
-func (c commentDo) Take() (*models.Comment, error) {
+func (c commentDo) Take() (*model.Comment, error) {
 	if result, err := c.DO.Take(); err != nil {
 		return nil, err
 	} else {
-		return result.(*models.Comment), nil
+		return result.(*model.Comment), nil
 	}
 }
 
-func (c commentDo) Last() (*models.Comment, error) {
+func (c commentDo) Last() (*model.Comment, error) {
 	if result, err := c.DO.Last(); err != nil {
 		return nil, err
 	} else {
-		return result.(*models.Comment), nil
+		return result.(*model.Comment), nil
 	}
 }
 
-func (c commentDo) Find() ([]*models.Comment, error) {
+func (c commentDo) Find() ([]*model.Comment, error) {
 	result, err := c.DO.Find()
-	return result.([]*models.Comment), err
+	return result.([]*model.Comment), err
 }
 
-func (c commentDo) FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error) (results []*models.Comment, err error) {
-	buf := make([]*models.Comment, 0, batchSize)
+func (c commentDo) FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error) (results []*model.Comment, err error) {
+	buf := make([]*model.Comment, 0, batchSize)
 	err = c.DO.FindInBatches(&buf, batchSize, func(tx gen.Dao, batch int) error {
 		defer func() { results = append(results, buf...) }()
 		return fc(tx, batch)
@@ -266,7 +266,7 @@ func (c commentDo) FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) err
 	return results, err
 }
 
-func (c commentDo) FindInBatches(result *[]*models.Comment, batchSize int, fc func(tx gen.Dao, batch int) error) error {
+func (c commentDo) FindInBatches(result *[]*model.Comment, batchSize int, fc func(tx gen.Dao, batch int) error) error {
 	return c.DO.FindInBatches(result, batchSize, fc)
 }
 
@@ -292,23 +292,23 @@ func (c commentDo) Preload(fields ...field.RelationField) *commentDo {
 	return &c
 }
 
-func (c commentDo) FirstOrInit() (*models.Comment, error) {
+func (c commentDo) FirstOrInit() (*model.Comment, error) {
 	if result, err := c.DO.FirstOrInit(); err != nil {
 		return nil, err
 	} else {
-		return result.(*models.Comment), nil
+		return result.(*model.Comment), nil
 	}
 }
 
-func (c commentDo) FirstOrCreate() (*models.Comment, error) {
+func (c commentDo) FirstOrCreate() (*model.Comment, error) {
 	if result, err := c.DO.FirstOrCreate(); err != nil {
 		return nil, err
 	} else {
-		return result.(*models.Comment), nil
+		return result.(*model.Comment), nil
 	}
 }
 
-func (c commentDo) FindByPage(offset int, limit int) (result []*models.Comment, count int64, err error) {
+func (c commentDo) FindByPage(offset int, limit int) (result []*model.Comment, count int64, err error) {
 	result, err = c.Offset(offset).Limit(limit).Find()
 	if err != nil {
 		return
@@ -337,7 +337,7 @@ func (c commentDo) Scan(result interface{}) (err error) {
 	return c.DO.Scan(result)
 }
 
-func (c commentDo) Delete(models ...*models.Comment) (result gen.ResultInfo, err error) {
+func (c commentDo) Delete(models ...*model.Comment) (result gen.ResultInfo, err error) {
 	return c.DO.Delete(models)
 }
 
