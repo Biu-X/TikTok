@@ -26,9 +26,23 @@ type Redis struct {
 	Database int    `yaml:"database"`
 }
 
+type S3 struct {
+	Endpoint  string `yaml:"endpoint"`
+	AccessKey string `yaml:"accessKey"`
+	SecretKey string `yaml:"secretKey"`
+	Region    string `yaml:"region"`
+	Bucket    string `yaml:"bucket"`
+
+	// 如果是使用 minio，并且没有使用 https，需要设置为 true
+	UseSsl *bool `yaml:"useSsl"`
+	// 如果是使用 minio，需要设置为 true
+	HostnameImmutable *bool `yaml:"hostnameImmutable"`
+}
+
 var (
-	mysql MySQL
-	redis Redis
+	mysql    MySQL
+	redis    Redis
+	S3Config S3
 )
 
 func Init() {
@@ -92,6 +106,27 @@ func Init() {
 	if err != nil {
 		log.Fatalf("unable to decode into struct, %v", err)
 	}
+	err = config.UnmarshalKey("s3", &S3Config)
+	if err != nil {
+		log.Fatalf("unable to decode into struct, %v", err)
+	}
+
+	// use env var to set S3 config when some field is nil
+	if S3Config.Endpoint == "" {
+		S3Config.Endpoint = config.GetString("s3.endpoint")
+	}
+	if S3Config.AccessKey == "" {
+		S3Config.AccessKey = config.GetString("s3.accesskey")
+	}
+	if S3Config.SecretKey == "" {
+		S3Config.SecretKey = config.GetString("s3.secretkey")
+	}
+	if S3Config.Region == "" {
+		S3Config.Region = config.GetString("s3.region")
+	}
+	if S3Config.Bucket == "" {
+		S3Config.Bucket = config.GetString("s3.bucket")
+	}
 }
 
 func Get(key string) interface{} {
@@ -100,10 +135,6 @@ func Get(key string) interface{} {
 
 func GetString(key string) string {
 	return config.GetString(key)
-}
-
-func Set(key string, value interface{}) {
-	config.Set(key, value)
 }
 
 func MySQLDSN() string {

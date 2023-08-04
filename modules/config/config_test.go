@@ -1,13 +1,13 @@
-package config_test
+package config
 
 import (
-	"biu-x.org/TikTok/modules/config"
 	"fmt"
 	"testing"
 )
 
 func TestConfig(t *testing.T) {
-	config.Init()
-	fmt.Println(config.GetString("mysql.host"))
-	fmt.Println(config.MySQLDSN())
+	Init()
+	fmt.Println(GetString("mysql.host"))
+	fmt.Println(MySQLDSN())
+	fmt.Printf("%#v\n", S3Config)
 }
