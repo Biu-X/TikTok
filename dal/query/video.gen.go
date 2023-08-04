@@ -40,7 +40,7 @@ func newVideo(db *gorm.DB, opts ...gen.DOOption) video {
 }
 
 type video struct {
-	videoDo videoDo
+	videoDo
 
 	ALL         field.Asterisk
 	ID          field.Int64
@@ -77,14 +77,6 @@ func (v *video) updateTableName(table string) *video {
 	return v
 }
 
-func (v *video) WithContext(ctx context.Context) *videoDo { return v.videoDo.WithContext(ctx) }
-
-func (v video) TableName() string { return v.videoDo.TableName() }
-
-func (v video) Alias() string { return v.videoDo.Alias() }
-
-func (v video) Columns(cols ...field.Expr) gen.Columns { return v.videoDo.Columns(cols...) }
-
 func (v *video) GetFieldByName(fieldName string) (field.OrderExpr, bool) {
 	_f, ok := v.fieldMap[fieldName]
 	if !ok || _f == nil {
@@ -116,95 +108,156 @@ func (v video) replaceDB(db *gorm.DB) video {
 
 type videoDo struct{ gen.DO }
 
-func (v videoDo) Debug() *videoDo {
+type IVideoDo interface {
+	gen.SubQuery
+	Debug() IVideoDo
+	WithContext(ctx context.Context) IVideoDo
+	WithResult(fc func(tx gen.Dao)) gen.ResultInfo
+	ReplaceDB(db *gorm.DB)
+	ReadDB() IVideoDo
+	WriteDB() IVideoDo
+	As(alias string) gen.Dao
+	Session(config *gorm.Session) IVideoDo
+	Columns(cols ...field.Expr) gen.Columns
+	Clauses(conds ...clause.Expression) IVideoDo
+	Not(conds ...gen.Condition) IVideoDo
+	Or(conds ...gen.Condition) IVideoDo
+	Select(conds ...field.Expr) IVideoDo
+	Where(conds ...gen.Condition) IVideoDo
+	Order(conds ...field.Expr) IVideoDo
+	Distinct(cols ...field.Expr) IVideoDo
+	Omit(cols ...field.Expr) IVideoDo
+	Join(table schema.Tabler, on ...field.Expr) IVideoDo
+	LeftJoin(table schema.Tabler, on ...field.Expr) IVideoDo
+	RightJoin(table schema.Tabler, on ...field.Expr) IVideoDo
+	Group(cols ...field.Expr) IVideoDo
+	Having(conds ...gen.Condition) IVideoDo
+	Limit(limit int) IVideoDo
+	Offset(offset int) IVideoDo
+	Count() (count int64, err error)
+	Scopes(funcs ...func(gen.Dao) gen.Dao) IVideoDo
+	Unscoped() IVideoDo
+	Create(values ...*model.Video) error
+	CreateInBatches(values []*model.Video, batchSize int) error
+	Save(values ...*model.Video) error
+	First() (*model.Video, error)
+	Take() (*model.Video, error)
+	Last() (*model.Video, error)
+	Find() ([]*model.Video, error)
+	FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error) (results []*model.Video, err error)
+	FindInBatches(result *[]*model.Video, batchSize int, fc func(tx gen.Dao, batch int) error) error
+	Pluck(column field.Expr, dest interface{}) error
+	Delete(...*model.Video) (info gen.ResultInfo, err error)
+	Update(column field.Expr, value interface{}) (info gen.ResultInfo, err error)
+	UpdateSimple(columns ...field.AssignExpr) (info gen.ResultInfo, err error)
+	Updates(value interface{}) (info gen.ResultInfo, err error)
+	UpdateColumn(column field.Expr, value interface{}) (info gen.ResultInfo, err error)
+	UpdateColumnSimple(columns ...field.AssignExpr) (info gen.ResultInfo, err error)
+	UpdateColumns(value interface{}) (info gen.ResultInfo, err error)
+	UpdateFrom(q gen.SubQuery) gen.Dao
+	Attrs(attrs ...field.AssignExpr) IVideoDo
+	Assign(attrs ...field.AssignExpr) IVideoDo
+	Joins(fields ...field.RelationField) IVideoDo
+	Preload(fields ...field.RelationField) IVideoDo
+	FirstOrInit() (*model.Video, error)
+	FirstOrCreate() (*model.Video, error)
+	FindByPage(offset int, limit int) (result []*model.Video, count int64, err error)
+	ScanByPage(result interface{}, offset int, limit int) (count int64, err error)
+	Scan(result interface{}) (err error)
+	Returning(value interface{}, columns ...string) IVideoDo
+	UnderlyingDB() *gorm.DB
+	schema.Tabler
+}
+
+func (v videoDo) Debug() IVideoDo {
 	return v.withDO(v.DO.Debug())
 }
 
-func (v videoDo) WithContext(ctx context.Context) *videoDo {
+func (v videoDo) WithContext(ctx context.Context) IVideoDo {
 	return v.withDO(v.DO.WithContext(ctx))
 }
 
-func (v videoDo) ReadDB() *videoDo {
+func (v videoDo) ReadDB() IVideoDo {
 	return v.Clauses(dbresolver.Read)
 }
 
-func (v videoDo) WriteDB() *videoDo {
+func (v videoDo) WriteDB() IVideoDo {
 	return v.Clauses(dbresolver.Write)
 }
 
-func (v videoDo) Session(config *gorm.Session) *videoDo {
+func (v videoDo) Session(config *gorm.Session) IVideoDo {
 	return v.withDO(v.DO.Session(config))
 }
 
-func (v videoDo) Clauses(conds ...clause.Expression) *videoDo {
+func (v videoDo) Clauses(conds ...clause.Expression) IVideoDo {
 	return v.withDO(v.DO.Clauses(conds...))
 }
 
-func (v videoDo) Returning(value interface{}, columns ...string) *videoDo {
+func (v videoDo) Returning(value interface{}, columns ...string) IVideoDo {
 	return v.withDO(v.DO.Returning(value, columns...))
 }
 
-func (v videoDo) Not(conds ...gen.Condition) *videoDo {
+func (v videoDo) Not(conds ...gen.Condition) IVideoDo {
 	return v.withDO(v.DO.Not(conds...))
 }
 
-func (v videoDo) Or(conds ...gen.Condition) *videoDo {
+func (v videoDo) Or(conds ...gen.Condition) IVideoDo {
 	return v.withDO(v.DO.Or(conds...))
 }
 
-func (v videoDo) Select(conds ...field.Expr) *videoDo {
+func (v videoDo) Select(conds ...field.Expr) IVideoDo {
 	return v.withDO(v.DO.Select(conds...))
 }
 
-func (v videoDo) Where(conds ...gen.Condition) *videoDo {
+func (v videoDo) Where(conds ...gen.Condition) IVideoDo {
 	return v.withDO(v.DO.Where(conds...))
 }
 
-func (v videoDo) Order(conds ...field.Expr) *videoDo {
+func (v videoDo) Order(conds ...field.Expr) IVideoDo {
 	return v.withDO(v.DO.Order(conds...))
 }
 
-func (v videoDo) Distinct(cols ...field.Expr) *videoDo {
+func (v videoDo) Distinct(cols ...field.Expr) IVideoDo {
 	return v.withDO(v.DO.Distinct(cols...))
 }
 
-func (v videoDo) Omit(cols ...field.Expr) *videoDo {
+func (v videoDo) Omit(cols ...field.Expr) IVideoDo {
 	return v.withDO(v.DO.Omit(cols...))
 }
 
-func (v videoDo) Join(table schema.Tabler, on ...field.Expr) *videoDo {
+func (v videoDo) Join(table schema.Tabler, on ...field.Expr) IVideoDo {
 	return v.withDO(v.DO.Join(table, on...))
 }
 
-func (v videoDo) LeftJoin(table schema.Tabler, on ...field.Expr) *videoDo {
+func (v videoDo) LeftJoin(table schema.Tabler, on ...field.Expr) IVideoDo {
 	return v.withDO(v.DO.LeftJoin(table, on...))
 }
 
-func (v videoDo) RightJoin(table schema.Tabler, on ...field.Expr) *videoDo {
+func (v videoDo) RightJoin(table schema.Tabler, on ...field.Expr) IVideoDo {
 	return v.withDO(v.DO.RightJoin(table, on...))
 }
 
-func (v videoDo) Group(cols ...field.Expr) *videoDo {
+func (v videoDo) Group(cols ...field.Expr) IVideoDo {
 	return v.withDO(v.DO.Group(cols...))
 }
 
-func (v videoDo) Having(conds ...gen.Condition) *videoDo {
+func (v videoDo) Having(conds ...gen.Condition) IVideoDo {
 	return v.withDO(v.DO.Having(conds...))
 }
 
-func (v videoDo) Limit(limit int) *videoDo {
+func (v videoDo) Limit(limit int) IVideoDo {
 	return v.withDO(v.DO.Limit(limit))
 }
 
-func (v videoDo) Offset(offset int) *videoDo {
+func (v videoDo) Offset(offset int) IVideoDo {
 	return v.withDO(v.DO.Offset(offset))
 }
 
-func (v videoDo) Scopes(funcs ...func(gen.Dao) gen.Dao) *videoDo {
+func (v videoDo) Scopes(funcs ...func(gen.Dao) gen.Dao) IVideoDo {
 	return v.withDO(v.DO.Scopes(funcs...))
 }
 
-func (v videoDo) Unscoped() *videoDo {
+func (v videoDo) Unscoped() IVideoDo {
 	return v.withDO(v.DO.Unscoped())
 }
 
@@ -270,22 +323,22 @@ func (v videoDo) FindInBatches(result *[]*model.Video, batchSize int, fc func(tx
 	return v.DO.FindInBatches(result, batchSize, fc)
 }
 
-func (v videoDo) Attrs(attrs ...field.AssignExpr) *videoDo {
+func (v videoDo) Attrs(attrs ...field.AssignExpr) IVideoDo {
 	return v.withDO(v.DO.Attrs(attrs...))
 }
 
-func (v videoDo) Assign(attrs ...field.AssignExpr) *videoDo {
+func (v videoDo) Assign(attrs ...field.AssignExpr) IVideoDo {
 	return v.withDO(v.DO.Assign(attrs...))
 }
 
-func (v videoDo) Joins(fields ...field.RelationField) *videoDo {
+func (v videoDo) Joins(fields ...field.RelationField) IVideoDo {
 	for _, _f := range fields {
 		v = *v.withDO(v.DO.Joins(_f))
 	}
 	return &v
 }
 
-func (v videoDo) Preload(fields ...field.RelationField) *videoDo {
+func (v videoDo) Preload(fields ...field.RelationField) IVideoDo {
 	for _, _f := range fields {
 		v = *v.withDO(v.DO.Preload(_f))
 	}

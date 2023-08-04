@@ -12,11 +12,15 @@ const TableNameMessage = "message"
 
 // Message mapped from table <message>
 type Message struct {
-	ID         int64     `gorm:"column:id;type:bigint;primaryKey;autoIncrement:true" json:"id"`
-	ToUserID   int64     `gorm:"column:to_user_id;type:bigint;not null;index:idx_message_from_user_id_to_user_id,priority:1;comment:消息接收者id" json:"to_user_id"`     // 消息接收者id
-	FromUserID int64     `gorm:"column:from_user_id;type:bigint;not null;index:idx_message_from_user_id_to_user_id,priority:2;comment:消息发送者id" json:"from_user_id"` // 消息发送者id
-	Content    string    `gorm:"column:content;type:varchar(255);not null;comment:消息内容" json:"content"`                                                             // 消息内容
-	CreateTime time.Time `gorm:"column:create_time;type:datetime;not null;comment:消息发送时间" json:"create_time"`                                                       // 消息发送时间
+	ID         int64 `gorm:"column:id;type:bigint;primaryKey;autoIncrement:true" json:"id"`
+	ToUserID   int64 `gorm:"column:to_user_id;type:bigint;not null;index:idx_message_from_user_id_to_user_id,priority:1;comment:消息接收者id" json:"to_user_id"`     // 消息接收者id
+	FromUserID int64 `gorm:"column:from_user_id;type:bigint;not null;index:idx_message_from_user_id_to_user_id,priority:2;comment:消息发送者id" json:"from_user_id"` // 消息发送者id
+	/*
+		消息内容
+
+	*/
+	Content    string    `gorm:"column:content;type:varchar(255);not null;comment:消息内容\n" json:"content"`
+	CreateTime time.Time `gorm:"column:create_time;type:datetime;not null;comment:消息发送时间" json:"create_time"` // 消息发送时间
 }
 
 // TableName Message's table name
