@@ -93,12 +93,12 @@ func (q *Query) ReplaceDB(db *gorm.DB) *Query {
 }
 
 type queryCtx struct {
-	Comment  *commentDo
-	Favorite *favoriteDo
-	Follow   *followDo
-	Message  *messageDo
-	User     *userDo
-	Video    *videoDo
+	Comment  ICommentDo
+	Favorite IFavoriteDo
+	Follow   IFollowDo
+	Message  IMessageDo
+	User     IUserDo
+	Video    IVideoDo
 }
 
 func (q *Query) WithContext(ctx context.Context) *queryCtx {

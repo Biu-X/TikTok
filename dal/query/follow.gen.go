@@ -38,7 +38,7 @@ func newFollow(db *gorm.DB, opts ...gen.DOOption) follow {
 }
 
 type follow struct {
-	followDo followDo
+	followDo
 
 	ALL        field.Asterisk
 	ID         field.Int64
@@ -71,14 +71,6 @@ func (f *follow) updateTableName(table string) *follow {
 	return f
 }
 
-func (f *follow) WithContext(ctx context.Context) *followDo { return f.followDo.WithContext(ctx) }
-
-func (f follow) TableName() string { return f.followDo.TableName() }
-
-func (f follow) Alias() string { return f.followDo.Alias() }
-
-func (f follow) Columns(cols ...field.Expr) gen.Columns { return f.followDo.Columns(cols...) }
-
 func (f *follow) GetFieldByName(fieldName string) (field.OrderExpr, bool) {
 	_f, ok := f.fieldMap[fieldName]
 	if !ok || _f == nil {
@@ -108,95 +100,156 @@ func (f follow) replaceDB(db *gorm.DB) follow {
 
 type followDo struct{ gen.DO }
 
-func (f followDo) Debug() *followDo {
+type IFollowDo interface {
+	gen.SubQuery
+	Debug() IFollowDo
+	WithContext(ctx context.Context) IFollowDo
+	WithResult(fc func(tx gen.Dao)) gen.ResultInfo
+	ReplaceDB(db *gorm.DB)
+	ReadDB() IFollowDo
+	WriteDB() IFollowDo
+	As(alias string) gen.Dao
+	Session(config *gorm.Session) IFollowDo
+	Columns(cols ...field.Expr) gen.Columns
+	Clauses(conds ...clause.Expression) IFollowDo
+	Not(conds ...gen.Condition) IFollowDo
+	Or(conds ...gen.Condition) IFollowDo
+	Select(conds ...field.Expr) IFollowDo
+	Where(conds ...gen.Condition) IFollowDo
+	Order(conds ...field.Expr) IFollowDo
+	Distinct(cols ...field.Expr) IFollowDo
+	Omit(cols ...field.Expr) IFollowDo
+	Join(table schema.Tabler, on ...field.Expr) IFollowDo
+	LeftJoin(table schema.Tabler, on ...field.Expr) IFollowDo
+	RightJoin(table schema.Tabler, on ...field.Expr) IFollowDo
+	Group(cols ...field.Expr) IFollowDo
+	Having(conds ...gen.Condition) IFollowDo
+	Limit(limit int) IFollowDo
+	Offset(offset int) IFollowDo
+	Count() (count int64, err error)
+	Scopes(funcs ...func(gen.Dao) gen.Dao) IFollowDo
+	Unscoped() IFollowDo
+	Create(values ...*model.Follow) error
+	CreateInBatches(values []*model.Follow, batchSize int) error
+	Save(values ...*model.Follow) error
+	First() (*model.Follow, error)
+	Take() (*model.Follow, error)
+	Last() (*model.Follow, error)
+	Find() ([]*model.Follow, error)
+	FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error) (results []*model.Follow, err error)
+	FindInBatches(result *[]*model.Follow, batchSize int, fc func(tx gen.Dao, batch int) error) error
+	Pluck(column field.Expr, dest interface{}) error
+	Delete(...*model.Follow) (info gen.ResultInfo, err error)
+	Update(column field.Expr, value interface{}) (info gen.ResultInfo, err error)
+	UpdateSimple(columns ...field.AssignExpr) (info gen.ResultInfo, err error)
+	Updates(value interface{}) (info gen.ResultInfo, err error)
+	UpdateColumn(column field.Expr, value interface{}) (info gen.ResultInfo, err error)
+	UpdateColumnSimple(columns ...field.AssignExpr) (info gen.ResultInfo, err error)
+	UpdateColumns(value interface{}) (info gen.ResultInfo, err error)
+	UpdateFrom(q gen.SubQuery) gen.Dao
+	Attrs(attrs ...field.AssignExpr) IFollowDo
+	Assign(attrs ...field.AssignExpr) IFollowDo
+	Joins(fields ...field.RelationField) IFollowDo
+	Preload(fields ...field.RelationField) IFollowDo
+	FirstOrInit() (*model.Follow, error)
+	FirstOrCreate() (*model.Follow, error)
+	FindByPage(offset int, limit int) (result []*model.Follow, count int64, err error)
+	ScanByPage(result interface{}, offset int, limit int) (count int64, err error)
+	Scan(result interface{}) (err error)
+	Returning(value interface{}, columns ...string) IFollowDo
+	UnderlyingDB() *gorm.DB
+	schema.Tabler
+}
+
+func (f followDo) Debug() IFollowDo {
 	return f.withDO(f.DO.Debug())
 }
 
-func (f followDo) WithContext(ctx context.Context) *followDo {
+func (f followDo) WithContext(ctx context.Context) IFollowDo {
 	return f.withDO(f.DO.WithContext(ctx))
 }
 
-func (f followDo) ReadDB() *followDo {
+func (f followDo) ReadDB() IFollowDo {
 	return f.Clauses(dbresolver.Read)
 }
 
-func (f followDo) WriteDB() *followDo {
+func (f followDo) WriteDB() IFollowDo {
 	return f.Clauses(dbresolver.Write)
 }
 
-func (f followDo) Session(config *gorm.Session) *followDo {
+func (f followDo) Session(config *gorm.Session) IFollowDo {
 	return f.withDO(f.DO.Session(config))
 }
 
-func (f followDo) Clauses(conds ...clause.Expression) *followDo {
+func (f followDo) Clauses(conds ...clause.Expression) IFollowDo {
 	return f.withDO(f.DO.Clauses(conds...))
 }
 
-func (f followDo) Returning(value interface{}, columns ...string) *followDo {
+func (f followDo) Returning(value interface{}, columns ...string) IFollowDo {
 	return f.withDO(f.DO.Returning(value, columns...))
 }
 
-func (f followDo) Not(conds ...gen.Condition) *followDo {
+func (f followDo) Not(conds ...gen.Condition) IFollowDo {
 	return f.withDO(f.DO.Not(conds...))
 }
 
-func (f followDo) Or(conds ...gen.Condition) *followDo {
+func (f followDo) Or(conds ...gen.Condition) IFollowDo {
 	return f.withDO(f.DO.Or(conds...))
 }
 
-func (f followDo) Select(conds ...field.Expr) *followDo {
+func (f followDo) Select(conds ...field.Expr) IFollowDo {
 	return f.withDO(f.DO.Select(conds...))
 }
 
-func (f followDo) Where(conds ...gen.Condition) *followDo {
+func (f followDo) Where(conds ...gen.Condition) IFollowDo {
 	return f.withDO(f.DO.Where(conds...))
 }
 
-func (f followDo) Order(conds ...field.Expr) *followDo {
+func (f followDo) Order(conds ...field.Expr) IFollowDo {
 	return f.withDO(f.DO.Order(conds...))
 }
 
-func (f followDo) Distinct(cols ...field.Expr) *followDo {
+func (f followDo) Distinct(cols ...field.Expr) IFollowDo {
 	return f.withDO(f.DO.Distinct(cols...))
 }
 
-func (f followDo) Omit(cols ...field.Expr) *followDo {
+func (f followDo) Omit(cols ...field.Expr) IFollowDo {
 	return f.withDO(f.DO.Omit(cols...))
 }
 
-func (f followDo) Join(table schema.Tabler, on ...field.Expr) *followDo {
+func (f followDo) Join(table schema.Tabler, on ...field.Expr) IFollowDo {
 	return f.withDO(f.DO.Join(table, on...))
 }
 
-func (f followDo) LeftJoin(table schema.Tabler, on ...field.Expr) *followDo {
+func (f followDo) LeftJoin(table schema.Tabler, on ...field.Expr) IFollowDo {
 	return f.withDO(f.DO.LeftJoin(table, on...))
 }
 
-func (f followDo) RightJoin(table schema.Tabler, on ...field.Expr) *followDo {
+func (f followDo) RightJoin(table schema.Tabler, on ...field.Expr) IFollowDo {
 	return f.withDO(f.DO.RightJoin(table, on...))
 }
 
-func (f followDo) Group(cols ...field.Expr) *followDo {
+func (f followDo) Group(cols ...field.Expr) IFollowDo {
 	return f.withDO(f.DO.Group(cols...))
 }
 
-func (f followDo) Having(conds ...gen.Condition) *followDo {
+func (f followDo) Having(conds ...gen.Condition) IFollowDo {
 	return f.withDO(f.DO.Having(conds...))
 }
 
-func (f followDo) Limit(limit int) *followDo {
+func (f followDo) Limit(limit int) IFollowDo {
 	return f.withDO(f.DO.Limit(limit))
 }
 
-func (f followDo) Offset(offset int) *followDo {
+func (f followDo) Offset(offset int) IFollowDo {
 	return f.withDO(f.DO.Offset(offset))
 }
 
-func (f followDo) Scopes(funcs ...func(gen.Dao) gen.Dao) *followDo {
+func (f followDo) Scopes(funcs ...func(gen.Dao) gen.Dao) IFollowDo {
 	return f.withDO(f.DO.Scopes(funcs...))
 }
 
-func (f followDo) Unscoped() *followDo {
+func (f followDo) Unscoped() IFollowDo {
 	return f.withDO(f.DO.Unscoped())
 }
 
@@ -262,22 +315,22 @@ func (f followDo) FindInBatches(result *[]*model.Follow, batchSize int, fc func(
 	return f.DO.FindInBatches(result, batchSize, fc)
 }
 
-func (f followDo) Attrs(attrs ...field.AssignExpr) *followDo {
+func (f followDo) Attrs(attrs ...field.AssignExpr) IFollowDo {
 	return f.withDO(f.DO.Attrs(attrs...))
 }
 
-func (f followDo) Assign(attrs ...field.AssignExpr) *followDo {
+func (f followDo) Assign(attrs ...field.AssignExpr) IFollowDo {
 	return f.withDO(f.DO.Assign(attrs...))
 }
 
-func (f followDo) Joins(fields ...field.RelationField) *followDo {
+func (f followDo) Joins(fields ...field.RelationField) IFollowDo {
 	for _, _f := range fields {
 		f = *f.withDO(f.DO.Joins(_f))
 	}
 	return &f
 }
 
-func (f followDo) Preload(fields ...field.RelationField) *followDo {
+func (f followDo) Preload(fields ...field.RelationField) IFollowDo {
 	for _, _f := range fields {
 		f = *f.withDO(f.DO.Preload(_f))
 	}

@@ -38,7 +38,7 @@ func newFavorite(db *gorm.DB, opts ...gen.DOOption) favorite {
 }
 
 type favorite struct {
-	favoriteDo favoriteDo
+	favoriteDo
 
 	ALL     field.Asterisk
 	ID      field.Int64
@@ -71,14 +71,6 @@ func (f *favorite) updateTableName(table string) *favorite {
 	return f
 }
 
-func (f *favorite) WithContext(ctx context.Context) *favoriteDo { return f.favoriteDo.WithContext(ctx) }
-
-func (f favorite) TableName() string { return f.favoriteDo.TableName() }
-
-func (f favorite) Alias() string { return f.favoriteDo.Alias() }
-
-func (f favorite) Columns(cols ...field.Expr) gen.Columns { return f.favoriteDo.Columns(cols...) }
-
 func (f *favorite) GetFieldByName(fieldName string) (field.OrderExpr, bool) {
 	_f, ok := f.fieldMap[fieldName]
 	if !ok || _f == nil {
@@ -108,95 +100,156 @@ func (f favorite) replaceDB(db *gorm.DB) favorite {
 
 type favoriteDo struct{ gen.DO }
 
-func (f favoriteDo) Debug() *favoriteDo {
+type IFavoriteDo interface {
+	gen.SubQuery
+	Debug() IFavoriteDo
+	WithContext(ctx context.Context) IFavoriteDo
+	WithResult(fc func(tx gen.Dao)) gen.ResultInfo
+	ReplaceDB(db *gorm.DB)
+	ReadDB() IFavoriteDo
+	WriteDB() IFavoriteDo
+	As(alias string) gen.Dao
+	Session(config *gorm.Session) IFavoriteDo
+	Columns(cols ...field.Expr) gen.Columns
+	Clauses(conds ...clause.Expression) IFavoriteDo
+	Not(conds ...gen.Condition) IFavoriteDo
+	Or(conds ...gen.Condition) IFavoriteDo
+	Select(conds ...field.Expr) IFavoriteDo
+	Where(conds ...gen.Condition) IFavoriteDo
+	Order(conds ...field.Expr) IFavoriteDo
+	Distinct(cols ...field.Expr) IFavoriteDo
+	Omit(cols ...field.Expr) IFavoriteDo
+	Join(table schema.Tabler, on ...field.Expr) IFavoriteDo
+	LeftJoin(table schema.Tabler, on ...field.Expr) IFavoriteDo
+	RightJoin(table schema.Tabler, on ...field.Expr) IFavoriteDo
+	Group(cols ...field.Expr) IFavoriteDo
+	Having(conds ...gen.Condition) IFavoriteDo
+	Limit(limit int) IFavoriteDo
+	Offset(offset int) IFavoriteDo
+	Count() (count int64, err error)
+	Scopes(funcs ...func(gen.Dao) gen.Dao) IFavoriteDo
+	Unscoped() IFavoriteDo
+	Create(values ...*model.Favorite) error
+	CreateInBatches(values []*model.Favorite, batchSize int) error
+	Save(values ...*model.Favorite) error
+	First() (*model.Favorite, error)
+	Take() (*model.Favorite, error)
+	Last() (*model.Favorite, error)
+	Find() ([]*model.Favorite, error)
+	FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error) (results []*model.Favorite, err error)
+	FindInBatches(result *[]*model.Favorite, batchSize int, fc func(tx gen.Dao, batch int) error) error
+	Pluck(column field.Expr, dest interface{}) error
+	Delete(...*model.Favorite) (info gen.ResultInfo, err error)
+	Update(column field.Expr, value interface{}) (info gen.ResultInfo, err error)
+	UpdateSimple(columns ...field.AssignExpr) (info gen.ResultInfo, err error)
+	Updates(value interface{}) (info gen.ResultInfo, err error)
+	UpdateColumn(column field.Expr, value interface{}) (info gen.ResultInfo, err error)
+	UpdateColumnSimple(columns ...field.AssignExpr) (info gen.ResultInfo, err error)
+	UpdateColumns(value interface{}) (info gen.ResultInfo, err error)
+	UpdateFrom(q gen.SubQuery) gen.Dao
+	Attrs(attrs ...field.AssignExpr) IFavoriteDo
+	Assign(attrs ...field.AssignExpr) IFavoriteDo
+	Joins(fields ...field.RelationField) IFavoriteDo
+	Preload(fields ...field.RelationField) IFavoriteDo
+	FirstOrInit() (*model.Favorite, error)
+	FirstOrCreate() (*model.Favorite, error)
+	FindByPage(offset int, limit int) (result []*model.Favorite, count int64, err error)
+	ScanByPage(result interface{}, offset int, limit int) (count int64, err error)
+	Scan(result interface{}) (err error)
+	Returning(value interface{}, columns ...string) IFavoriteDo
+	UnderlyingDB() *gorm.DB
+	schema.Tabler
+}
+
+func (f favoriteDo) Debug() IFavoriteDo {
 	return f.withDO(f.DO.Debug())
 }
 
-func (f favoriteDo) WithContext(ctx context.Context) *favoriteDo {
+func (f favoriteDo) WithContext(ctx context.Context) IFavoriteDo {
 	return f.withDO(f.DO.WithContext(ctx))
 }
 
-func (f favoriteDo) ReadDB() *favoriteDo {
+func (f favoriteDo) ReadDB() IFavoriteDo {
 	return f.Clauses(dbresolver.Read)
 }
 
-func (f favoriteDo) WriteDB() *favoriteDo {
+func (f favoriteDo) WriteDB() IFavoriteDo {
 	return f.Clauses(dbresolver.Write)
 }
 
-func (f favoriteDo) Session(config *gorm.Session) *favoriteDo {
+func (f favoriteDo) Session(config *gorm.Session) IFavoriteDo {
 	return f.withDO(f.DO.Session(config))
 }
 
-func (f favoriteDo) Clauses(conds ...clause.Expression) *favoriteDo {
+func (f favoriteDo) Clauses(conds ...clause.Expression) IFavoriteDo {
 	return f.withDO(f.DO.Clauses(conds...))
 }
 
-func (f favoriteDo) Returning(value interface{}, columns ...string) *favoriteDo {
+func (f favoriteDo) Returning(value interface{}, columns ...string) IFavoriteDo {
 	return f.withDO(f.DO.Returning(value, columns...))
 }
 
-func (f favoriteDo) Not(conds ...gen.Condition) *favoriteDo {
+func (f favoriteDo) Not(conds ...gen.Condition) IFavoriteDo {
 	return f.withDO(f.DO.Not(conds...))
 }
 
-func (f favoriteDo) Or(conds ...gen.Condition) *favoriteDo {
+func (f favoriteDo) Or(conds ...gen.Condition) IFavoriteDo {
 	return f.withDO(f.DO.Or(conds...))
 }
 
-func (f favoriteDo) Select(conds ...field.Expr) *favoriteDo {
+func (f favoriteDo) Select(conds ...field.Expr) IFavoriteDo {
 	return f.withDO(f.DO.Select(conds...))
 }
 
-func (f favoriteDo) Where(conds ...gen.Condition) *favoriteDo {
+func (f favoriteDo) Where(conds ...gen.Condition) IFavoriteDo {
 	return f.withDO(f.DO.Where(conds...))
 }
 
-func (f favoriteDo) Order(conds ...field.Expr) *favoriteDo {
+func (f favoriteDo) Order(conds ...field.Expr) IFavoriteDo {
 	return f.withDO(f.DO.Order(conds...))
 }
 
-func (f favoriteDo) Distinct(cols ...field.Expr) *favoriteDo {
+func (f favoriteDo) Distinct(cols ...field.Expr) IFavoriteDo {
 	return f.withDO(f.DO.Distinct(cols...))
 }
 
-func (f favoriteDo) Omit(cols ...field.Expr) *favoriteDo {
+func (f favoriteDo) Omit(cols ...field.Expr) IFavoriteDo {
 	return f.withDO(f.DO.Omit(cols...))
 }
 
-func (f favoriteDo) Join(table schema.Tabler, on ...field.Expr) *favoriteDo {
+func (f favoriteDo) Join(table schema.Tabler, on ...field.Expr) IFavoriteDo {
 	return f.withDO(f.DO.Join(table, on...))
 }
 
-func (f favoriteDo) LeftJoin(table schema.Tabler, on ...field.Expr) *favoriteDo {
+func (f favoriteDo) LeftJoin(table schema.Tabler, on ...field.Expr) IFavoriteDo {
 	return f.withDO(f.DO.LeftJoin(table, on...))
 }
 
-func (f favoriteDo) RightJoin(table schema.Tabler, on ...field.Expr) *favoriteDo {
+func (f favoriteDo) RightJoin(table schema.Tabler, on ...field.Expr) IFavoriteDo {
 	return f.withDO(f.DO.RightJoin(table, on...))
 }
 
-func (f favoriteDo) Group(cols ...field.Expr) *favoriteDo {
+func (f favoriteDo) Group(cols ...field.Expr) IFavoriteDo {
 	return f.withDO(f.DO.Group(cols...))
 }
 
-func (f favoriteDo) Having(conds ...gen.Condition) *favoriteDo {
+func (f favoriteDo) Having(conds ...gen.Condition) IFavoriteDo {
 	return f.withDO(f.DO.Having(conds...))
 }
 
-func (f favoriteDo) Limit(limit int) *favoriteDo {
+func (f favoriteDo) Limit(limit int) IFavoriteDo {
 	return f.withDO(f.DO.Limit(limit))
 }
 
-func (f favoriteDo) Offset(offset int) *favoriteDo {
+func (f favoriteDo) Offset(offset int) IFavoriteDo {
 	return f.withDO(f.DO.Offset(offset))
 }
 
-func (f favoriteDo) Scopes(funcs ...func(gen.Dao) gen.Dao) *favoriteDo {
+func (f favoriteDo) Scopes(funcs ...func(gen.Dao) gen.Dao) IFavoriteDo {
 	return f.withDO(f.DO.Scopes(funcs...))
 }
 
-func (f favoriteDo) Unscoped() *favoriteDo {
+func (f favoriteDo) Unscoped() IFavoriteDo {
 	return f.withDO(f.DO.Unscoped())
 }
 
@@ -262,22 +315,22 @@ func (f favoriteDo) FindInBatches(result *[]*model.Favorite, batchSize int, fc f
 	return f.DO.FindInBatches(result, batchSize, fc)
 }
 
-func (f favoriteDo) Attrs(attrs ...field.AssignExpr) *favoriteDo {
+func (f favoriteDo) Attrs(attrs ...field.AssignExpr) IFavoriteDo {
 	return f.withDO(f.DO.Attrs(attrs...))
 }
 
-func (f favoriteDo) Assign(attrs ...field.AssignExpr) *favoriteDo {
+func (f favoriteDo) Assign(attrs ...field.AssignExpr) IFavoriteDo {
 	return f.withDO(f.DO.Assign(attrs...))
 }
 
-func (f favoriteDo) Joins(fields ...field.RelationField) *favoriteDo {
+func (f favoriteDo) Joins(fields ...field.RelationField) IFavoriteDo {
 	for _, _f := range fields {
 		f = *f.withDO(f.DO.Joins(_f))
 	}
 	return &f
 }
 
-func (f favoriteDo) Preload(fields ...field.RelationField) *favoriteDo {
+func (f favoriteDo) Preload(fields ...field.RelationField) IFavoriteDo {
 	for _, _f := range fields {
 		f = *f.withDO(f.DO.Preload(_f))
 	}
