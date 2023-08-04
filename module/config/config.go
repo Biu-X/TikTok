@@ -87,7 +87,7 @@ func Init() {
 				"port":     3306,
 				"username": "root",
 				"password": "123456",
-				"database": "demo",
+				"database": "tiktok",
 			})
 
 			config.SetDefault("redis", map[string]interface{}{

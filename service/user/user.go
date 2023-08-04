@@ -2,27 +2,19 @@ package user
 
 import (
 	"biu-x.org/TikTok/dal/query"
-	"biu-x.org/TikTok/model"
-	"biu-x.org/TikTok/module/db"
-	"context"
 	"fmt"
 )
 
 func SaveUser() {
-	q := query.Use(db.DB)
-	if !q.Available() {
-		fmt.Println("query Use(db) fail: query.Available() == false")
-	}
-	do := q.WithContext(context.Background())
-
-	u := &model.User{
-		Name:     "i@hiif.ong",
-		Password: "123456",
-	}
-
-	err := do.User.Create(u)
+	//q := query.Use(db.DB)
+	//err := query.Use(db.DB).User.Create(&model.User{Name: "hiifong2", Password: "123456", Signature: "lazy", Avatar: "https://hiif.ong/logo.png", BackgroundImage: "https://hiif.ong/logo.png"})
+	//if err != nil {
+	//	fmt.Printf("err: %v\n", err)
+	//}
+	//query.SetDefault(db.DB)
+	userDo, err := query.User.Where(query.User.Name.Eq("hiifong")).First()
 	if err != nil {
-		fmt.Println(err)
-		return
+		fmt.Printf("err: %v\n", err)
 	}
+	fmt.Println(userDo)
 }
