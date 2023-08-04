@@ -25,9 +25,23 @@ type Redis struct {
 	Database int    `yaml:"database"`
 }
 
+type S3 struct {
+	Endpoint  string `yaml:"endpoint"`
+	AccessKey string `yaml:"access_key"`
+	SecretKey string `yaml:"secret_key"`
+	Region    string `yaml:"region"`
+	Bucket    string `yaml:"bucket"`
+
+	// 如果是使用 minio，并且没有使用 https，需要设置为 true
+	UseSsl *bool `yaml:"use_ssl"`
+	// 如果是使用 minio，需要设置为 true
+	HostnameImmutable *bool `yaml:"hostname_immutable"`
+}
+
 var (
-	mysql MySQL
-	redis Redis
+	mysql    MySQL
+	redis    Redis
+	S3Config S3
 )
 
 func Init() {
@@ -83,6 +97,10 @@ func Init() {
 		log.Fatalf("unable to decode into struct, %v", err)
 	}
 	err = config.UnmarshalKey("redis", &redis)
+	if err != nil {
+		log.Fatalf("unable to decode into struct, %v", err)
+	}
+	err = config.UnmarshalKey("s3", &S3Config)
 	if err != nil {
 		log.Fatalf("unable to decode into struct, %v", err)
 	}
