@@ -9,4 +9,5 @@ import (
 func TestConfig(t *testing.T) {
 	config.Init()
 	fmt.Println(config.GetString("mysql.host"))
+	fmt.Println(config.MySQLDSN())
 }
