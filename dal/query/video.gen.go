@@ -16,14 +16,14 @@ import (
 
 	"gorm.io/plugin/dbresolver"
 
-	"biu-x.org/TikTok/models"
+	"biu-x.org/TikTok/model"
 )
 
 func newVideo(db *gorm.DB, opts ...gen.DOOption) video {
 	_video := video{}
 
 	_video.videoDo.UseDB(db, opts...)
-	_video.videoDo.UseModel(&models.Video{})
+	_video.videoDo.UseModel(&model.Video{})
 
 	tableName := _video.videoDo.TableName()
 	_video.ALL = field.NewAsterisk(tableName)
@@ -208,57 +208,57 @@ func (v videoDo) Unscoped() *videoDo {
 	return v.withDO(v.DO.Unscoped())
 }
 
-func (v videoDo) Create(values ...*models.Video) error {
+func (v videoDo) Create(values ...*model.Video) error {
 	if len(values) == 0 {
 		return nil
 	}
 	return v.DO.Create(values)
 }
 
-func (v videoDo) CreateInBatches(values []*models.Video, batchSize int) error {
+func (v videoDo) CreateInBatches(values []*model.Video, batchSize int) error {
 	return v.DO.CreateInBatches(values, batchSize)
 }
 
 // Save : !!! underlying implementation is different with GORM
 // The method is equivalent to executing the statement: db.Clauses(clause.OnConflict{UpdateAll: true}).Create(values)
-func (v videoDo) Save(values ...*models.Video) error {
+func (v videoDo) Save(values ...*model.Video) error {
 	if len(values) == 0 {
 		return nil
 	}
 	return v.DO.Save(values)
 }
 
-func (v videoDo) First() (*models.Video, error) {
+func (v videoDo) First() (*model.Video, error) {
 	if result, err := v.DO.First(); err != nil {
 		return nil, err
 	} else {
-		return result.(*models.Video), nil
+		return result.(*model.Video), nil
 	}
 }
 
-func (v videoDo) Take() (*models.Video, error) {
+func (v videoDo) Take() (*model.Video, error) {
 	if result, err := v.DO.Take(); err != nil {
 		return nil, err
 	} else {
-		return result.(*models.Video), nil
+		return result.(*model.Video), nil
 	}
 }
 
-func (v videoDo) Last() (*models.Video, error) {
+func (v videoDo) Last() (*model.Video, error) {
 	if result, err := v.DO.Last(); err != nil {
 		return nil, err
 	} else {
-		return result.(*models.Video), nil
+		return result.(*model.Video), nil
 	}
 }
 
-func (v videoDo) Find() ([]*models.Video, error) {
+func (v videoDo) Find() ([]*model.Video, error) {
 	result, err := v.DO.Find()
-	return result.([]*models.Video), err
+	return result.([]*model.Video), err
 }
 
-func (v videoDo) FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error) (results []*models.Video, err error) {
-	buf := make([]*models.Video, 0, batchSize)
+func (v videoDo) FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error) (results []*model.Video, err error) {
+	buf := make([]*model.Video, 0, batchSize)
 	err = v.DO.FindInBatches(&buf, batchSize, func(tx gen.Dao, batch int) error {
 		defer func() { results = append(results, buf...) }()
 		return fc(tx, batch)
@@ -266,7 +266,7 @@ func (v videoDo) FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error
 	return results, err
 }
 
-func (v videoDo) FindInBatches(result *[]*models.Video, batchSize int, fc func(tx gen.Dao, batch int) error) error {
+func (v videoDo) FindInBatches(result *[]*model.Video, batchSize int, fc func(tx gen.Dao, batch int) error) error {
 	return v.DO.FindInBatches(result, batchSize, fc)
 }
 
@@ -292,23 +292,23 @@ func (v videoDo) Preload(fields ...field.RelationField) *videoDo {
 	return &v
 }
 
-func (v videoDo) FirstOrInit() (*models.Video, error) {
+func (v videoDo) FirstOrInit() (*model.Video, error) {
 	if result, err := v.DO.FirstOrInit(); err != nil {
 		return nil, err
 	} else {
-		return result.(*models.Video), nil
+		return result.(*model.Video), nil
 	}
 }
 
-func (v videoDo) FirstOrCreate() (*models.Video, error) {
+func (v videoDo) FirstOrCreate() (*model.Video, error) {
 	if result, err := v.DO.FirstOrCreate(); err != nil {
 		return nil, err
 	} else {
-		return result.(*models.Video), nil
+		return result.(*model.Video), nil
 	}
 }
 
-func (v videoDo) FindByPage(offset int, limit int) (result []*models.Video, count int64, err error) {
+func (v videoDo) FindByPage(offset int, limit int) (result []*model.Video, count int64, err error) {
 	result, err = v.Offset(offset).Limit(limit).Find()
 	if err != nil {
 		return
@@ -337,7 +337,7 @@ func (v videoDo) Scan(result interface{}) (err error) {
 	return v.DO.Scan(result)
 }
 
-func (v videoDo) Delete(models ...*models.Video) (result gen.ResultInfo, err error) {
+func (v videoDo) Delete(models ...*model.Video) (result gen.ResultInfo, err error) {
 	return v.DO.Delete(models)
 }
 

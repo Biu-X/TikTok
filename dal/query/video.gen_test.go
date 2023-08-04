@@ -9,7 +9,7 @@ import (
 	"fmt"
 	"testing"
 
-	"biu-x.org/TikTok/models"
+	"biu-x.org/TikTok/model"
 	"gorm.io/gen"
 	"gorm.io/gen/field"
 	"gorm.io/gorm/clause"
@@ -17,9 +17,9 @@ import (
 
 func init() {
 	InitializeDB()
-	err := db.AutoMigrate(&models.Video{})
+	err := db.AutoMigrate(&model.Video{})
 	if err != nil {
-		fmt.Printf("Error: AutoMigrate(&models.Video{}) fail: %s", err)
+		fmt.Printf("Error: AutoMigrate(&model.Video{}) fail: %s", err)
 	}
 }
 
@@ -40,17 +40,17 @@ func Test_videoQuery(t *testing.T) {
 		t.Error("GetFieldByName(\"\") from video success")
 	}
 
-	err = _do.Create(&models.Video{})
+	err = _do.Create(&model.Video{})
 	if err != nil {
 		t.Error("create item in table <video> fail:", err)
 	}
 
-	err = _do.Save(&models.Video{})
+	err = _do.Save(&model.Video{})
 	if err != nil {
 		t.Error("create item in table <video> fail:", err)
 	}
 
-	err = _do.CreateInBatches([]*models.Video{{}, {}}, 10)
+	err = _do.CreateInBatches([]*model.Video{{}, {}}, 10)
 	if err != nil {
 		t.Error("create item in table <video> fail:", err)
 	}
@@ -75,7 +75,7 @@ func Test_videoQuery(t *testing.T) {
 		t.Error("FindInBatch() on table <video> fail:", err)
 	}
 
-	err = _do.Where(primaryKey.IsNotNull()).FindInBatches(&[]*models.Video{}, 10, func(tx gen.Dao, batch int) error { return nil })
+	err = _do.Where(primaryKey.IsNotNull()).FindInBatches(&[]*model.Video{}, 10, func(tx gen.Dao, batch int) error { return nil })
 	if err != nil {
 		t.Error("FindInBatches() on table <video> fail:", err)
 	}
@@ -110,7 +110,7 @@ func Test_videoQuery(t *testing.T) {
 		t.Error("FindByPage() on table <video> fail:", err)
 	}
 
-	_, err = _do.ScanByPage(&models.Video{}, 0, 1)
+	_, err = _do.ScanByPage(&model.Video{}, 0, 1)
 	if err != nil {
 		t.Error("ScanByPage() on table <video> fail:", err)
 	}

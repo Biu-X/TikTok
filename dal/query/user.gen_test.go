@@ -9,7 +9,7 @@ import (
 	"fmt"
 	"testing"
 
-	"biu-x.org/TikTok/models"
+	"biu-x.org/TikTok/model"
 	"gorm.io/gen"
 	"gorm.io/gen/field"
 	"gorm.io/gorm/clause"
@@ -17,9 +17,9 @@ import (
 
 func init() {
 	InitializeDB()
-	err := db.AutoMigrate(&models.User{})
+	err := db.AutoMigrate(&model.User{})
 	if err != nil {
-		fmt.Printf("Error: AutoMigrate(&models.User{}) fail: %s", err)
+		fmt.Printf("Error: AutoMigrate(&model.User{}) fail: %s", err)
 	}
 }
 
@@ -40,17 +40,17 @@ func Test_userQuery(t *testing.T) {
 		t.Error("GetFieldByName(\"\") from user success")
 	}
 
-	err = _do.Create(&models.User{})
+	err = _do.Create(&model.User{})
 	if err != nil {
 		t.Error("create item in table <user> fail:", err)
 	}
 
-	err = _do.Save(&models.User{})
+	err = _do.Save(&model.User{})
 	if err != nil {
 		t.Error("create item in table <user> fail:", err)
 	}
 
-	err = _do.CreateInBatches([]*models.User{{}, {}}, 10)
+	err = _do.CreateInBatches([]*model.User{{}, {}}, 10)
 	if err != nil {
 		t.Error("create item in table <user> fail:", err)
 	}
@@ -75,7 +75,7 @@ func Test_userQuery(t *testing.T) {
 		t.Error("FindInBatch() on table <user> fail:", err)
 	}
 
-	err = _do.Where(primaryKey.IsNotNull()).FindInBatches(&[]*models.User{}, 10, func(tx gen.Dao, batch int) error { return nil })
+	err = _do.Where(primaryKey.IsNotNull()).FindInBatches(&[]*model.User{}, 10, func(tx gen.Dao, batch int) error { return nil })
 	if err != nil {
 		t.Error("FindInBatches() on table <user> fail:", err)
 	}
@@ -110,7 +110,7 @@ func Test_userQuery(t *testing.T) {
 		t.Error("FindByPage() on table <user> fail:", err)
 	}
 
-	_, err = _do.ScanByPage(&models.User{}, 0, 1)
+	_, err = _do.ScanByPage(&model.User{}, 0, 1)
 	if err != nil {
 		t.Error("ScanByPage() on table <user> fail:", err)
 	}

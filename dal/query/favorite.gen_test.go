@@ -9,7 +9,7 @@ import (
 	"fmt"
 	"testing"
 
-	"biu-x.org/TikTok/models"
+	"biu-x.org/TikTok/model"
 	"gorm.io/gen"
 	"gorm.io/gen/field"
 	"gorm.io/gorm/clause"
@@ -17,9 +17,9 @@ import (
 
 func init() {
 	InitializeDB()
-	err := db.AutoMigrate(&models.Favorite{})
+	err := db.AutoMigrate(&model.Favorite{})
 	if err != nil {
-		fmt.Printf("Error: AutoMigrate(&models.Favorite{}) fail: %s", err)
+		fmt.Printf("Error: AutoMigrate(&model.Favorite{}) fail: %s", err)
 	}
 }
 
@@ -40,17 +40,17 @@ func Test_favoriteQuery(t *testing.T) {
 		t.Error("GetFieldByName(\"\") from favorite success")
 	}
 
-	err = _do.Create(&models.Favorite{})
+	err = _do.Create(&model.Favorite{})
 	if err != nil {
 		t.Error("create item in table <favorite> fail:", err)
 	}
 
-	err = _do.Save(&models.Favorite{})
+	err = _do.Save(&model.Favorite{})
 	if err != nil {
 		t.Error("create item in table <favorite> fail:", err)
 	}
 
-	err = _do.CreateInBatches([]*models.Favorite{{}, {}}, 10)
+	err = _do.CreateInBatches([]*model.Favorite{{}, {}}, 10)
 	if err != nil {
 		t.Error("create item in table <favorite> fail:", err)
 	}
@@ -75,7 +75,7 @@ func Test_favoriteQuery(t *testing.T) {
 		t.Error("FindInBatch() on table <favorite> fail:", err)
 	}
 
-	err = _do.Where(primaryKey.IsNotNull()).FindInBatches(&[]*models.Favorite{}, 10, func(tx gen.Dao, batch int) error { return nil })
+	err = _do.Where(primaryKey.IsNotNull()).FindInBatches(&[]*model.Favorite{}, 10, func(tx gen.Dao, batch int) error { return nil })
 	if err != nil {
 		t.Error("FindInBatches() on table <favorite> fail:", err)
 	}
@@ -110,7 +110,7 @@ func Test_favoriteQuery(t *testing.T) {
 		t.Error("FindByPage() on table <favorite> fail:", err)
 	}
 
-	_, err = _do.ScanByPage(&models.Favorite{}, 0, 1)
+	_, err = _do.ScanByPage(&model.Favorite{}, 0, 1)
 	if err != nil {
 		t.Error("ScanByPage() on table <favorite> fail:", err)
 	}
