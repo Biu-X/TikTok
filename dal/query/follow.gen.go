@@ -16,14 +16,14 @@ import (
 
 	"gorm.io/plugin/dbresolver"
 
-	"biu-x.org/TikTok/models"
+	"biu-x.org/TikTok/model"
 )
 
 func newFollow(db *gorm.DB, opts ...gen.DOOption) follow {
 	_follow := follow{}
 
 	_follow.followDo.UseDB(db, opts...)
-	_follow.followDo.UseModel(&models.Follow{})
+	_follow.followDo.UseModel(&model.Follow{})
 
 	tableName := _follow.followDo.TableName()
 	_follow.ALL = field.NewAsterisk(tableName)
@@ -200,57 +200,57 @@ func (f followDo) Unscoped() *followDo {
 	return f.withDO(f.DO.Unscoped())
 }
 
-func (f followDo) Create(values ...*models.Follow) error {
+func (f followDo) Create(values ...*model.Follow) error {
 	if len(values) == 0 {
 		return nil
 	}
 	return f.DO.Create(values)
 }
 
-func (f followDo) CreateInBatches(values []*models.Follow, batchSize int) error {
+func (f followDo) CreateInBatches(values []*model.Follow, batchSize int) error {
 	return f.DO.CreateInBatches(values, batchSize)
 }
 
 // Save : !!! underlying implementation is different with GORM
 // The method is equivalent to executing the statement: db.Clauses(clause.OnConflict{UpdateAll: true}).Create(values)
-func (f followDo) Save(values ...*models.Follow) error {
+func (f followDo) Save(values ...*model.Follow) error {
 	if len(values) == 0 {
 		return nil
 	}
 	return f.DO.Save(values)
 }
 
-func (f followDo) First() (*models.Follow, error) {
+func (f followDo) First() (*model.Follow, error) {
 	if result, err := f.DO.First(); err != nil {
 		return nil, err
 	} else {
-		return result.(*models.Follow), nil
+		return result.(*model.Follow), nil
 	}
 }
 
-func (f followDo) Take() (*models.Follow, error) {
+func (f followDo) Take() (*model.Follow, error) {
 	if result, err := f.DO.Take(); err != nil {
 		return nil, err
 	} else {
-		return result.(*models.Follow), nil
+		return result.(*model.Follow), nil
 	}
 }
 
-func (f followDo) Last() (*models.Follow, error) {
+func (f followDo) Last() (*model.Follow, error) {
 	if result, err := f.DO.Last(); err != nil {
 		return nil, err
 	} else {
-		return result.(*models.Follow), nil
+		return result.(*model.Follow), nil
 	}
 }
 
-func (f followDo) Find() ([]*models.Follow, error) {
+func (f followDo) Find() ([]*model.Follow, error) {
 	result, err := f.DO.Find()
-	return result.([]*models.Follow), err
+	return result.([]*model.Follow), err
 }
 
-func (f followDo) FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error) (results []*models.Follow, err error) {
-	buf := make([]*models.Follow, 0, batchSize)
+func (f followDo) FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error) (results []*model.Follow, err error) {
+	buf := make([]*model.Follow, 0, batchSize)
 	err = f.DO.FindInBatches(&buf, batchSize, func(tx gen.Dao, batch int) error {
 		defer func() { results = append(results, buf...) }()
 		return fc(tx, batch)
@@ -258,7 +258,7 @@ func (f followDo) FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) erro
 	return results, err
 }
 
-func (f followDo) FindInBatches(result *[]*models.Follow, batchSize int, fc func(tx gen.Dao, batch int) error) error {
+func (f followDo) FindInBatches(result *[]*model.Follow, batchSize int, fc func(tx gen.Dao, batch int) error) error {
 	return f.DO.FindInBatches(result, batchSize, fc)
 }
 
@@ -284,23 +284,23 @@ func (f followDo) Preload(fields ...field.RelationField) *followDo {
 	return &f
 }
 
-func (f followDo) FirstOrInit() (*models.Follow, error) {
+func (f followDo) FirstOrInit() (*model.Follow, error) {
 	if result, err := f.DO.FirstOrInit(); err != nil {
 		return nil, err
 	} else {
-		return result.(*models.Follow), nil
+		return result.(*model.Follow), nil
 	}
 }
 
-func (f followDo) FirstOrCreate() (*models.Follow, error) {
+func (f followDo) FirstOrCreate() (*model.Follow, error) {
 	if result, err := f.DO.FirstOrCreate(); err != nil {
 		return nil, err
 	} else {
-		return result.(*models.Follow), nil
+		return result.(*model.Follow), nil
 	}
 }
 
-func (f followDo) FindByPage(offset int, limit int) (result []*models.Follow, count int64, err error) {
+func (f followDo) FindByPage(offset int, limit int) (result []*model.Follow, count int64, err error) {
 	result, err = f.Offset(offset).Limit(limit).Find()
 	if err != nil {
 		return
@@ -329,7 +329,7 @@ func (f followDo) Scan(result interface{}) (err error) {
 	return f.DO.Scan(result)
 }
 
-func (f followDo) Delete(models ...*models.Follow) (result gen.ResultInfo, err error) {
+func (f followDo) Delete(models ...*model.Follow) (result gen.ResultInfo, err error) {
 	return f.DO.Delete(models)
 }
 

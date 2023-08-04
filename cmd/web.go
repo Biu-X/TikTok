@@ -1,8 +1,8 @@
 package cmd
 
 import (
-	"biu-x.org/TikTok/modules/config"
-	"biu-x.org/TikTok/modules/db"
+	"biu-x.org/TikTok/module/config"
+	"biu-x.org/TikTok/module/db"
 	"biu-x.org/TikTok/routers"
 	"github.com/urfave/cli/v2"
 )

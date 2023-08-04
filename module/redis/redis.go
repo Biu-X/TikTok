@@ -1,7 +1,7 @@
 package redis
 
 import (
-	"biu-x.org/TikTok/modules/config"
+	"biu-x.org/TikTok/module/config"
 	"context"
 	"fmt"
 	"github.com/redis/go-redis/v9"

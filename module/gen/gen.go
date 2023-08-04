@@ -1,7 +1,7 @@
 package gen
 
 import (
-	"biu-x.org/TikTok/modules/db"
+	"biu-x.org/TikTok/module/db"
 	"gorm.io/gen"
 )
 
@@ -15,7 +15,7 @@ func Init() {
 	g := gen.NewGenerator(gen.Config{
 		OutPath:      "dal/query",
 		Mode:         gen.WithDefaultQuery,
-		ModelPkgPath: "./models",
+		ModelPkgPath: "./model",
 
 		WithUnitTest: true,
 

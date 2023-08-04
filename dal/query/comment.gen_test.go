@@ -9,7 +9,7 @@ import (
 	"fmt"
 	"testing"
 
-	"biu-x.org/TikTok/models"
+	"biu-x.org/TikTok/model"
 	"gorm.io/gen"
 	"gorm.io/gen/field"
 	"gorm.io/gorm/clause"
@@ -17,9 +17,9 @@ import (
 
 func init() {
 	InitializeDB()
-	err := db.AutoMigrate(&models.Comment{})
+	err := db.AutoMigrate(&model.Comment{})
 	if err != nil {
-		fmt.Printf("Error: AutoMigrate(&models.Comment{}) fail: %s", err)
+		fmt.Printf("Error: AutoMigrate(&model.Comment{}) fail: %s", err)
 	}
 }
 
@@ -40,17 +40,17 @@ func Test_commentQuery(t *testing.T) {
 		t.Error("GetFieldByName(\"\") from comment success")
 	}
 
-	err = _do.Create(&models.Comment{})
+	err = _do.Create(&model.Comment{})
 	if err != nil {
 		t.Error("create item in table <comment> fail:", err)
 	}
 
-	err = _do.Save(&models.Comment{})
+	err = _do.Save(&model.Comment{})
 	if err != nil {
 		t.Error("create item in table <comment> fail:", err)
 	}
 
-	err = _do.CreateInBatches([]*models.Comment{{}, {}}, 10)
+	err = _do.CreateInBatches([]*model.Comment{{}, {}}, 10)
 	if err != nil {
 		t.Error("create item in table <comment> fail:", err)
 	}
@@ -75,7 +75,7 @@ func Test_commentQuery(t *testing.T) {
 		t.Error("FindInBatch() on table <comment> fail:", err)
 	}
 
-	err = _do.Where(primaryKey.IsNotNull()).FindInBatches(&[]*models.Comment{}, 10, func(tx gen.Dao, batch int) error { return nil })
+	err = _do.Where(primaryKey.IsNotNull()).FindInBatches(&[]*model.Comment{}, 10, func(tx gen.Dao, batch int) error { return nil })
 	if err != nil {
 		t.Error("FindInBatches() on table <comment> fail:", err)
 	}
@@ -110,7 +110,7 @@ func Test_commentQuery(t *testing.T) {
 		t.Error("FindByPage() on table <comment> fail:", err)
 	}
 
-	_, err = _do.ScanByPage(&models.Comment{}, 0, 1)
+	_, err = _do.ScanByPage(&model.Comment{}, 0, 1)
 	if err != nil {
 		t.Error("ScanByPage() on table <comment> fail:", err)
 	}

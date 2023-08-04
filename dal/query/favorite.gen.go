@@ -16,14 +16,14 @@ import (
 
 	"gorm.io/plugin/dbresolver"
 
-	"biu-x.org/TikTok/models"
+	"biu-x.org/TikTok/model"
 )
 
 func newFavorite(db *gorm.DB, opts ...gen.DOOption) favorite {
 	_favorite := favorite{}
 
 	_favorite.favoriteDo.UseDB(db, opts...)
-	_favorite.favoriteDo.UseModel(&models.Favorite{})
+	_favorite.favoriteDo.UseModel(&model.Favorite{})
 
 	tableName := _favorite.favoriteDo.TableName()
 	_favorite.ALL = field.NewAsterisk(tableName)
@@ -200,57 +200,57 @@ func (f favoriteDo) Unscoped() *favoriteDo {
 	return f.withDO(f.DO.Unscoped())
 }
 
-func (f favoriteDo) Create(values ...*models.Favorite) error {
+func (f favoriteDo) Create(values ...*model.Favorite) error {
 	if len(values) == 0 {
 		return nil
 	}
 	return f.DO.Create(values)
 }
 
-func (f favoriteDo) CreateInBatches(values []*models.Favorite, batchSize int) error {
+func (f favoriteDo) CreateInBatches(values []*model.Favorite, batchSize int) error {
 	return f.DO.CreateInBatches(values, batchSize)
 }
 
 // Save : !!! underlying implementation is different with GORM
 // The method is equivalent to executing the statement: db.Clauses(clause.OnConflict{UpdateAll: true}).Create(values)
-func (f favoriteDo) Save(values ...*models.Favorite) error {
+func (f favoriteDo) Save(values ...*model.Favorite) error {
 	if len(values) == 0 {
 		return nil
 	}
 	return f.DO.Save(values)
 }
 
-func (f favoriteDo) First() (*models.Favorite, error) {
+func (f favoriteDo) First() (*model.Favorite, error) {
 	if result, err := f.DO.First(); err != nil {
 		return nil, err
 	} else {
-		return result.(*models.Favorite), nil
+		return result.(*model.Favorite), nil
 	}
 }
 
-func (f favoriteDo) Take() (*models.Favorite, error) {
+func (f favoriteDo) Take() (*model.Favorite, error) {
 	if result, err := f.DO.Take(); err != nil {
 		return nil, err
 	} else {
-		return result.(*models.Favorite), nil
+		return result.(*model.Favorite), nil
 	}
 }
 
-func (f favoriteDo) Last() (*models.Favorite, error) {
+func (f favoriteDo) Last() (*model.Favorite, error) {
 	if result, err := f.DO.Last(); err != nil {
 		return nil, err
 	} else {
-		return result.(*models.Favorite), nil
+		return result.(*model.Favorite), nil
 	}
 }
 
-func (f favoriteDo) Find() ([]*models.Favorite, error) {
+func (f favoriteDo) Find() ([]*model.Favorite, error) {
 	result, err := f.DO.Find()
-	return result.([]*models.Favorite), err
+	return result.([]*model.Favorite), err
 }
 
-func (f favoriteDo) FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error) (results []*models.Favorite, err error) {
-	buf := make([]*models.Favorite, 0, batchSize)
+func (f favoriteDo) FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error) (results []*model.Favorite, err error) {
+	buf := make([]*model.Favorite, 0, batchSize)
 	err = f.DO.FindInBatches(&buf, batchSize, func(tx gen.Dao, batch int) error {
 		defer func() { results = append(results, buf...) }()
 		return fc(tx, batch)
@@ -258,7 +258,7 @@ func (f favoriteDo) FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) er
 	return results, err
 }
 
-func (f favoriteDo) FindInBatches(result *[]*models.Favorite, batchSize int, fc func(tx gen.Dao, batch int) error) error {
+func (f favoriteDo) FindInBatches(result *[]*model.Favorite, batchSize int, fc func(tx gen.Dao, batch int) error) error {
 	return f.DO.FindInBatches(result, batchSize, fc)
 }
 
@@ -284,23 +284,23 @@ func (f favoriteDo) Preload(fields ...field.RelationField) *favoriteDo {
 	return &f
 }
 
-func (f favoriteDo) FirstOrInit() (*models.Favorite, error) {
+func (f favoriteDo) FirstOrInit() (*model.Favorite, error) {
 	if result, err := f.DO.FirstOrInit(); err != nil {
 		return nil, err
 	} else {
-		return result.(*models.Favorite), nil
+		return result.(*model.Favorite), nil
 	}
 }
 
-func (f favoriteDo) FirstOrCreate() (*models.Favorite, error) {
+func (f favoriteDo) FirstOrCreate() (*model.Favorite, error) {
 	if result, err := f.DO.FirstOrCreate(); err != nil {
 		return nil, err
 	} else {
-		return result.(*models.Favorite), nil
+		return result.(*model.Favorite), nil
 	}
 }
 
-func (f favoriteDo) FindByPage(offset int, limit int) (result []*models.Favorite, count int64, err error) {
+func (f favoriteDo) FindByPage(offset int, limit int) (result []*model.Favorite, count int64, err error) {
 	result, err = f.Offset(offset).Limit(limit).Find()
 	if err != nil {
 		return
@@ -329,7 +329,7 @@ func (f favoriteDo) Scan(result interface{}) (err error) {
 	return f.DO.Scan(result)
 }
 
-func (f favoriteDo) Delete(models ...*models.Favorite) (result gen.ResultInfo, err error) {
+func (f favoriteDo) Delete(models ...*model.Favorite) (result gen.ResultInfo, err error) {
 	return f.DO.Delete(models)
 }
 

@@ -2,8 +2,8 @@ package user
 
 import (
 	"biu-x.org/TikTok/dal/query"
-	"biu-x.org/TikTok/models"
-	"biu-x.org/TikTok/modules/db"
+	"biu-x.org/TikTok/model"
+	"biu-x.org/TikTok/module/db"
 	"context"
 	"fmt"
 )
@@ -15,8 +15,8 @@ func SaveUser() {
 	}
 	do := q.WithContext(context.Background())
 
-	u := &models.User{
-		Email:    "i@hiif.ong",
+	u := &model.User{
+		Name:     "i@hiif.ong",
 		Password: "123456",
 	}
 
