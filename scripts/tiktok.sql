@@ -25,7 +25,7 @@ CREATE TABLE `comment`  (
   `id` bigint NOT NULL AUTO_INCREMENT,
   `user_id` bigint NOT NULL COMMENT '用户id',
   `video_id` bigint NOT NULL COMMENT '视频id',
-  `content` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '评论内容\r\n',
+  `content` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '评论内容',
   `create_date` datetime NOT NULL COMMENT '评论发布日期',
   `delete_date` datetime NULL DEFAULT NULL COMMENT '评论删除日期',
   PRIMARY KEY (`id`) USING BTREE,
@@ -69,7 +69,7 @@ CREATE TABLE `message`  (
   `id` bigint NOT NULL AUTO_INCREMENT,
   `to_user_id` bigint NOT NULL COMMENT '消息接收者id',
   `from_user_id` bigint NOT NULL COMMENT '消息发送者id',
-  `content` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '消息内容\r\n',
+  `content` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '消息内容',
   `create_time` datetime NOT NULL COMMENT '消息发送时间',
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `idx_message_from_user_id_to_user_id`(`to_user_id` ASC, `from_user_id` ASC) USING BTREE
@@ -85,7 +85,7 @@ CREATE TABLE `user`  (
   `password` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '密码',
   `signature` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '个人简介',
   `avatar` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '头像',
-  `background_image` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '用户个人页顶部大图\r\n',
+  `background_image` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '用户个人页顶部大图',
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `uq_user_name`(`name` ASC) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户信息表' ROW_FORMAT = Dynamic;
