@@ -23,7 +23,9 @@ redis:
   db: 0
 s3:
   endpoint:
-  access_key:
-  secret_key:
+  accessKey:
+  secretKey:
   region:
   bucket:
+  useSsl: true
+  hostnameImmutable: true

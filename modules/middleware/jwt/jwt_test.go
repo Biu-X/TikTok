@@ -1,11 +1,10 @@
-package jwt_test
+package jwt
 
 import (
-	"biu-x.org/TikTok/modules/middleware/jwt"
 	"testing"
 )
 
 func TestSingToken(t *testing.T) {
-	token := jwt.CreateToken()
-	jwt.ParsToken(token)
+	token := CreateToken()
+	ParsToken(token)
 }
