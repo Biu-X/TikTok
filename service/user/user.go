@@ -1,16 +1,15 @@
 package user
 
 import (
-	"context"
 	"fmt"
 	"net/http"
 	"strconv"
 
 	"biu-x.org/TikTok/dal/query"
 	"biu-x.org/TikTok/model"
-	"biu-x.org/TikTok/module/db"
-	"context"
-	"fmt"
+	"biu-x.org/TikTok/module/middleware/jwt"
+	"github.com/gin-gonic/gin"
+	"golang.org/x/crypto/bcrypt"
 )
 
 func SaveUser() {

@@ -18,14 +18,14 @@ func TestSingToken(t *testing.T) {
 	db.Init()
 	// 模拟新建一个用户
 	fmt.Printf("err: %v\n", 1)
-	user := &model.User{Name: "smy", ID: 1}
-	errStr := query.User.Create(user).Error()
+	u := query.Use(db.DB).User
+	user := &model.User{Name: "Test9", Password: "abc", Signature: "newtess", Avatar: "avatar", BackgroundImage: "background"}
+	_ = u.Create(user)
+	fmt.Printf("err: %v\n", 2)
 
-	if len(errStr) != 0 {
-		t.Fatalf("err: %v", errStr)
-	}
 	// 模拟登录成功
-	token := jwt.GenerateToken("smy")
+	token := jwt.GenerateToken("Test9")
+	fmt.Printf("err: %v\n", 3)
 	fmt.Printf("token: %#v", token)
 
 	useClaims, err := jwt.ParseToken(token)

@@ -1,0 +1,31 @@
+server:
+  port: 8080
+  mode: prod
+
+log:
+  level: debug
+  mode:
+    - console
+    - file
+  path: ./log
+
+mysql:
+  host: 127.0.0.1
+  port: 3306
+  username: root
+  password: 123456
+  database: tiktok
+
+redis:
+  host: 127.0.0.1
+  port: 6379
+  password: 123456
+  db: 0
+s3:
+  endpoint:
+  accessKey:
+  secretKey:
+  region:
+  bucket:
+  useSsl: true
+  hostnameImmutable: true
