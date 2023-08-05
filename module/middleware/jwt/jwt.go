@@ -27,12 +27,6 @@ import (
 *
 */
 
-type UserClaims struct {
-	jwt.RegisteredClaims
-	ID       int64  `json:"id"`
-	UserName string `json:"username"`
-}
-
 // 根据使用情况调整 jwt 过期时间
 const (
 	TokenExpiredDuration = time.Hour * 2
@@ -60,7 +54,7 @@ func GenToken(u *model.User) string {
 		Issuer:    "gopher-dance",
 		IssuedAt:  jwt.NewNumericDate(time.Now()),
 		Subject:   "token",
-		ID:        userId, // jwt 中已经包含了合法用户的 ID
+		ID:        userId, // jwt 中保存合法用户的 ID
 	}
 
 	// 使用指定的签名算法创建用于签名的字符串对象（使用 json 序列化和 base64Url 编码生成 jwt 的 1、2 部分））
@@ -78,18 +72,23 @@ func GenToken(u *model.User) string {
 }
 
 // ParseToken 负责解析客户端 Header 中包含的 jwt，解析成功返回用户的 Claims（包含了用户的信息）
-func ParseToken(tokenString string) (*UserClaims, error) {
+func ParseToken(tokenString string) (*jwt.RegisteredClaims, error) {
 	// 使用匿名函数先去查询服务器签名时使用的私钥，然后调用签名的验证算法进行验证
 	// 验证通过后，将 tokenString 进行反编码并反序列化到 jwt.Token 结构体相应字段
-	token, err := jwt.ParseWithClaims(tokenString, &UserClaims{}, func(token *jwt.Token) (interface{}, error) {
+	token, err := jwt.ParseWithClaims(tokenString, &jwt.RegisteredClaims{}, func(token *jwt.Token) (interface{}, error) {
+		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
+		}
 		return mySigningKey, nil
 	})
+
 	if err != nil {
-		return nil, err
+		log.Println(err.Error())
 	}
+
 	// 对空接口类型值进行类型断言
 	// 如果类型断言成功并且 token 的有效位为 true（ParseWithClaims 方法调用成功后会将 Vaild 设置为 true）
-	if cliams, ok := token.Claims.(*UserClaims); ok && token.Valid {
+	if cliams, ok := token.Claims.(*jwt.RegisteredClaims); ok && token.Valid {
 		return cliams, nil
 	}
 

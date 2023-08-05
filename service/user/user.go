@@ -1,15 +1,18 @@
 package user
 
 import (
+	"errors"
 	"fmt"
 	"net/http"
 	"strconv"
 
 	"biu-x.org/TikTok/dal/query"
 	"biu-x.org/TikTok/model"
+	"biu-x.org/TikTok/module/db"
 	"biu-x.org/TikTok/module/middleware/jwt"
 	"github.com/gin-gonic/gin"
 	"golang.org/x/crypto/bcrypt"
+	"gorm.io/gorm"
 )
 
 func SaveUser() {
@@ -53,22 +56,13 @@ type UserResponse struct {
 func Signup(c *gin.Context) {
 	username := c.Query("username")
 	password := c.Query("password")
-	// ....
 	u := query.User
-	user, err := query.User.Where(u.Name.Eq("username")).First()
-	// 数据库查询出现错误，服务端错误
-	if err != nil {
-		println("signup: database search failed, err:", err)
-		c.JSON(http.StatusInternalServerError, gin.H{})
-		return
-	}
-	// 用户已存在
-	if user.Name == username {
-		c.JSON(http.StatusOK, UserLoginResponse{
-			Response: Response{
-				StatusCode: 1,
-				Message:    "User Already Exists",
-			},
+	// todo: 判断用户已经存在
+	_, err := u.Where(u.Name.Eq(username)).First()
+	if !errors.Is(err, gorm.ErrRecordNotFound) {
+		c.AbortWithStatusJSON(http.StatusBadRequest, Response{
+			StatusCode: -1,
+			Message:    "user already exist",
 		})
 		return
 	}
@@ -86,14 +80,14 @@ func Signup(c *gin.Context) {
 		Password: string(hash),
 	}
 	// err := u.WithContext(ctx).Create(&user) // pass pointer of data to Create
-	err = query.User.Create(&newuser)
+	err = u.Create(&newuser)
 	if err != nil {
-		println("singup: create newuser failed, err: ", err)
+		println("singup: create new user failed, err: ", err)
 		c.JSON(http.StatusServiceUnavailable, gin.H{})
 		return
 	}
 
-	user, err = query.User.Where(u.Name.Eq("username")).First()
+	user, err := u.Where(u.Name.Eq(username)).First()
 	// 数据库查询出现错误，服务端错误
 	if err != nil {
 		println("signup: insert user success but search failed, err: ", err)
@@ -112,25 +106,21 @@ func Signup(c *gin.Context) {
 
 // Login Post /douyin/user/login/ 用户登录
 func Login(c *gin.Context) {
-	u := query.User
+	u := query.Use(db.DB).User
 	username := c.Query("username")
 	password := c.Query("password")
-	// 生成密码的 hash 值
-	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), 10)
-	if err != nil {
-		println("login: get password's hash failed....")
-		c.JSON(http.StatusInternalServerError, gin.H{})
-		return
-	}
 
 	user, err := query.User.Where(u.Name.Eq(username)).First()
-	if err != nil {
-		println("login: database search failed, err:", err)
-		c.JSON(http.StatusInternalServerError, gin.H{})
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		c.AbortWithStatusJSON(http.StatusBadRequest, Response{
+			StatusCode: -1,
+			Message:    "You have not signup",
+		})
 		return
 	}
-	// verify pass
-	if user.Password == string(hashedPassword) {
+	// verify password
+	err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password))
+	if err == nil {
 		// 注册之后的下次登录成功，才会为其生成 token
 		token := jwt.GenerateToken(username)
 		// 打印相应信息和用户信息以及生成的 token 值
@@ -155,8 +145,8 @@ func Login(c *gin.Context) {
 // token 验证通过后，可以根据用户 id 查询用户的信息
 func UserInfo(c *gin.Context) {
 	u := query.User
-
-	userId := c.Query("user_id")
+	// 从 RequireAuth 处读取 user_id
+	userId := c.GetString("user_id")
 	id, _ := strconv.ParseInt(userId, 10, 64)
 	if user, err := query.User.Where(u.ID.Eq(id)).First(); err != nil {
 		c.JSON(http.StatusInternalServerError, UserResponse{
