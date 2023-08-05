@@ -1,4 +1,4 @@
-package jwt_test
+package main
 
 import (
 	"fmt"
@@ -17,8 +17,10 @@ func TestSingToken(t *testing.T) {
 	config.Init()
 	db.Init()
 	// 模拟新建一个用户
-	user := model.User{Name: "smy", ID: 1}
-	errStr := query.User.Create(&user).Error()
+	fmt.Printf("err: %v\n", 1)
+	user := &model.User{Name: "smy", ID: 1}
+	errStr := query.User.Create(user).Error()
+
 	if len(errStr) != 0 {
 		t.Fatalf("err: %v", errStr)
 	}
