@@ -7,6 +7,10 @@ import (
 
 var u = query.User
 
+func initQueryUser() {
+	u = query.User
+}
+
 func CreateUser(user *model.User) (err error) {
 	err = u.Create(user)
 	return err
@@ -27,8 +31,8 @@ func GetPasswordByName(name string) (password string, err error) {
 	return user.Password, err
 }
 
-func SetAvatarByID(id int64, avatar_url string) (err error) {
-	_, err = u.Where(u.ID.Eq(id)).Update(u.Avatar, avatar_url)
+func SetAvatarByID(id int64, avatarURL string) (err error) {
+	_, err = u.Where(u.ID.Eq(id)).Update(u.Avatar, avatarURL)
 	return err
 }
 
@@ -42,8 +46,8 @@ func SetPasswordByID(id int64, password string) (err error) {
 	return err
 }
 
-func SetBackgroundImageByID(id int64, background_image_url string) (err error) {
-	_, err = u.Where(u.ID.Eq(id)).Update(u.BackgroundImage, background_image_url)
+func SetBackgroundImageByID(id int64, backgroundImageURL string) (err error) {
+	_, err = u.Where(u.ID.Eq(id)).Update(u.BackgroundImage, backgroundImageURL)
 	return err
 }
 

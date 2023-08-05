@@ -4,17 +4,36 @@ import (
 	"testing"
 
 	"biu-x.org/TikTok/model"
+	"biu-x.org/TikTok/module/config"
+	"biu-x.org/TikTok/module/db"
 )
 
+func init() {
+	config.Init()
+	db.Init()
+	// initQueryUser()
+}
 func Test_UserDAO(t *testing.T) {
 	u := &model.User{
-		Name:     "Zaire",
-		Password: "root",
+		Name:            "Zaire",
+		Password:        "root",
+		Signature:       "signature",
+		Avatar:          "avatar",
+		BackgroundImage: "backgroundimage",
 	}
+
+	t.Log(u)
+
 	// ----------------------------
 	// Test for CreateUser
 	// ----------------------------
-	err := CreateUser(u)
+	err := CreateUser(&model.User{
+		Name:            "Zaire",
+		Password:        "root",
+		Signature:       "signature",
+		Avatar:          "avatar",
+		BackgroundImage: "backgroundimage",
+	})
 	if err != nil {
 		t.Error("CreateUser fail", err)
 		return
@@ -92,4 +111,35 @@ func Test_UserDAO(t *testing.T) {
 		t.Error("SetPasswordByID result wrong")
 	}
 
+	// ----------------------------
+	// Test for SetBackgroundImageByID
+	// ----------------------------
+	err = SetBackgroundImageByID(u.ID, "test_background_image")
+	if err != nil {
+		t.Error("SetBackgroundImageByID fail", err)
+		return
+	}
+	acc, err = GetUserByID(u.ID)
+	if err != nil {
+		t.Error("GetUserByID fail when test for SetBackgroundImageByID", err)
+	}
+	if acc.BackgroundImage != "test_background_image" {
+		t.Error("SetBackgroundImageByID result wrong")
+	}
+
+	// ----------------------------
+	// Test for SetNameByID
+	// ----------------------------
+	err = SetNameByID(u.ID, "test_name")
+	if err != nil {
+		t.Error("SetNameByID fail", err)
+		return
+	}
+	acc, err = GetUserByID(u.ID)
+	if err != nil {
+		t.Error("GetUserByID fail when test for SetNameByID", err)
+	}
+	if acc.Name != "test_name" {
+		t.Error("SetNameByID result wrong")
+	}
 }
