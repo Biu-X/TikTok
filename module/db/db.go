@@ -1,6 +1,7 @@
 package db
 
 import (
+	"biu-x.org/TikTok/dal/query"
 	"biu-x.org/TikTok/module/config"
 	"fmt"
 	"gorm.io/driver/mysql"
@@ -11,6 +12,7 @@ var DB *gorm.DB
 
 func Init() {
 	DB = ConnectDB(config.MySQLDSN())
+	query.SetDefault(DB)
 }
 
 func ConnectDB(dsn string) (db *gorm.DB) {
