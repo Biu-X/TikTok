@@ -7,6 +7,10 @@ import (
 	"io"
 )
 
+func GetCoverFromVideoWithDefault(path string) (io.Reader, error) {
+	return GetCoverFromVideo(path, 1)
+}
+
 func GetCoverFromVideo(inFileName string, frameNum int) (io.Reader, error) {
 	buf := bytes.NewBuffer(nil)
 	err := ffmpeg.Input(inFileName).
