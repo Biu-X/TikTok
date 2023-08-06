@@ -9,7 +9,6 @@ import (
 
 func CreateComment(comment *model.Comment) (err error) {
 	c := query.Comment
-	comment.CreateDate = time.Now()
 	err = c.Create(comment)
 	return err
 }

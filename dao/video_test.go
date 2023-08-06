@@ -3,8 +3,6 @@ package dao
 import (
 	"testing"
 
-	"time"
-
 	"biu-x.org/TikTok/model"
 	"biu-x.org/TikTok/module/config"
 	"biu-x.org/TikTok/module/db"
@@ -17,11 +15,10 @@ func init() {
 
 func Test_VideoDAO(t *testing.T) {
 	v := &model.Video{
-		AuthorID:    0,
-		PlayURL:     "playURL",
-		CoverURL:    "coverURL",
-		PublishTime: time.Now(),
-		Title:       "title",
+		AuthorID: 0,
+		PlayURL:  "playURL",
+		CoverURL: "coverURL",
+		Title:    "title",
 	}
 
 	// ----------------------------
