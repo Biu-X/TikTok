@@ -1,6 +1,7 @@
 package ffmpeg
 
 import (
+	"biu-x.org/TikTok/module/log"
 	"bytes"
 	"fmt"
 	ffmpeg "github.com/u2takey/ffmpeg-go"
@@ -19,7 +20,7 @@ func GetCoverFromVideo(inFileName string, frameNum int) (io.Reader, error) {
 		WithOutput(buf).
 		Run()
 	if err != nil {
-		fmt.Printf("err: %v\n", err)
+		log.Logger.Errorf("GetCoverFromVideo Error: %v\n", err)
 		return nil, err
 	}
 	return buf, nil

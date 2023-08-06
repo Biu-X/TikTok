@@ -2,9 +2,9 @@ package s3
 
 import (
 	"biu-x.org/TikTok/module/config"
+	"biu-x.org/TikTok/module/log"
 	"github.com/eleven26/goss/v3"
 	"io"
-	"log"
 )
 
 var (
@@ -16,7 +16,7 @@ func Init() {
 	cfg := &config.S3Config
 	s3, err = goss.New(goss.WithConfig((*goss.Config)(cfg)))
 	if err != nil {
-		log.Fatalf("init goss faild: %v\n", err)
+		log.Logger.Fatalf("init goss faild: %v", err)
 	}
 }
 
