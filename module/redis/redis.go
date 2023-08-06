@@ -2,6 +2,7 @@ package redis
 
 import (
 	"biu-x.org/TikTok/module/config"
+	"biu-x.org/TikTok/module/log"
 	"context"
 	"fmt"
 	"github.com/redis/go-redis/v9"
@@ -26,10 +27,11 @@ func NewRedisClient() *Client {
 }
 
 func (c Client) Set(key string, value interface{}) *redis.StatusCmd { //nolint:typecheck
-	fmt.Printf("%#v\n", key)
-	return c.Client.Set(c.ctx, key, value, 10*time.Second)
+	log.Logger.Debugf("redis set key: %v, value: %v", key, value)
+	return c.Client.Set(c.ctx, key, value, 10*time.Hour)
 }
 
 func (c Client) Get(key interface{}) *redis.StringCmd { //nolint:typecheck
+	log.Logger.Debugf("redis get key: %v", key)
 	return c.Client.Get(c.ctx, key.(string))
 }
