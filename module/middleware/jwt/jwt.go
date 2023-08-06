@@ -19,7 +19,7 @@ type Claims struct {
 
 var claims = Claims{
 	RegisteredClaims: jwt.RegisteredClaims{
-		ExpiresAt: jwt.NewNumericDate(time.Now().Add(6 * time.Second)),
+		ExpiresAt: jwt.NewNumericDate(time.Now().Add(6 * time.Hour)),
 		Subject:   "Tiktok",
 	},
 	//CustomClaims: map[string]interface{}{
