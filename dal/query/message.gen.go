@@ -31,7 +31,7 @@ func newMessage(db *gorm.DB, opts ...gen.DOOption) message {
 	_message.ToUserID = field.NewInt64(tableName, "to_user_id")
 	_message.FromUserID = field.NewInt64(tableName, "from_user_id")
 	_message.Content = field.NewString(tableName, "content")
-	_message.CreateTime = field.NewTime(tableName, "create_time")
+	_message.CreatedAt = field.NewTime(tableName, "created_at")
 
 	_message.fillFieldMap()
 
@@ -46,7 +46,7 @@ type message struct {
 	ToUserID   field.Int64  // 消息接收者id
 	FromUserID field.Int64  // 消息发送者id
 	Content    field.String // 消息内容
-	CreateTime field.Time   // 消息发送时间
+	CreatedAt  field.Time   // 消息发送时间
 
 	fieldMap map[string]field.Expr
 }
@@ -67,7 +67,7 @@ func (m *message) updateTableName(table string) *message {
 	m.ToUserID = field.NewInt64(table, "to_user_id")
 	m.FromUserID = field.NewInt64(table, "from_user_id")
 	m.Content = field.NewString(table, "content")
-	m.CreateTime = field.NewTime(table, "create_time")
+	m.CreatedAt = field.NewTime(table, "created_at")
 
 	m.fillFieldMap()
 
@@ -89,7 +89,7 @@ func (m *message) fillFieldMap() {
 	m.fieldMap["to_user_id"] = m.ToUserID
 	m.fieldMap["from_user_id"] = m.FromUserID
 	m.fieldMap["content"] = m.Content
-	m.fieldMap["create_time"] = m.CreateTime
+	m.fieldMap["created_at"] = m.CreatedAt
 }
 
 func (m message) clone(db *gorm.DB) message {

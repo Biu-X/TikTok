@@ -30,6 +30,13 @@ func Init() {
 	// Generate basic type-safe DAO API for struct `model.User` following conventions
 	g.ApplyBasic(g.GenerateAllTable()...)
 
+	g.GenerateModel("comment", gen.FieldJSONTag("created_at", "create_date"),
+		gen.FieldJSONTag("deleted_at", "delete_date"))
+
+	g.GenerateModel("message", gen.FieldJSONTag("created_at", "create_date"))
+
+	g.GenerateModel("video", gen.FieldJSONTag("created_at", "publish_time"))
+
 	// Generate the code
 	g.Execute()
 }

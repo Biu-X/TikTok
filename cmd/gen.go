@@ -4,6 +4,7 @@ import (
 	"biu-x.org/TikTok/module/config"
 	"biu-x.org/TikTok/module/db"
 	"biu-x.org/TikTok/module/gen"
+	"biu-x.org/TikTok/module/log"
 	"github.com/urfave/cli/v2"
 )
 
@@ -17,6 +18,7 @@ var CmdGen = &cli.Command{ //nolint:typecheck
 
 func runGen(ctx *cli.Context) error { //nolint:typecheck
 	config.Init()
+	log.Init()
 	db.Init()
 	gen.Init()
 	return nil
