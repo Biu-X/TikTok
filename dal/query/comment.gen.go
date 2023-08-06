@@ -31,8 +31,8 @@ func newComment(db *gorm.DB, opts ...gen.DOOption) comment {
 	_comment.UserID = field.NewInt64(tableName, "user_id")
 	_comment.VideoID = field.NewInt64(tableName, "video_id")
 	_comment.Content = field.NewString(tableName, "content")
-	_comment.CreateDate = field.NewTime(tableName, "create_date")
-	_comment.DeleteDate = field.NewTime(tableName, "delete_date")
+	_comment.CreatedAt = field.NewTime(tableName, "created_at")
+	_comment.DeletedAt = field.NewField(tableName, "deleted_at")
 
 	_comment.fillFieldMap()
 
@@ -42,13 +42,13 @@ func newComment(db *gorm.DB, opts ...gen.DOOption) comment {
 type comment struct {
 	commentDo
 
-	ALL        field.Asterisk
-	ID         field.Int64
-	UserID     field.Int64  // 用户id
-	VideoID    field.Int64  // 视频id
-	Content    field.String // 评论内容
-	CreateDate field.Time   // 评论发布日期
-	DeleteDate field.Time   // 评论删除日期
+	ALL       field.Asterisk
+	ID        field.Int64
+	UserID    field.Int64  // 用户id
+	VideoID   field.Int64  // 视频id
+	Content   field.String // 评论内容
+	CreatedAt field.Time   // 评论发布日期
+	DeletedAt field.Field  // 评论删除日期
 
 	fieldMap map[string]field.Expr
 }
@@ -69,8 +69,8 @@ func (c *comment) updateTableName(table string) *comment {
 	c.UserID = field.NewInt64(table, "user_id")
 	c.VideoID = field.NewInt64(table, "video_id")
 	c.Content = field.NewString(table, "content")
-	c.CreateDate = field.NewTime(table, "create_date")
-	c.DeleteDate = field.NewTime(table, "delete_date")
+	c.CreatedAt = field.NewTime(table, "created_at")
+	c.DeletedAt = field.NewField(table, "deleted_at")
 
 	c.fillFieldMap()
 
@@ -92,8 +92,8 @@ func (c *comment) fillFieldMap() {
 	c.fieldMap["user_id"] = c.UserID
 	c.fieldMap["video_id"] = c.VideoID
 	c.fieldMap["content"] = c.Content
-	c.fieldMap["create_date"] = c.CreateDate
-	c.fieldMap["delete_date"] = c.DeleteDate
+	c.fieldMap["created_at"] = c.CreatedAt
+	c.fieldMap["deleted_at"] = c.DeletedAt
 }
 
 func (c comment) clone(db *gorm.DB) comment {
