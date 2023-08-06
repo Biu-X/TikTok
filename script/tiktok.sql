@@ -11,7 +11,7 @@
  Target Server Version : 80026
  File Encoding         : 65001
 
- Date: 03/08/2023 22:27:02
+ Date: 06/08/2023 17:19:40
 */
 
 SET NAMES utf8mb4;
@@ -27,10 +27,10 @@ CREATE TABLE `comment`  (
   `video_id` bigint NOT NULL COMMENT '视频id',
   `content` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '评论内容',
   `create_date` datetime NOT NULL COMMENT '评论发布日期',
-  `delete_date` datetime NULL DEFAULT NULL COMMENT '评论删除日期',
+  `cancel` tinyint NOT NULL DEFAULT 0 COMMENT '删除是1',
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `idx_comment_video_id`(`video_id` ASC) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '评论表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '评论表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Table structure for favorite
@@ -44,7 +44,7 @@ CREATE TABLE `favorite`  (
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `idx_favorite_user_id`(`user_id` ASC) USING BTREE,
   INDEX `idx_favorite_video_id`(`video_id` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '喜欢视频表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '喜欢视频表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Table structure for follow
@@ -59,7 +59,7 @@ CREATE TABLE `follow`  (
   UNIQUE INDEX `uq_follow_user_id_follow_id`(`user_id` ASC, `follower_id` ASC) USING BTREE,
   INDEX `idx_follow_user_id`(`user_id` ASC) USING BTREE,
   INDEX `idx_follow_follow_id`(`follower_id` ASC) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '关注表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '关注表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Table structure for message
@@ -72,8 +72,9 @@ CREATE TABLE `message`  (
   `content` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '消息内容',
   `create_time` datetime NOT NULL COMMENT '消息发送时间',
   PRIMARY KEY (`id`) USING BTREE,
-  INDEX `idx_message_from_user_id_to_user_id`(`to_user_id` ASC, `from_user_id` ASC) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '聊天记录表' ROW_FORMAT = Dynamic;
+  INDEX `idx_message_from_user_id_to_user_id`(`to_user_id` ASC, `from_user_id` ASC) USING BTREE,
+  INDEX `idx_message_create_time`(`create_time` ASC) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '聊天记录表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Table structure for user
@@ -88,7 +89,7 @@ CREATE TABLE `user`  (
   `background_image` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '用户个人页顶部大图',
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `uq_user_name`(`name` ASC) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户信息表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 14 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户信息表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Table structure for video
@@ -103,6 +104,6 @@ CREATE TABLE `video`  (
   `title` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '标题',
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `idx_video_author_id`(`author_id` ASC) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '视频信息表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 7 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '视频信息表' ROW_FORMAT = DYNAMIC;
 
 SET FOREIGN_KEY_CHECKS = 1;

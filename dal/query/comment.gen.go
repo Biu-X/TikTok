@@ -32,7 +32,7 @@ func newComment(db *gorm.DB, opts ...gen.DOOption) comment {
 	_comment.VideoID = field.NewInt64(tableName, "video_id")
 	_comment.Content = field.NewString(tableName, "content")
 	_comment.CreateDate = field.NewTime(tableName, "create_date")
-	_comment.DeleteDate = field.NewTime(tableName, "delete_date")
+	_comment.Cancel = field.NewInt32(tableName, "cancel")
 
 	_comment.fillFieldMap()
 
@@ -48,7 +48,7 @@ type comment struct {
 	VideoID    field.Int64  // 视频id
 	Content    field.String // 评论内容
 	CreateDate field.Time   // 评论发布日期
-	DeleteDate field.Time   // 评论删除日期
+	Cancel     field.Int32  // 删除是1
 
 	fieldMap map[string]field.Expr
 }
@@ -70,7 +70,7 @@ func (c *comment) updateTableName(table string) *comment {
 	c.VideoID = field.NewInt64(table, "video_id")
 	c.Content = field.NewString(table, "content")
 	c.CreateDate = field.NewTime(table, "create_date")
-	c.DeleteDate = field.NewTime(table, "delete_date")
+	c.Cancel = field.NewInt32(table, "cancel")
 
 	c.fillFieldMap()
 
@@ -93,7 +93,7 @@ func (c *comment) fillFieldMap() {
 	c.fieldMap["video_id"] = c.VideoID
 	c.fieldMap["content"] = c.Content
 	c.fieldMap["create_date"] = c.CreateDate
-	c.fieldMap["delete_date"] = c.DeleteDate
+	c.fieldMap["cancel"] = c.Cancel
 }
 
 func (c comment) clone(db *gorm.DB) comment {

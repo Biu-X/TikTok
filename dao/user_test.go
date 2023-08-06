@@ -1,6 +1,7 @@
 package dao
 
 import (
+	"reflect"
 	"testing"
 
 	"biu-x.org/TikTok/model"
@@ -11,30 +12,8 @@ import (
 func init() {
 	config.Init()
 	db.Init()
-	initQueryUser()
 }
 
-func equal(a *model.User, b *model.User) bool {
-	if a.ID != b.ID {
-		return false
-	}
-	if a.Name != b.Name {
-		return false
-	}
-	if a.Password != b.Password {
-		return false
-	}
-	if a.Avatar != b.Avatar {
-		return false
-	}
-	if a.Signature != b.Signature {
-		return false
-	}
-	if a.BackgroundImage != b.BackgroundImage {
-		return false
-	}
-	return true
-}
 func Test_UserDAO(t *testing.T) {
 	u := &model.User{
 		Name:            "Zaire",
@@ -63,7 +42,7 @@ func Test_UserDAO(t *testing.T) {
 		t.Error("GetUserByID fail", err)
 		return
 	}
-	if !equal(acc, u) {
+	if !reflect.DeepEqual(acc, u) {
 		t.Error("GetUserByID result wrong")
 	}
 
@@ -75,7 +54,7 @@ func Test_UserDAO(t *testing.T) {
 		t.Error("GetUserByName fail", err)
 		return
 	}
-	if !equal(acc, u) {
+	if !reflect.DeepEqual(acc, u) {
 		t.Error("GetUserByName result wrong")
 	}
 
@@ -157,5 +136,14 @@ func Test_UserDAO(t *testing.T) {
 	}
 	if acc.Name != "test_name" {
 		t.Error("SetNameByID result wrong")
+	}
+
+	// ----------------------------
+	// Test for DeleteUserByID
+	// ----------------------------
+	err = DeleteUserByID(u.ID)
+	if err != nil {
+		t.Error("DeleteUserByID fail", err)
+		return
 	}
 }

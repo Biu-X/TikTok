@@ -17,7 +17,7 @@ type Comment struct {
 	VideoID    int64     `gorm:"column:video_id;type:bigint;not null;index:idx_comment_video_id,priority:1;comment:视频id" json:"video_id"` // 视频id
 	Content    string    `gorm:"column:content;type:varchar(255);not null;comment:评论内容" json:"content"`                                   // 评论内容
 	CreateDate time.Time `gorm:"column:create_date;type:datetime;not null;comment:评论发布日期" json:"create_date"`                             // 评论发布日期
-	DeleteDate time.Time `gorm:"column:delete_date;type:datetime;comment:评论删除日期" json:"delete_date"`                                      // 评论删除日期
+	Cancel     int32     `gorm:"column:cancel;type:tinyint;not null;comment:删除是1" json:"cancel"`                                          // 删除是1
 }
 
 // TableName Comment's table name
