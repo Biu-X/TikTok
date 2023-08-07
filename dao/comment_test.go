@@ -3,7 +3,6 @@ package dao
 import (
 	"testing"
 
-	"biu-x.org/TikTok/dal/query"
 	"biu-x.org/TikTok/model"
 	"biu-x.org/TikTok/module/config"
 	"biu-x.org/TikTok/module/db"
@@ -22,10 +21,33 @@ func Test_CommentDAO(t *testing.T) {
 		VideoID: 0,
 		Content: "test_content",
 	}
-	err := query.Comment.Create(c)
+	// ----------------------------
+	// Test for CreateComment
+	// ----------------------------
+	err := CreateComment(c)
 	if err != nil {
 		t.Error("CreateComment fail", err)
 		return
 	}
 	t.Log(c)
+
+	// ----------------------------
+	// Test for GetCommentByVideoID
+	// ----------------------------
+	comments, err := GetCommentByVideoID(0)
+	if err != nil {
+		t.Error("GetCommentByVideoID fail", err)
+		return
+	}
+	t.Log(comments)
+
+	// ----------------------------
+	// Test for DeleteCommentByID
+	// ----------------------------
+	err = DeleteCommentByID(c.ID)
+	if err != nil {
+		t.Error("DeleteCommentByID fail", err)
+		return
+	}
+
 }
