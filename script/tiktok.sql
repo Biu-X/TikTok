@@ -44,7 +44,8 @@ CREATE TABLE `favorite` (
   `cancel` tinyint NOT NULL COMMENT '取消赞是1，默认0',
   PRIMARY KEY (`id`),
   KEY `idx_favorite_user_id` (`user_id`),
-  KEY `idx_favorite_video_id` (`video_id`)
+  KEY `idx_favorite_video_id` (`video_id`),
+  UNIQUE KEY `uq_favorite_user_id_video_id` (`user_id`,`video_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- ----------------------------
