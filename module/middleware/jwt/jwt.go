@@ -41,7 +41,6 @@ func GenerateToken(username string) string {
 		println(err.Error())
 		return ""
 	}
-	println("generate token for user ", username)
 	return GenToken(user)
 }
 
@@ -67,7 +66,6 @@ func GenToken(u *model.User) string {
 		log.Println(err)
 		return ""
 	}
-	fmt.Printf("GenToken success %s", tokenStr)
 	return tokenStr
 }
 

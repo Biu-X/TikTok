@@ -2,7 +2,6 @@ package jwt_test
 
 import (
 	"fmt"
-	"log"
 	"testing"
 
 	"biu-x.org/TikTok/dal/query"
@@ -12,24 +11,27 @@ import (
 	"biu-x.org/TikTok/module/middleware/jwt"
 )
 
-func TestSingToken(t *testing.T) {
-	// 初始 mysql 连接
+func TestSingToken1(t *testing.T) {
+	// 配置初始化
 	config.Init()
 	db.Init()
-	// 模拟新建一个用户
-	user := model.User{Name: "smy", ID: 1}
-	errStr := query.User.Create(&user).Error()
-	if len(errStr) != 0 {
-		t.Fatalf("err: %v", errStr)
+
+	// 模拟注册（新建一个用户）
+	u := query.User
+	user := &model.User{Name: "TableNewUser", Password: "abc", Signature: "newtess", Avatar: "avatar", BackgroundImage: "background"}
+	err := u.Create(user)
+	if err != nil {
+		t.Fatalf("create user failed, err: %v", err)
 	}
-	// 模拟登录成功
-	token := jwt.GenerateToken("smy")
-	fmt.Printf("token: %#v", token)
+
+	// 模拟登录（生成 JWT token）
+	token := jwt.GenerateToken("TableNewUser")
+	fmt.Printf("token: %#v\n", token)
 
 	useClaims, err := jwt.ParseToken(token)
 	if err != nil {
 		t.Fatalf("jwt token generate success, but vaild failed....")
 	}
 
-	log.Println(*useClaims)
+	fmt.Println("token 解析成功，获取到的用户信息：", *useClaims)
 }

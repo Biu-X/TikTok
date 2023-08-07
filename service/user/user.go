@@ -8,7 +8,6 @@ import (
 
 	"biu-x.org/TikTok/dal/query"
 	"biu-x.org/TikTok/model"
-	"biu-x.org/TikTok/module/db"
 	"biu-x.org/TikTok/module/middleware/jwt"
 	"github.com/gin-gonic/gin"
 	"golang.org/x/crypto/bcrypt"
@@ -57,9 +56,8 @@ func Signup(c *gin.Context) {
 	username := c.Query("username")
 	password := c.Query("password")
 	u := query.User
-	// todo: 判断用户已经存在
-	_, err := u.Where(u.Name.Eq(username)).First()
-	if !errors.Is(err, gorm.ErrRecordNotFound) {
+	count, _ := u.Where(u.Name.Eq(username)).Count()
+	if count > 0 {
 		c.AbortWithStatusJSON(http.StatusBadRequest, Response{
 			StatusCode: -1,
 			Message:    "user already exist",
@@ -106,11 +104,11 @@ func Signup(c *gin.Context) {
 
 // Login Post /douyin/user/login/ 用户登录
 func Login(c *gin.Context) {
-	u := query.Use(db.DB).User
+	u := query.User
 	username := c.Query("username")
 	password := c.Query("password")
 
-	user, err := query.User.Where(u.Name.Eq(username)).First()
+	user, err := u.Where(u.Name.Eq(username)).First()
 	if errors.Is(err, gorm.ErrRecordNotFound) {
 		c.AbortWithStatusJSON(http.StatusBadRequest, Response{
 			StatusCode: -1,

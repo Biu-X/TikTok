@@ -1,7 +1,6 @@
 package auth
 
 import (
-	"fmt"
 	"net/http"
 	"time"
 
@@ -45,8 +44,6 @@ func RequireAuth() gin.HandlerFunc {
 			})
 			return
 		}
-		fmt.Println(claims)
-		fmt.Println(claims.ID)
 		// validate expire time
 		if time.Now().Unix() > claims.ExpiresAt.Unix() {
 			c.AbortWithStatusJSON(http.StatusUnauthorized, AuthResponse{
@@ -57,10 +54,6 @@ func RequireAuth() gin.HandlerFunc {
 		}
 
 		userId := claims.ID
-		c.JSON(http.StatusOK, gin.H{
-			"user_id": userId,
-		})
-
 		c.Set("user_id", userId)
 		// 放行
 		c.Next()
