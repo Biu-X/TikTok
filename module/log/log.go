@@ -1,10 +1,11 @@
 package log
 
 import (
-	"biu-x.org/TikTok/module/config"
-	"github.com/charmbracelet/log"
 	"os"
 	"time"
+
+	"biu-x.org/TikTok/module/config"
+	"github.com/charmbracelet/log"
 )
 
 var Logger *log.Logger
