@@ -79,7 +79,7 @@ func Signup(c *gin.Context) {
 		Name:     username,
 		Password: string(hash),
 	}
-	// err := u.WithContext(ctx).Create(&user) // pass pointer of data to Create
+	// pass pointer of data to Create
 	err = u.Create(&newuser)
 	if err != nil {
 		println("singup: create new user failed, err: ", err)
@@ -98,7 +98,7 @@ func Signup(c *gin.Context) {
 	c.JSON(http.StatusOK, UserLoginResponse{
 		Response: Response{
 			StatusCode: 0,
-			Message:    "signup success...",
+			Message:    "newuser signup success...",
 		},
 		UserId: user.ID,
 	})

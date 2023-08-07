@@ -8,7 +8,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// 持久化
+// 使用 cookie 持久化
 func RequireAuth1(c *gin.Context) {
 	// get the coolie off request
 	tokenString, err := c.Cookie("Authorization")
@@ -42,7 +42,7 @@ func JWTAuthMiddleWare() func(ctx *gin.Context) {
 		tokenStr := ctx.Query("token")
 		// 如果从上下文中没有查询到，尝试解析 url
 		if len(tokenStr) == 0 {
-			tokenStr, _ = ctx.Cookie("Authorization")
+			tokenStr = ctx.PostForm("token")
 		}
 		if len(tokenStr) == 0 {
 			ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
