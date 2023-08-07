@@ -47,6 +47,18 @@ func Test_FavoriteDAO(t *testing.T) {
 	// ----------------------------
 	// Test for GetFavoriteByID
 	// ----------------------------
+	favorites, err := GetFavoriteByUserID(f.UserID)
+	if err != nil {
+		t.Error("GetFavoriteByUserID fail", err)
+		return
+	}
+	for _, favorite := range favorites {
+		t.Log(favorite)
+	}
+
+	// ----------------------------
+	// Test for GetFavoriteByID
+	// ----------------------------
 	favorite, err = GetFavoriteByID(f.ID)
 	if err != nil {
 		t.Error("GetFavoriteByID fail", err)

@@ -17,6 +17,12 @@ func GetFavoriteByBoth(userID int64, videoID int64) (favorite *model.Favorite, e
 	return favorite, err
 }
 
+func GetFavoriteByUserID(userID int64) (favorites []*model.Favorite, err error) {
+	f := query.Favorite
+	favorites, err = f.Where(f.UserID.Eq(userID)).Find()
+	return favorites, err
+}
+
 func GetFavoriteByID(id int64) (favorite *model.Favorite, err error) {
 	f := query.Favorite
 	favorite, err = f.Where(f.ID.Eq(id)).First()

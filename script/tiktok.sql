@@ -54,8 +54,8 @@ CREATE TABLE `favorite` (
 DROP TABLE IF EXISTS `follow`;
 CREATE TABLE `follow` (
   `id` bigint NOT NULL AUTO_INCREMENT,
-  `user_id` bigint NOT NULL COMMENT '用户id',
-  `follower_id` bigint NOT NULL COMMENT '被关注用户id',
+  `user_id` bigint NOT NULL COMMENT '用户id即被关注的用户',
+  `follower_id` bigint NOT NULL COMMENT '关注者id',
   `cancel` tinyint NOT NULL COMMENT '取消关注是1，默认0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `uq_follow_user_id_follow_id` (`user_id`,`follower_id`),

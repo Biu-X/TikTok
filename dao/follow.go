@@ -17,6 +17,12 @@ func GetFollowByID(id int64) (follow *model.Follow, err error) {
 	return follow, err
 }
 
+func GetFollowUserByUserID(userID int64) (follows []*model.Follow, err error) {
+	f := query.Follow
+	follows, err = f.Where(f.UserID.Eq(userID)).Find()
+	return follows, err
+}
+
 func GetFollowByBoth(userID int64, followID int64) (follow *model.Follow, err error) {
 	f := query.Follow
 	follow, err = f.Where(f.UserID.Eq(userID), f.FollowerID.Eq(followID)).First()
