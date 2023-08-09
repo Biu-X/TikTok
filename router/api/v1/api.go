@@ -1,14 +1,15 @@
 package v1
 
 import (
+	"biu-x.org/TikTok/service/auth"
 	"net/http"
 
+	user_service "biu-x.org/TikTok/service/user"
 	"github.com/gin-gonic/gin"
 )
 
 func NewAPI() *gin.Engine {
 	r := gin.New()
-	r.Use(pass)
 	r.Use(gin.Logger(), gin.Recovery())
 
 	r.GET("/", func(c *gin.Context) {
@@ -17,7 +18,7 @@ func NewAPI() *gin.Engine {
 		})
 	})
 
-	tiktok := r.Group("/douyin/", pass)
+	tiktok := r.Group("/douyin/")
 	{
 		// 视频流接口
 		tiktok.GET("feed/")
@@ -25,15 +26,17 @@ func NewAPI() *gin.Engine {
 		user := tiktok.Group("user/")
 		{
 			// 用户注册
-			user.POST("register/")
+			user.POST("register/", user_service.Signup)
 			// 用户登录
-			user.POST("login/")
+			user.POST("login/", user_service.Login)
 			// 用户信息
-			user.GET("")
+			user.Use(auth.RequireAuth())
+			user.GET("", user_service.UserInfo)
 		}
 
 		publish := tiktok.Group("publish/")
 		{
+			publish.Use(auth.RequireAuth())
 			// 投稿接口
 			publish.POST("action/")
 			// 发布列表
@@ -42,6 +45,7 @@ func NewAPI() *gin.Engine {
 
 		favorite := tiktok.Group("favorite/")
 		{
+			favorite.Use(auth.RequireAuth())
 			// 赞操作
 			favorite.POST("action/")
 			// 喜欢列表
@@ -50,6 +54,7 @@ func NewAPI() *gin.Engine {
 
 		comment := tiktok.Group("comment/")
 		{
+			comment.Use(auth.RequireAuth())
 			// 评论操作
 			comment.POST("action/")
 			// 评论列表
@@ -58,6 +63,7 @@ func NewAPI() *gin.Engine {
 
 		relation := tiktok.Group("relation/")
 		{
+			relation.Use(auth.RequireAuth())
 			// 关注操作
 			relation.POST("action/")
 
@@ -82,6 +88,7 @@ func NewAPI() *gin.Engine {
 
 		message := tiktok.Group("message/")
 		{
+			message.Use(auth.RequireAuth())
 			// 发送消息
 			message.POST("action/")
 			// 聊天记录
@@ -90,11 +97,4 @@ func NewAPI() *gin.Engine {
 	}
 
 	return r
-}
-
-func pass(c *gin.Context) {
-	c.JSON(http.StatusOK, gin.H{
-		"status_code": 0,
-		"status_msg":  "string",
-	})
 }
