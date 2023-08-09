@@ -1,9 +1,8 @@
 package v1
 
 import (
-	"net/http"
-
 	"github.com/gin-gonic/gin"
+	"net/http"
 )
 
 func NewAPI() *gin.Engine {
