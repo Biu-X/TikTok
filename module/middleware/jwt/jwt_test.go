@@ -1,6 +1,7 @@
 package jwt_test
 
 import (
+	"biu-x.org/TikTok/module/log"
 	"fmt"
 	"testing"
 
@@ -14,11 +15,12 @@ import (
 func TestSingToken1(t *testing.T) {
 	// 配置初始化
 	config.Init()
+	log.Init()
 	db.Init()
 
 	// 模拟注册（新建一个用户）
 	u := query.User
-	user := &model.User{Name: "TableNewUser", Password: "abc", Signature: "newtess", Avatar: "avatar", BackgroundImage: "background"}
+	user := &model.User{Name: "newuser", Password: "abc", Signature: "newtess", Avatar: "avatar", BackgroundImage: "background"}
 	err := u.Create(user)
 	if err != nil {
 		t.Fatalf("create user failed, err: %v", err)
@@ -33,5 +35,5 @@ func TestSingToken1(t *testing.T) {
 		t.Fatalf("jwt token generate success, but vaild failed....")
 	}
 
-	fmt.Println("token 解析成功，获取到的用户信息：", *useClaims)
+	fmt.Printf("token 解析成功，获取到的用户信息：%#v\n", *useClaims)
 }
