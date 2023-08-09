@@ -1,9 +1,9 @@
 package jwt
 
 import (
+	"biu-x.org/TikTok/module/log"
 	"errors"
 	"fmt"
-	"log"
 	"strconv"
 	"time"
 
@@ -12,21 +12,19 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 )
 
-/*
-*
-  - jwt 最终表现形式 {
-    base64Url(json.marshal(header)).
-    base64Url(json.marshal(claim)).
-    signature
-    }
-  - Claim Set 用于在 token 中记录用户的一些信息供服务端使用，是 jwt 的第二部分；
-  - 第一部分： Header{Alg, TokenType} 表示使用的签名算法和使用的 Token 类型（比如 jwt）
-  - 第三部分： Header 和 Cliam 分别序列化加 base64Url 编码组合后再使用服务器私钥
-  - 签名后得到的签名值（也是经过了 base64Url 编码）
+//- jwt 最终表现形式 {
+//  base64Url(json.marshal(header)).
+//  base64Url(json.marshal(claim)).
+//  signature
+//  }
+//- Claim Set 用于在 token 中记录用户的一些信息供服务端使用，是 jwt 的第二部分；
+//- 第一部分： Header{Alg, TokenType} 表示使用的签名算法和使用的 Token 类型（比如 jwt）
+//- 第三部分： Header 和 Cliam 分别序列化加 base64Url 编码组合后再使用服务器私钥
+//- 签名后得到的签名值（也是经过了 base64Url 编码）
 
 // 根据使用情况调整 jwt 过期时间
 const (
-	TokenExpiredDuration = time.Hour * 2
+	TokenExpiredDuration = time.Hour * 6
 )
 
 var mySigningKey = []byte("tiktok")
@@ -35,7 +33,7 @@ var mySigningKey = []byte("tiktok")
 func GenerateToken(username string) string {
 	user, err := query.User.Where(query.User.Name.Eq(username)).First()
 	if err != nil {
-		println(err.Error())
+		log.Logger.Info(err)
 		return ""
 	}
 	return GenToken(user)
@@ -60,7 +58,7 @@ func GenToken(u *model.User) string {
 	// 这里有个坑：参数可以是任意类型，但是你传 string 类型就会失败，这里一定要使用字节切片
 	tokenStr, err := token.SignedString(mySigningKey)
 	if err != nil {
-		log.Println(err)
+		log.Logger.Info(err)
 		return ""
 	}
 	return tokenStr
@@ -78,7 +76,7 @@ func ParseToken(tokenString string) (*jwt.RegisteredClaims, error) {
 	})
 
 	if err != nil {
-		log.Println(err.Error())
+		log.Logger.Info(err)
 	}
 
 	// 对空接口类型值进行类型断言
