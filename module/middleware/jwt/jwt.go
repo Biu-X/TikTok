@@ -24,9 +24,6 @@ import (
   - 第三部分： Header 和 Cliam 分别序列化加 base64Url 编码组合后再使用服务器私钥
   - 签名后得到的签名值（也是经过了 base64Url 编码）
 
-*
-*/
-
 // 根据使用情况调整 jwt 过期时间
 const (
 	TokenExpiredDuration = time.Hour * 2

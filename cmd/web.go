@@ -3,6 +3,7 @@ package cmd
 import (
 	"biu-x.org/TikTok/module/config"
 	"biu-x.org/TikTok/module/db"
+	"biu-x.org/TikTok/module/log"
 	"biu-x.org/TikTok/router"
 	"github.com/urfave/cli/v2"
 )
@@ -25,6 +26,7 @@ var CmdWeb = &cli.Command{ //nolint:typecheck
 
 func runWeb(ctx *cli.Context) error { //nolint:typecheck
 	config.Init()
+	log.Init()
 	db.Init()
 	router.Init()
 	return nil

@@ -31,7 +31,7 @@ func newVideo(db *gorm.DB, opts ...gen.DOOption) video {
 	_video.AuthorID = field.NewInt64(tableName, "author_id")
 	_video.PlayURL = field.NewString(tableName, "play_url")
 	_video.CoverURL = field.NewString(tableName, "cover_url")
-	_video.PublishTime = field.NewTime(tableName, "publish_time")
+	_video.CreatedAt = field.NewTime(tableName, "created_at")
 	_video.Title = field.NewString(tableName, "title")
 
 	_video.fillFieldMap()
@@ -42,13 +42,13 @@ func newVideo(db *gorm.DB, opts ...gen.DOOption) video {
 type video struct {
 	videoDo
 
-	ALL         field.Asterisk
-	ID          field.Int64
-	AuthorID    field.Int64  // 作者信息
-	PlayURL     field.String // 播放地址
-	CoverURL    field.String // 封面地址
-	PublishTime field.Time   // 发布时间
-	Title       field.String // 标题
+	ALL       field.Asterisk
+	ID        field.Int64
+	AuthorID  field.Int64  // 作者信息
+	PlayURL   field.String // 播放地址
+	CoverURL  field.String // 封面地址
+	CreatedAt field.Time   // 发布时间
+	Title     field.String // 标题
 
 	fieldMap map[string]field.Expr
 }
@@ -69,7 +69,7 @@ func (v *video) updateTableName(table string) *video {
 	v.AuthorID = field.NewInt64(table, "author_id")
 	v.PlayURL = field.NewString(table, "play_url")
 	v.CoverURL = field.NewString(table, "cover_url")
-	v.PublishTime = field.NewTime(table, "publish_time")
+	v.CreatedAt = field.NewTime(table, "created_at")
 	v.Title = field.NewString(table, "title")
 
 	v.fillFieldMap()
@@ -92,7 +92,7 @@ func (v *video) fillFieldMap() {
 	v.fieldMap["author_id"] = v.AuthorID
 	v.fieldMap["play_url"] = v.PlayURL
 	v.fieldMap["cover_url"] = v.CoverURL
-	v.fieldMap["publish_time"] = v.PublishTime
+	v.fieldMap["created_at"] = v.CreatedAt
 	v.fieldMap["title"] = v.Title
 }
 

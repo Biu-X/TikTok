@@ -100,15 +100,15 @@ func Init() {
 	}
 	err := config.UnmarshalKey("mysql", &mysql)
 	if err != nil {
-		log.Fatalf("unable to decode into struct, %v", err)
+		log.Fatalf("unable to decode into mysql struct, %v", err)
 	}
 	err = config.UnmarshalKey("redis", &redis)
 	if err != nil {
-		log.Fatalf("unable to decode into struct, %v", err)
+		log.Fatalf("unable to decode into redis struct, %v", err)
 	}
 	err = config.UnmarshalKey("s3", &S3Config)
 	if err != nil {
-		log.Fatalf("unable to decode into struct, %v", err)
+		log.Fatalf("unable to decode into s3 struct, %v", err)
 	}
 
 	// use env var to set S3 config when some field is nil

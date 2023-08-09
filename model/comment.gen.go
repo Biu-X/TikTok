@@ -6,18 +6,20 @@ package model
 
 import (
 	"time"
+
+	"gorm.io/gorm"
 )
 
 const TableNameComment = "comment"
 
 // Comment mapped from table <comment>
 type Comment struct {
-	ID         int64     `gorm:"column:id;type:bigint;primaryKey;autoIncrement:true" json:"id"`
-	UserID     int64     `gorm:"column:user_id;type:bigint;not null;comment:用户id" json:"user_id"`                                         // 用户id
-	VideoID    int64     `gorm:"column:video_id;type:bigint;not null;index:idx_comment_video_id,priority:1;comment:视频id" json:"video_id"` // 视频id
-	Content    string    `gorm:"column:content;type:varchar(255);not null;comment:评论内容" json:"content"`                                   // 评论内容
-	CreateDate time.Time `gorm:"column:create_date;type:datetime;not null;comment:评论发布日期" json:"create_date"`                             // 评论发布日期
-	DeleteDate time.Time `gorm:"column:delete_date;type:datetime;comment:评论删除日期" json:"delete_date"`                                      // 评论删除日期
+	ID        int64          `gorm:"column:id;type:bigint;primaryKey;autoIncrement:true" json:"id"`
+	UserID    int64          `gorm:"column:user_id;type:bigint;not null;comment:用户id" json:"user_id"`                                              // 用户id
+	VideoID   int64          `gorm:"column:video_id;type:bigint;not null;index:idx_comment_video_id,priority:1;comment:视频id" json:"video_id"`      // 视频id
+	Content   string         `gorm:"column:content;type:varchar(255);not null;comment:评论内容" json:"content"`                                        // 评论内容
+	CreatedAt time.Time      `gorm:"column:created_at;type:datetime(3);comment:评论发布日期" json:"create_date"`                                         // 评论发布日期
+	DeletedAt gorm.DeletedAt `gorm:"column:deleted_at;type:datetime(3);index:idx_comment_deleted_at,priority:1;comment:评论删除日期" json:"delete_date"` // 评论删除日期
 }
 
 // TableName Comment's table name

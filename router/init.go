@@ -2,11 +2,11 @@ package router
 
 import (
 	"biu-x.org/TikTok/module/config"
+	"biu-x.org/TikTok/module/log"
 	v1 "biu-x.org/TikTok/router/api/v1"
 	"context"
 	"fmt"
 	"github.com/gin-gonic/gin"
-	"log"
 	"net/http"
 	"os/signal"
 	"syscall"
@@ -24,12 +24,13 @@ func Init() {
 	} else {
 		mode = gin.ReleaseMode
 	}
+	log.Logger.Debugf("gin mode: %v", mode)
 	gin.SetMode(mode)
 
 	e := v1.NewAPI()
-	addr := ":" + fmt.Sprint(config.Get("server.port"))
+	log.Logger.Debugf("server port: %v", config.GetString("server.port"))
 	srv := &http.Server{
-		Addr:    addr,
+		Addr:    fmt.Sprintf(":%v", config.GetString("server.port")),
 		Handler: e,
 	}
 
@@ -37,7 +38,7 @@ func Init() {
 	// it won't block the graceful shutdown handling below
 	go func() {
 		if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
-			log.Fatalf("listen: %s\n", err)
+			log.Logger.Fatalf("listen: %s", err)
 		}
 	}()
 
@@ -46,13 +47,13 @@ func Init() {
 
 	// Restore default behavior on the interrupt signal and notify user of shutdown.
 	stop()
-	log.Println("shutting down gracefully, press Ctrl+C again to force")
+	log.Logger.Info("shutting down gracefully, press Ctrl+C again to force")
 
 	// The context is used to inform the server it has 5 seconds to finish
 	// the request it is currently handling
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 	if err := srv.Shutdown(ctx); err != nil {
-		log.Fatal("Server forced to shutdown: ", err)
+		log.Logger.Fatal("Server forced to shutdown: ", err)
 	}
 }
