@@ -1,8 +1,8 @@
 package user
 
 import (
+	"biu-x.org/TikTok/module/log"
 	"errors"
-	"fmt"
 	"net/http"
 	"strconv"
 
@@ -14,27 +14,10 @@ import (
 	"gorm.io/gorm"
 )
 
-func SaveUser() {
-	//q := query.Use(db.DB)
-	//err := query.Use(db.DB).User.Create(&model.User{Name: "hiifong2", Password: "123456", Signature: "lazy", Avatar: "https://hiif.ong/logo.png", BackgroundImage: "https://hiif.ong/logo.png"})
-	//if err != nil {
-	//	fmt.Printf("err: %v\n", err)
-	//}
-	//query.SetDefault(db.DB)
-	userDo, err := query.User.Where(query.User.Name.Eq("hiifong")).First()
-	if err != nil {
-		fmt.Printf("err: %v\n", err)
-	}
-	fmt.Println(userDo)
-}
+//包含响应状态码和响应信息
+//field：StatusCode 状态码 ，值为 0（正常） 或者 1（异常）
+//field：Message 状态信息，描述响应
 
-/**
-*
-* 包含响应状态码和响应信息
-* field：StatusCode 状态码 ，值为 0（正常） 或者 1（异常）
-* field：Message 状态信息，描述响应
-*
- */
 type Response struct {
 	StatusCode int    `json:"status_code"`
 	Message    string `json:"status_message"`
@@ -68,7 +51,8 @@ func Signup(c *gin.Context) {
 	// 生成密码的 hash 值
 	hash, err := bcrypt.GenerateFromPassword([]byte(password), 10)
 	if err != nil {
-		println("signup: get password's hash failed....")
+		log.Logger.Errorf("signup: get password's hash failed...., error: %v", err)
+		println()
 		c.JSON(http.StatusInternalServerError, gin.H{})
 		return
 	}
@@ -80,7 +64,7 @@ func Signup(c *gin.Context) {
 	// pass pointer of data to Create
 	err = u.Create(&newuser)
 	if err != nil {
-		println("singup: create new user failed, err: ", err)
+		log.Logger.Errorf("singup: create new user failed, err: %v", err)
 		c.JSON(http.StatusServiceUnavailable, gin.H{})
 		return
 	}
@@ -88,7 +72,7 @@ func Signup(c *gin.Context) {
 	user, err := u.Where(u.Name.Eq(username)).First()
 	// 数据库查询出现错误，服务端错误
 	if err != nil {
-		println("signup: insert user success but search failed, err: ", err)
+		log.Logger.Errorf("signup: insert user success but search failed, err: %v", err)
 		c.JSON(http.StatusInternalServerError, gin.H{})
 		return
 	}
