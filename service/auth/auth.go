@@ -1,6 +1,7 @@
 package auth
 
 import (
+	"biu-x.org/TikTok/module/log"
 	"net/http"
 	"time"
 
@@ -33,7 +34,7 @@ func RequireAuth() gin.HandlerFunc {
 			return
 		}
 
-		println("token 读取成功")
+		log.Logger.Info("token 读取成功")
 		// auth = [[header][cliams][signature]]
 		// 解析 token
 		claims, err := jwt.ParseToken(token)
