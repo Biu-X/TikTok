@@ -1,9 +1,11 @@
 package v1
 
 import (
-	"biu-x.org/TikTok/service/auth"
 	"net/http"
 
+	"biu-x.org/TikTok/service/auth"
+
+	comment_service "biu-x.org/TikTok/service/comment"
 	user_service "biu-x.org/TikTok/service/user"
 	"github.com/gin-gonic/gin"
 )
@@ -56,9 +58,9 @@ func NewAPI() *gin.Engine {
 		{
 			comment.Use(auth.RequireAuth())
 			// 评论操作
-			comment.POST("action/")
+			comment.POST("action/", comment_service.Action)
 			// 评论列表
-			comment.GET("list/")
+			comment.GET("list/", comment_service.List)
 		}
 
 		relation := tiktok.Group("relation/")
