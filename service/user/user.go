@@ -1,10 +1,11 @@
 package user
 
 import (
-	"biu-x.org/TikTok/module/log"
 	"errors"
 	"net/http"
 	"strconv"
+
+	"biu-x.org/TikTok/module/log"
 
 	"biu-x.org/TikTok/dal/query"
 	"biu-x.org/TikTok/model"
@@ -46,9 +47,11 @@ func Signup(c *gin.Context) {
 	}
 
 	if len(username) == 0 || len(password) == 0 {
-		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
-			"ErrorMsg": "username or password is required",
+		c.AbortWithStatusJSON(http.StatusBadRequest, Response{
+			StatusCode: -1,
+			Message:    "username or password is required",
 		})
+		return
 	}
 
 	u := query.User
@@ -111,9 +114,13 @@ func Login(c *gin.Context) {
 	}
 
 	if len(username) == 0 || len(password) == 0 {
-		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
-			"ErrorMsg": "username or password is required",
+		c.AbortWithStatusJSON(http.StatusBadRequest, UserLoginResponse{
+			Response: Response{
+				StatusCode: -1,
+				Message:    "username or password is required",
+			},
 		})
+		return
 	}
 
 	user, err := u.Where(u.Name.Eq(username)).First()
