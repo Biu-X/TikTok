@@ -53,8 +53,21 @@ type UserResponse struct {
 
 // Signup 用户注册 /douyin/user/signup/
 func Signup(c *gin.Context) {
+	// 优先从 url 中获取参数
 	username := c.Query("username")
 	password := c.Query("password")
+
+	if len(username) == 0 && len(password) == 0 {
+		username = c.Request.PostFormValue("username")
+		password = c.Request.PostFormValue("password")
+	}
+
+	if len(username) == 0 || len(password) == 0 {
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
+			"ErrorMsg": "username or password is required",
+		})
+	}
+
 	u := query.User
 	count, _ := u.Where(u.Name.Eq(username)).Count()
 	if count > 0 {
@@ -107,6 +120,17 @@ func Login(c *gin.Context) {
 	u := query.User
 	username := c.Query("username")
 	password := c.Query("password")
+
+	if len(username) == 0 && len(password) == 0 {
+		username = c.Request.PostFormValue("username")
+		password = c.Request.PostFormValue("password")
+	}
+
+	if len(username) == 0 || len(password) == 0 {
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
+			"ErrorMsg": "username or password is required",
+		})
+	}
 
 	user, err := u.Where(u.Name.Eq(username)).First()
 	if errors.Is(err, gorm.ErrRecordNotFound) {
