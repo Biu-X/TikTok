@@ -1,10 +1,11 @@
 package user
 
 import (
-	"biu-x.org/TikTok/module/log"
 	"errors"
 	"net/http"
 	"strconv"
+
+	"biu-x.org/TikTok/module/log"
 
 	"biu-x.org/TikTok/dal/query"
 	"biu-x.org/TikTok/model"
@@ -36,8 +37,23 @@ type UserResponse struct {
 
 // Signup 用户注册 /douyin/user/signup/
 func Signup(c *gin.Context) {
+	// 优先从 url 中获取参数
 	username := c.Query("username")
 	password := c.Query("password")
+
+	if len(username) == 0 && len(password) == 0 {
+		username = c.Request.PostFormValue("username")
+		password = c.Request.PostFormValue("password")
+	}
+
+	if len(username) == 0 || len(password) == 0 {
+		c.AbortWithStatusJSON(http.StatusBadRequest, Response{
+			StatusCode: -1,
+			Message:    "username or password is required",
+		})
+		return
+	}
+
 	u := query.User
 	count, _ := u.Where(u.Name.Eq(username)).Count()
 	if count > 0 {
@@ -91,6 +107,21 @@ func Login(c *gin.Context) {
 	u := query.User
 	username := c.Query("username")
 	password := c.Query("password")
+
+	if len(username) == 0 && len(password) == 0 {
+		username = c.Request.PostFormValue("username")
+		password = c.Request.PostFormValue("password")
+	}
+
+	if len(username) == 0 || len(password) == 0 {
+		c.AbortWithStatusJSON(http.StatusBadRequest, UserLoginResponse{
+			Response: Response{
+				StatusCode: -1,
+				Message:    "username or password is required",
+			},
+		})
+		return
+	}
 
 	user, err := u.Where(u.Name.Eq(username)).First()
 	if errors.Is(err, gorm.ErrRecordNotFound) {
