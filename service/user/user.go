@@ -1,6 +1,7 @@
 package user
 
 import (
+	"biu-x.org/TikTok/module/response"
 	"errors"
 	"net/http"
 	"strconv"
@@ -93,12 +94,8 @@ func Signup(c *gin.Context) {
 		return
 	}
 	// 打印用户信息
-	c.JSON(http.StatusOK, UserLoginResponse{
-		Response: Response{
-			StatusCode: 0,
-			Message:    "newuser signup success...",
-		},
-		UserId: user.ID,
+	response.OKRespWithData(c, map[string]interface{}{
+		"user_id": user.ID,
 	})
 }
 
@@ -137,21 +134,12 @@ func Login(c *gin.Context) {
 		// 注册之后的下次登录成功，才会为其生成 token
 		token := jwt.GenerateToken(username)
 		// 打印相应信息和用户信息以及生成的 token 值
-		c.JSON(http.StatusOK, UserLoginResponse{
-			Response: Response{
-				StatusCode: 0,
-				Message:    "Login Success",
-			},
-			UserId: user.ID,
-			Token:  token,
+		response.OKRespWithData(c, map[string]interface{}{
+			"user_id": user.ID,
+			"token":   token,
 		})
 	} else {
-		c.JSON(http.StatusBadRequest, UserLoginResponse{
-			Response: Response{
-				StatusCode: 1,
-				Message:    "Username or Password Error",
-			},
-		})
+		response.OKResp(c)
 	}
 }
 
@@ -162,19 +150,11 @@ func UserInfo(c *gin.Context) {
 	userId := c.GetString("user_id")
 	id, _ := strconv.ParseInt(userId, 10, 64)
 	if user, err := query.User.Where(u.ID.Eq(id)).First(); err != nil {
-		c.JSON(http.StatusInternalServerError, UserResponse{
-			Response: Response{
-				StatusCode: 1,
-				Message:    "UserInfo: query user info by user id failed...",
-			},
-		})
+		response.ErrRespWithMsg(c, "UserInfo: query user info by user id failed...")
 	} else {
-		c.JSON(http.StatusOK, UserResponse{
-			Response: Response{
-				StatusCode: 0,
-				Message:    "query success",
-			},
-			User: user,
+		log.Logger.Infof("user: %+v", user)
+		response.OKRespWithData(c, map[string]interface{}{
+			"user": user,
 		})
 	}
 }
