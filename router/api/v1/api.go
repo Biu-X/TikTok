@@ -1,8 +1,9 @@
 package v1
 
 import (
-	"biu-x.org/TikTok/service/auth"
 	"net/http"
+
+	"biu-x.org/TikTok/service/auth"
 
 	user_service "biu-x.org/TikTok/service/user"
 	"github.com/gin-gonic/gin"
