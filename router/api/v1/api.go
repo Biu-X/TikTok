@@ -32,7 +32,7 @@ func NewAPI() *gin.Engine {
 			user.POST("login/", user_service.Login)
 			// 用户信息
 			user.Use(auth.RequireAuth())
-			user.GET("userinfo/", user_service.UserInfo)
+			user.GET("", user_service.UserInfo)
 		}
 
 		publish := tiktok.Group("publish/")
