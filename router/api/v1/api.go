@@ -2,11 +2,10 @@ package v1
 
 import (
 	"biu-x.org/TikTok/service/auth"
-	"net/http"
-
 	publish_service "biu-x.org/TikTok/service/publish"
 	user_service "biu-x.org/TikTok/service/user"
 	"github.com/gin-gonic/gin"
+	"net/http"
 )
 
 func NewAPI() *gin.Engine {
