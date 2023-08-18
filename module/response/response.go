@@ -1,9 +1,15 @@
 package response
 
 import (
-	"github.com/gin-gonic/gin"
 	"net/http"
+
+	"github.com/gin-gonic/gin"
 )
+
+type ErrReponse struct {
+	StatusCode int    `json:"status_code"` // 错误码
+	Message    string `json:"messgae"`     // 错误信息
+}
 
 func OKResp(c *gin.Context) {
 	resp := map[string]interface{}{

@@ -1,8 +1,9 @@
 package v1
 
 import (
-	"biu-x.org/TikTok/service/auth"
 	"net/http"
+
+	"biu-x.org/TikTok/service/auth"
 
 	user_service "biu-x.org/TikTok/service/user"
 	"github.com/gin-gonic/gin"
@@ -31,7 +32,7 @@ func NewAPI() *gin.Engine {
 			user.POST("login/", user_service.Login)
 			// 用户信息
 			user.Use(auth.RequireAuth())
-			user.GET("", user_service.UserInfo)
+			user.GET("userinfo/", user_service.UserInfo)
 		}
 
 		publish := tiktok.Group("publish/")
