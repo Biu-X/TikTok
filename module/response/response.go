@@ -1,22 +1,10 @@
 package response
 
 import (
-	"net/http"
-
+	"biu-x.org/TikTok/dao"
 	"github.com/gin-gonic/gin"
+	"net/http"
 )
-
-type ErrReponse struct {
-	StatusCode int    `json:"status_code"` // 错误码
-	Message    string `json:"messgae"`     // 错误信息
-}
-
-type CommentResponse struct {
-	CommentID  int64        `json:"id"`          //评论ID
-	User       UserResponse `json:"user"`        //评论用户
-	Content    string       `json:"content"`     //评论内容
-	CreateDate string       `json:"create_date"` //评论发布日期，格式 mm-dd
-}
 
 func OKResp(c *gin.Context) {
 	resp := map[string]interface{}{
@@ -53,27 +41,62 @@ func ErrRespWithMsg(c *gin.Context, msg string) {
 	c.JSON(http.StatusOK, resp)
 }
 
-type VideoResponse struct {
-	VideoID       int64        `json:"id"`             // 视频唯一标识
-	Author        UserResponse `json:"author"`         // 视频作者信息
-	PlayURL       string       `json:"play_url"`       // 视频播放地址
-	CoverURL      string       `json:"cover_url"`      // 视频封面地址
-	FavoriteCount int64        `json:"favorite_count"` // 视频的点赞总数
-	CommentCount  int64        `json:"comment_count"`  // 视频的评论总数
-	IsFavorite    bool         `json:"is_favorite"`    // true-已点赞，false-未点赞
-	Title         string       `json:"title"`          // 视频标题
-}
+// 返回用户信息，id 为要获取的用户 id，userID 为当前登录用户 id
+func GetUserResponseByID(id int64, userID int64) (*UserResponse, error) {
+	isFollow := dao.GetIsFollowByBoth(id, userID) // 判断 要获取的用户 是否被 当前登录用户 关注
 
-type UserResponse struct {
-	UserID         int64  `json:"id"`               // 用户ID
-	Username       string `json:"name"`             // 用户名
-	FollowCount    int64  `json:"follow_count"`     // 该用户关注了多少个其他用户
-	FollowerCount  int64  `json:"follower_count"`   // 该用户粉丝总数
-	IsFollow       bool   `json:"is_follow"`        // true: 已关注 false: 未关注
-	Avatar         string `json:"avatar"`           // 头像
-	BackGroudImage string `json:"background_image"` // 背景大图
-	Signature      string `json:"signature"`        // 个人简介
-	TotalFavorite  int64  `json:"total_favorite"`   // 该用户获赞总量
-	WorkCount      int64  `json:"work_count"`       // 作品数量
-	FavoriteCount  int64  `json:"favorite_count"`   // 喜欢的作品数量
+	user, err := dao.GetUserByID(id)
+	if err != nil {
+		return nil, err
+	}
+
+	// 求用户关注了多少个用户，即求表中关注者 ID 为 userId 的列数
+	followCount, err := dao.GetFollowingCountByFollowerID(id)
+	if err != nil {
+		return nil, err
+	}
+
+	// 求用户的关注者数量，即求表中用户 id 等于 userId 的列数
+	followerCount, err := dao.GetFollowerCountByUserID(id)
+	if err != nil {
+		return nil, err
+	}
+
+	// 作品获赞数量（需要去 Video 表中查询该用户所有的 Video_ID，然后再去 Favorite 表中查询每一个 Video_ID 的获赞数）
+	videoIDs, err := dao.GetVideoIDByAuthorID(id)
+	if err != nil {
+		return nil, err
+	}
+	acquireFavoriteTotal := int64(0)
+	for _, videoID := range videoIDs {
+		count, err := dao.GetFavoriteCountByVideoID(videoID)
+		if err != nil {
+			return nil, err
+		}
+		acquireFavoriteTotal += count
+	}
+
+	// 总的作品数量
+	totalWork := int64(len(videoIDs))
+
+	// 总的喜欢作品量
+	totalFavorite, err := dao.GetFavoriteCountByUserID(id)
+	if err != nil {
+		return nil, err
+	}
+
+	userResponse := UserResponse{
+		UserID:         user.ID,
+		Username:       user.Name,
+		FollowCount:    followCount,
+		FollowerCount:  followerCount,
+		IsFollow:       isFollow,
+		Avatar:         user.Avatar,
+		BackGroudImage: user.BackgroundImage,
+		Signature:      user.Signature,
+		TotalFavorite:  totalFavorite,
+		WorkCount:      totalWork,
+		FavoriteCount:  totalFavorite,
+	}
+	return &userResponse, nil
 }
