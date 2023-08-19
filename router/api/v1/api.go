@@ -1,12 +1,11 @@
 package v1
 
 import (
-	"net/http"
-
 	"biu-x.org/TikTok/service/auth"
-
+	publish_service "biu-x.org/TikTok/service/publish"
 	user_service "biu-x.org/TikTok/service/user"
 	"github.com/gin-gonic/gin"
+	"net/http"
 )
 
 func NewAPI() *gin.Engine {
@@ -39,9 +38,9 @@ func NewAPI() *gin.Engine {
 		{
 			publish.Use(auth.RequireAuth())
 			// 投稿接口
-			publish.POST("action/")
+			publish.POST("action/", publish_service.PublishVideo)
 			// 发布列表
-			publish.GET("list/")
+			publish.GET("list/", publish_service.GetPublishList)
 		}
 
 		favorite := tiktok.Group("favorite/")
