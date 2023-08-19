@@ -6,11 +6,11 @@ import (
 )
 
 // CreateFollow 创建关注记录
-// userId ->关注 toUserId，则写成
+// FollowerID ->关注 UserID，则写成
 //
 //	&model.Follow{
-//		 UserID:     toUserId, // 对方用户id
-//		 FollowerID: userId, // 自己的用户id
+//		 UserID:     UserID, // 用户id
+//		 FollowerID: FollowerID, // 粉丝id
 //	}
 func CreateFollow(follow *model.Follow) (err error) {
 	f := query.Follow
@@ -32,7 +32,7 @@ func GetFollowByUserID(userID int64) (follows []*model.Follow, err error) {
 	return follows, err
 }
 
-// 返回 userID 的所有粉丝，Follow.FollowerID 是粉丝的ID
+// 返回 userID 的所有 粉丝，Follow.FollowerID 是粉丝的ID
 func GetFollowFollowerIDsByUserID(userID int64) (followerIDs []int64, err error) {
 	follows, err := GetFollowByUserID(userID)
 	for _, follow := range follows {
@@ -112,9 +112,10 @@ func SetFollowCancelByID(id int64, cancel bool) (err error) {
 	return err
 }
 
-// SetFollowCancelByBoth 取消关注
-// userId ->取关 toUserId，则应该是
-// err := dao.SetFollowCancelByBoth(toUserId, userId) // userId 取关 toUserId
+// SetFollowCancelByBoth 取消关注，第二个用户取消关注第一个用户
+// FollowerID ->取关 userId，则应该是
+//
+// err := dao.SetFollowCancelByBoth(userId, FollowerID) // 粉丝取关用户
 func SetFollowCancelByBoth(userID int64, followerID int64) (err error) {
 	f := query.Follow
 	_, err = f.Where(f.UserID.Eq(userID), f.FollowerID.Eq(followerID)).Update(f.Cancel, true)
