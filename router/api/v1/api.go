@@ -4,10 +4,10 @@ import (
 	"net/http"
 
 	"biu-x.org/TikTok/service/auth"
+	comment_service "biu-x.org/TikTok/service/comment"
 	favorite_service "biu-x.org/TikTok/service/favorite"
 	publish_service "biu-x.org/TikTok/service/publish"
 	user_service "biu-x.org/TikTok/service/user"
-	comment_service "biu-x.org/Tiktok/service/comment"
 	"github.com/gin-gonic/gin"
 )
 

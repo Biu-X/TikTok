@@ -5,12 +5,14 @@ import (
 	"biu-x.org/TikTok/model"
 )
 
+// 创建关注记录
 func CreateFollow(follow *model.Follow) (err error) {
 	f := query.Follow
 	err = f.Create(follow)
 	return err
 }
 
+// 通过ID获取关注记录
 func GetFollowByID(id int64) (follow *model.Follow, err error) {
 	f := query.Follow
 	follow, err = f.Where(f.ID.Eq(id)).First()
@@ -63,12 +65,15 @@ func GetFollowerCountByUserID(userID int64) (count int64, err error) {
 	return count, err
 }
 
-func GetFollowByBoth(userID int64, followID int64) (follow *model.Follow, err error) {
+// 查询两人的关注信息
+// 可获取：第二个用户是否关注了第一个用户
+func GetFollowByBoth(userID int64, followerID int64) (follow *model.Follow, err error) {
 	f := query.Follow
-	follow, err = f.Where(f.UserID.Eq(userID), f.FollowerID.Eq(followID)).First()
+	follow, err = f.Where(f.UserID.Eq(userID), f.FollowerID.Eq(followerID)).First()
 	return follow, err
 }
 
+// 通过记录ID设置是否取关
 func SetFollowCancelByID(id int64, cancel bool) (err error) {
 	f := query.Follow
 	_, err = f.Where(f.ID.Eq(id)).Update(f.Cancel, cancel)
