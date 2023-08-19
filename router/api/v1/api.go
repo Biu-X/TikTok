@@ -2,6 +2,7 @@ package v1
 
 import (
 	"biu-x.org/TikTok/service/auth"
+	favorite_service "biu-x.org/TikTok/service/favorite"
 	publish_service "biu-x.org/TikTok/service/publish"
 	user_service "biu-x.org/TikTok/service/user"
 	"github.com/gin-gonic/gin"
@@ -47,9 +48,9 @@ func NewAPI() *gin.Engine {
 		{
 			favorite.Use(auth.RequireAuth())
 			// 赞操作
-			favorite.POST("action/")
+			favorite.POST("action/", favorite_service.Action)
 			// 喜欢列表
-			favorite.GET("list/")
+			favorite.GET("list/", favorite_service.List)
 		}
 
 		comment := tiktok.Group("comment/")
