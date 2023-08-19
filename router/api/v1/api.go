@@ -85,7 +85,7 @@ func NewAPI() *gin.Engine {
 			friend := relation.Group("friend/")
 			{
 				// 好友列表
-				friend.GET("list/")
+				friend.GET("list/", relation_service.FriendList)
 			}
 		}
 

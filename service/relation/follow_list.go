@@ -23,7 +23,10 @@ func FollowList(c *gin.Context) {
 
 	for _, followID := range followIDs {
 		userRes, err := response.GetUserResponseByID(followID, userId)
-		log.Logger.Error(err)
+		if err != nil {
+			log.Logger.Error(err)
+			continue
+		}
 		userList = append(userList, *userRes)
 	}
 
