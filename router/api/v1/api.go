@@ -40,9 +40,9 @@ func NewAPI() *gin.Engine {
 		{
 			publish.Use(auth.RequireAuth())
 			// 投稿接口
-			publish.POST("action/", publish_service.PublishVideo)
+			publish.POST("action/", publish_service.Action)
 			// 发布列表
-			publish.GET("list/", publish_service.GetPublishList)
+			publish.GET("list/", publish_service.List)
 		}
 
 		favorite := tiktok.Group("favorite/")
