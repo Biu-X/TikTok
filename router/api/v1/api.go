@@ -1,14 +1,16 @@
 package v1
 
 import (
+	"net/http"
+
 	"biu-x.org/TikTok/service/auth"
 	comment_service "biu-x.org/TikTok/service/comment"
 	favorite_service "biu-x.org/TikTok/service/favorite"
+	message_service "biu-x.org/TikTok/service/message"
 	publish_service "biu-x.org/TikTok/service/publish"
 	relation_service "biu-x.org/TikTok/service/relation"
 	user_service "biu-x.org/TikTok/service/user"
 	"github.com/gin-gonic/gin"
-	"net/http"
 )
 
 func NewAPI() *gin.Engine {
@@ -93,9 +95,9 @@ func NewAPI() *gin.Engine {
 		{
 			message.Use(auth.RequireAuth())
 			// 发送消息
-			message.POST("action/")
+			message.POST("action/", message_service.Action)
 			// 聊天记录
-			message.GET("chat/")
+			message.GET("chat/", message_service.Chat)
 		}
 	}
 
