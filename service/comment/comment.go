@@ -7,6 +7,7 @@ import (
 	"biu-x.org/TikTok/dao"
 	"biu-x.org/TikTok/model"
 	"biu-x.org/TikTok/module/log"
+	"biu-x.org/TikTok/module/response"
 	"github.com/gin-gonic/gin"
 )
 
@@ -43,7 +44,7 @@ func Action(c *gin.Context) {
 		err := dao.CreateComment(comment)
 		if err != nil {
 			log.Logger.Errorf("action: CreateComment failed, err: %v", err)
-			c.JSON(http.StatusInternalServerError, gin.H{})
+			response.ErrRespWithMsg(c, err.Error())
 			return
 		}
 		c.JSON(http.StatusOK, CommentActionResponse{
@@ -59,7 +60,7 @@ func Action(c *gin.Context) {
 		err := dao.DeleteCommentByID(commentId)
 		if err != nil {
 			log.Logger.Errorf("action: DeleteCommentByID failed, err: %v", err)
-			c.JSON(http.StatusInternalServerError, gin.H{})
+			response.ErrRespWithMsg(c, err.Error())
 			return
 		}
 		c.JSON(http.StatusOK, CommentActionResponse{
@@ -78,7 +79,7 @@ func List(c *gin.Context) {
 	commentList, err := dao.GetCommentByVideoID(videoId)
 	if err != nil {
 		log.Logger.Errorf("list: GetCommentByVideoID failed, err: %v", err)
-		c.JSON(http.StatusInternalServerError, gin.H{})
+		response.ErrRespWithMsg(c, err.Error())
 		return
 	}
 	c.JSON(http.StatusOK, CommentListResponse{
