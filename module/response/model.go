@@ -1,15 +1,10 @@
 package response
 
-type ErrReponse struct {
-	StatusCode int    `json:"status_code"` // 错误码
-	Message    string `json:"messgae"`     // 错误信息
-}
-
 type CommentResponse struct {
-	CommentID  int64        `json:"id"`          //评论ID
-	User       UserResponse `json:"user"`        //评论用户
-	Content    string       `json:"content"`     //评论内容
-	CreateDate string       `json:"create_date"` //评论发布日期，格式 mm-dd
+	CommentID  int64        `json:"id"`          // 评论ID
+	User       UserResponse `json:"user"`        // 评论用户
+	Content    string       `json:"content"`     // 评论内容
+	CreateDate string       `json:"create_date"` // 评论发布日期，格式 mm-dd
 }
 
 type VideoResponse struct {
