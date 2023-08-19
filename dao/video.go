@@ -23,6 +23,14 @@ func GetVideoByAuthorID(authorID int64) (videos []*model.Video, err error) {
 	return videos, err
 }
 
+func GetVideoIDByAuthorID(authorID int64) (id []int64, err error) {
+	videos, err := GetVideoByAuthorID(authorID)
+	for _, video := range videos {
+		id = append(id, video.AuthorID)
+	}
+	return id, err
+}
+
 func DeleteVideoByID(id int64) (err error) {
 	v := query.Video
 	_, err = v.Where(v.ID.Eq(id)).Delete()
