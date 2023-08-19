@@ -16,15 +16,14 @@ func Action(c *gin.Context) {
 	toUserID, _ := strconv.ParseInt(c.Query("to_user_id"), 10, 64)
 	actionType, _ := strconv.ParseInt(c.Query("action_type"), 10, 32)
 	content := c.Query("content")
-	log.Logger.Info("action_type = ", actionType)
 	if actionType == 1 {
-		log.Logger.Info("action_type  1")
 		err := dao.CreateMessage(&model.Message{
 			ToUserID:   toUserID,
 			FromUserID: userID,
 			Content:    content,
 		})
 		if err != nil {
+			log.Logger.Errorf("action: CreateMessage failed, err: %v", err)
 			response.ErrRespWithMsg(c, err.Error())
 			return
 		}

@@ -34,6 +34,11 @@ func Action(c *gin.Context) {
 			return
 		}
 		user, err := response.GetUserResponseByID(comment.UserID, userID)
+		if err != nil {
+			log.Logger.Errorf("action: GetUserResponseByID failed, err: %v", err)
+			response.ErrRespWithMsg(c, err.Error())
+			return
+		}
 		response.OKRespWithData(c, map[string]interface{}{
 			"comment": response.CommentResponse{
 				CommentID:  comment.ID,
@@ -73,6 +78,7 @@ func List(c *gin.Context) {
 	for _, comment := range commentList {
 		user, err := response.GetUserResponseByID(comment.UserID, userID)
 		if err != nil {
+			log.Logger.Errorf("list: GetUserResponseByID failed, err: %v", err)
 			response.ErrRespWithMsg(c, err.Error())
 			return
 		}
