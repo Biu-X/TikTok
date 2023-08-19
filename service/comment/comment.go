@@ -1,7 +1,6 @@
 package comment
 
 import (
-	"net/http"
 	"strconv"
 
 	"biu-x.org/TikTok/dao"
@@ -10,20 +9,6 @@ import (
 	"biu-x.org/TikTok/module/response"
 	"github.com/gin-gonic/gin"
 )
-
-type Response struct {
-	StatusCode int    `json:"status_code"`
-	Message    string `json:"status_message"`
-}
-
-type CommentActionResponse struct {
-	Response
-	Comment *model.Comment
-}
-type CommentListResponse struct {
-	Response
-	CommentList []*model.Comment
-}
 
 // Action 评论操作 /douyin/comment/action/
 func Action(c *gin.Context) {
@@ -35,6 +20,7 @@ func Action(c *gin.Context) {
 	actionType, _ := strconv.Atoi(actionTypeStr)
 
 	if actionType == 1 {
+		// create comment
 		commentText := c.Query("comment_text")
 		comment := &model.Comment{
 			UserID:  int64(userId),
@@ -47,14 +33,16 @@ func Action(c *gin.Context) {
 			response.ErrRespWithMsg(c, err.Error())
 			return
 		}
-		c.JSON(http.StatusOK, CommentActionResponse{
-			Response: Response{
-				StatusCode: 0,
-				Message:    "newcomment create success...",
+		response.OKRespWithData(c, map[string]interface{}{
+			"comment": response.CommentResponse{
+				CommentID: comment.ID,
+				//User: ,
+				Content:    comment.Content,
+				CreateDate: comment.CreatedAt.Format("mm-dd"),
 			},
-			Comment: comment,
 		})
 	} else {
+		// delete comment
 		commentIdStr := c.Query("comment_id")
 		commentId, _ := strconv.ParseInt(commentIdStr, 10, 64)
 		err := dao.DeleteCommentByID(commentId)
@@ -63,12 +51,7 @@ func Action(c *gin.Context) {
 			response.ErrRespWithMsg(c, err.Error())
 			return
 		}
-		c.JSON(http.StatusOK, CommentActionResponse{
-			Response: Response{
-				StatusCode: 0,
-				Message:    "comment delete success...",
-			},
-		})
+		response.OKResp(c)
 	}
 }
 
@@ -82,11 +65,17 @@ func List(c *gin.Context) {
 		response.ErrRespWithMsg(c, err.Error())
 		return
 	}
-	c.JSON(http.StatusOK, CommentListResponse{
-		Response: Response{
-			StatusCode: 0,
-			Message:    "query success",
-		},
-		CommentList: commentList,
+
+	commentResponseList := []response.CommentResponse{}
+	for _, comment := range commentList {
+		commentResponseList = append(commentResponseList, response.CommentResponse{
+			CommentID: comment.ID,
+			//User: ,
+			Content:    comment.Content,
+			CreateDate: comment.CreatedAt.Format("mm-dd"),
+		})
+	}
+	response.OKRespWithData(c, map[string]interface{}{
+		"comment_list": commentResponseList,
 	})
 }

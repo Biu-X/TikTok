@@ -11,6 +11,13 @@ type ErrReponse struct {
 	Message    string `json:"messgae"`     // 错误信息
 }
 
+type CommentResponse struct {
+	CommentID  int64        `json:"id"`          //评论ID
+	User       UserResponse `json:"user"`        //评论用户
+	Content    string       `json:"content"`     //评论内容
+	CreateDate string       `json:"create_date"` //评论发布日期，格式 mm-dd
+}
+
 func OKResp(c *gin.Context) {
 	resp := map[string]interface{}{
 		"status_code": OK,
