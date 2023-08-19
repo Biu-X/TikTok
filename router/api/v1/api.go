@@ -7,6 +7,7 @@ import (
 	comment_service "biu-x.org/TikTok/service/comment"
 	favorite_service "biu-x.org/TikTok/service/favorite"
 	publish_service "biu-x.org/TikTok/service/publish"
+	relation_service "biu-x.org/TikTok/service/relation"
 	user_service "biu-x.org/TikTok/service/user"
 	"github.com/gin-gonic/gin"
 )
@@ -68,7 +69,7 @@ func NewAPI() *gin.Engine {
 		{
 			relation.Use(auth.RequireAuth())
 			// 关注操作
-			relation.POST("action/")
+			relation.POST("action/", relation_service.Action)
 
 			follow := relation.Group("follow/")
 			{

@@ -5,7 +5,13 @@ import (
 	"biu-x.org/TikTok/model"
 )
 
-// 创建关注记录
+// CreateFollow 创建关注记录
+// userId ->关注 toUserId，则写成
+//
+//	&model.Follow{
+//		 UserID:     toUserId, // 对方用户id
+//		 FollowerID: userId, // 自己的用户id
+//	}
 func CreateFollow(follow *model.Follow) (err error) {
 	f := query.Follow
 	err = f.Create(follow)
@@ -77,5 +83,14 @@ func GetFollowByBoth(userID int64, followerID int64) (follow *model.Follow, err 
 func SetFollowCancelByID(id int64, cancel bool) (err error) {
 	f := query.Follow
 	_, err = f.Where(f.ID.Eq(id)).Update(f.Cancel, cancel)
+	return err
+}
+
+// SetFollowCancelByBoth 取消关注
+// userId ->取关 toUserId，则应该是
+// err := dao.SetFollowCancelByBoth(toUserId, userId) // userId 取关 toUserId
+func SetFollowCancelByBoth(userID int64, followerID int64) (err error) {
+	f := query.Follow
+	_, err = f.Where(f.UserID.Eq(userID), f.FollowerID.Eq(followerID)).Update(f.Cancel, true)
 	return err
 }
