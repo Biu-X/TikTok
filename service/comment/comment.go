@@ -12,19 +12,19 @@ import (
 
 // Action 评论操作 /douyin/comment/action/
 func Action(c *gin.Context) {
-	userIdStr := c.GetString("user_id")
-	userId, _ := strconv.ParseInt(userIdStr, 10, 64)
-	videoIdStr := c.Query("video_id")
+	userIDStr := c.GetString("user_id")
+	userID, _ := strconv.ParseInt(userIDStr, 10, 64)
+	videoIDStr := c.Query("video_id")
 	actionTypeStr := c.Query("action_type")
-	videoId, _ := strconv.ParseInt(videoIdStr, 10, 64)
+	videoID, _ := strconv.ParseInt(videoIDStr, 10, 64)
 	actionType, _ := strconv.Atoi(actionTypeStr)
 
 	if actionType == 1 {
 		// create comment
 		commentText := c.Query("comment_text")
 		comment := &model.Comment{
-			UserID:  int64(userId),
-			VideoID: int64(videoId),
+			UserID:  int64(userID),
+			VideoID: int64(videoID),
 			Content: commentText,
 		}
 		err := dao.CreateComment(comment)
@@ -33,19 +33,20 @@ func Action(c *gin.Context) {
 			response.ErrRespWithMsg(c, err.Error())
 			return
 		}
+		user, err := response.GetUserResponseByID(comment.UserID, userID)
 		response.OKRespWithData(c, map[string]interface{}{
 			"comment": response.CommentResponse{
-				CommentID: comment.ID,
-				//User: ,
+				CommentID:  comment.ID,
+				User:       *user,
 				Content:    comment.Content,
-				CreateDate: comment.CreatedAt.Format("mm-dd"),
+				CreateDate: comment.CreatedAt.Format("01-02"),
 			},
 		})
 	} else {
 		// delete comment
-		commentIdStr := c.Query("comment_id")
-		commentId, _ := strconv.ParseInt(commentIdStr, 10, 64)
-		err := dao.DeleteCommentByID(commentId)
+		commentIDStr := c.Query("comment_id")
+		commentID, _ := strconv.ParseInt(commentIDStr, 10, 64)
+		err := dao.DeleteCommentByID(commentID)
 		if err != nil {
 			log.Logger.Errorf("action: DeleteCommentByID failed, err: %v", err)
 			response.ErrRespWithMsg(c, err.Error())
@@ -57,9 +58,11 @@ func Action(c *gin.Context) {
 
 // List 评论操作 /douyin/comment/list/
 func List(c *gin.Context) {
-	videoIdStr := c.Query("video_id")
-	videoId, _ := strconv.ParseInt(videoIdStr, 10, 64)
-	commentList, err := dao.GetCommentByVideoID(videoId)
+	videoIDStr := c.Query("video_id")
+	videoID, _ := strconv.ParseInt(videoIDStr, 10, 64)
+	userIDStr := c.GetString("user_id")
+	userID, _ := strconv.ParseInt(userIDStr, 10, 64)
+	commentList, err := dao.GetCommentByVideoID(videoID)
 	if err != nil {
 		log.Logger.Errorf("list: GetCommentByVideoID failed, err: %v", err)
 		response.ErrRespWithMsg(c, err.Error())
@@ -68,11 +71,16 @@ func List(c *gin.Context) {
 
 	commentResponseList := []response.CommentResponse{}
 	for _, comment := range commentList {
+		user, err := response.GetUserResponseByID(comment.UserID, userID)
+		if err != nil {
+			response.ErrRespWithMsg(c, err.Error())
+			return
+		}
 		commentResponseList = append(commentResponseList, response.CommentResponse{
-			CommentID: comment.ID,
-			//User: ,
+			CommentID:  comment.ID,
+			User:       *user,
 			Content:    comment.Content,
-			CreateDate: comment.CreatedAt.Format("mm-dd"),
+			CreateDate: comment.CreatedAt.Format("01-02"),
 		})
 	}
 	response.OKRespWithData(c, map[string]interface{}{
