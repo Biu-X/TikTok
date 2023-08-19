@@ -4,6 +4,7 @@ import (
 	"biu-x.org/TikTok/module/config"
 	"biu-x.org/TikTok/module/db"
 	"biu-x.org/TikTok/module/log"
+	"biu-x.org/TikTok/module/s3"
 	"biu-x.org/TikTok/router"
 	"github.com/urfave/cli/v2"
 )
@@ -28,6 +29,7 @@ func runWeb(ctx *cli.Context) error { //nolint:typecheck
 	config.Init()
 	log.Init()
 	db.Init()
+	s3.Init()
 	router.Init()
 	return nil
 }
