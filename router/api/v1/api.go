@@ -73,7 +73,7 @@ func NewAPI() *gin.Engine {
 			follow := relation.Group("follow/")
 			{
 				// 关注列表
-				follow.GET("list/")
+				follow.GET("list/", relation_service.FollowList)
 			}
 
 			follower := relation.Group("follower/")
