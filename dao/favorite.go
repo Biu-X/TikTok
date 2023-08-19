@@ -28,6 +28,19 @@ func GetFavoriteByID(id int64) (favorite *model.Favorite, err error) {
 	favorite, err = f.Where(f.ID.Eq(id)).First()
 	return favorite, err
 }
+
+func GetFavoriteCountByVideoID(videoID int64) (count int64, err error) {
+	f := query.Favorite
+	count, err = f.Where(f.VideoID.Eq(videoID), f.Cancel.Eq(0)).Count()
+	return count, err
+}
+
+func GetFavoriteCountByUserID(userID int64) (count int64, err error) {
+	f := query.Favorite
+	count, err = f.Where(f.UserID.Eq(userID), f.Cancel.Eq(0)).Count()
+	return count, err
+}
+
 func SetFavoriteCancelByID(id int64, cancel bool) (err error) {
 	f := query.Favorite
 	_, err = f.Where(f.ID.Eq(id)).Update(f.Cancel, cancel)
