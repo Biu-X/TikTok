@@ -31,3 +31,11 @@ type UserResponse struct {
 	WorkCount      int64  `json:"work_count"`       // 作品数量
 	FavoriteCount  int64  `json:"favorite_count"`   // 喜欢的作品数量
 }
+
+type MessageResponse struct {
+	ID         int64  `json:"id"`           // 消息ID
+	ToUserID   int64  `json:"to_user_id"`   // 消息接收者id
+	FromUserID int64  `json:"from_user_id"` // 消息发送者id
+	Content    string `json:"content"`      // 消息内容
+	CreateTime string `json:"create_time"`  // 消息发送时间 yyyy-MM-dd HH:MM:ss
+}
