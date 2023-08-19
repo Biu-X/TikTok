@@ -27,5 +27,7 @@ func FollowList(c *gin.Context) {
 		userList = append(userList, *userRes)
 	}
 
-	response.OKResp(c)
+	response.OKRespWithData(c, map[string]interface{}{
+		"user_list": userList,
+	})
 }
