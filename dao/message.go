@@ -5,18 +5,21 @@ import (
 	"biu-x.org/TikTok/model"
 )
 
+// 创建聊天消息
 func CreateMessage(message *model.Message) (err error) {
 	m := query.Message
 	err = m.Create(message)
 	return err
 }
 
+// 通过消息ID获取对应消息
 func GetMessageByID(id int64) (message *model.Message, err error) {
 	f := query.Message
 	message, err = f.Where(f.ID.Eq(id)).First()
 	return message, err
 }
 
+// 
 // Order By CreatedAt ASC
 func GetMessageByBoth(fromUserID int64, toUserID int64) (messages []*model.Message, err error) {
 	f := query.Message
