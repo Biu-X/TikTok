@@ -55,7 +55,7 @@ func NewAPI() *gin.Engine {
 			favorite.GET("list/", favorite_service.List)
 		}
 
-		comment := tiktok.Group("comment/ ")
+		comment := tiktok.Group("comment/")
 		{
 			comment.Use(auth.RequireAuth())
 			// 评论操作
