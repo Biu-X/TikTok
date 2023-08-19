@@ -8,12 +8,12 @@ import (
 	"strconv"
 )
 
-// FollowerList /douyin/relation/follower/list/ - 用户粉丝列表
-func FollowerList(c *gin.Context) {
+// FriendList /douyin/relation/friend/list/ - 用户好友列表
+func FriendList(c *gin.Context) {
 	// 从 RequireAuth 处读取 user_id
 	userId, _ := strconv.ParseInt(c.GetString("user_id"), 10, 64)
 
-	var userList []response.UserResponse
+	var userList []response.FriendUserResponse
 
 	followerIDs, err := dao.GetFollowFollowerIDsByUserID(userId)
 	if err != nil {
@@ -27,7 +27,25 @@ func FollowerList(c *gin.Context) {
 			log.Logger.Error(err)
 			continue
 		}
-		userList = append(userList, *userRes)
+
+		message, err := dao.GetLatestBidirectionalMessage(userId, followerID)
+		if err != nil {
+			log.Logger.Error(err)
+			continue
+		}
+
+		var msgType int64
+		if message.FromUserID == userId {
+			msgType = 1
+		} else {
+			msgType = 0
+		}
+
+		userList = append(userList, response.FriendUserResponse{
+			UserResponse: *userRes,
+			Message:      message.Content,
+			MsgType:      msgType,
+		})
 	}
 
 	response.OKRespWithData(c, map[string]interface{}{

@@ -32,6 +32,12 @@ type UserResponse struct {
 	FavoriteCount  int64  `json:"favorite_count"`   // 喜欢的作品数量
 }
 
+type FriendUserResponse struct {
+	UserResponse
+	Message string `json:"message"`  // 和该好友的最新聊天消息
+	MsgType int64  `json:"msg_type"` // message消息的类型，0 => 当前请求用户接收的消息， 1 => 当前请求用户发送的消息
+}
+
 type MessageResponse struct {
 	ID         int64  `json:"id"`           // 消息ID
 	ToUserID   int64  `json:"to_user_id"`   // 消息接收者id
