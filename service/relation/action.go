@@ -39,13 +39,6 @@ func Action(c *gin.Context) {
 	response.OKResp(c)
 }
 
-// FollowerInfoResponse 返回格式
-type FollowerInfoResponse struct {
-	StatusCode int                         `json:"status_code"`
-	Message    string                      `json:"status_msg"`
-	UserList   []user_service.UserResponse `json:"user_list"`
-}
-
 // FollowList 关注列表
 func FollowList(c *gin.Context) {
 	var follow model.Follow
@@ -60,11 +53,6 @@ func FollowList(c *gin.Context) {
 		response.ErrRespWithMsg(c, err.Error())
 		return
 	}
-	//var followerIDs []int64
-	//for _, follow := range followListInfo {
-	//	followerIDs = append(followerIDs, follow.UserID)
-	//}
-	//log.Logger.Debugf("这是关注列表的id：%v", followerIDs)
 
 	// 遍历函数
 	var followInfo []user_service.UserResponse
