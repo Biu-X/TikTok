@@ -3,11 +3,10 @@ package config
 import (
 	"errors"
 	"fmt"
-	"log"
-	"strings"
-
 	"github.com/fsnotify/fsnotify"
 	"github.com/spf13/viper"
+	"log"
+	"strings"
 )
 
 var config *viper.Viper

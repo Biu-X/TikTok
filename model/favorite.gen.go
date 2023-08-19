@@ -9,9 +9,9 @@ const TableNameFavorite = "favorite"
 // Favorite mapped from table <favorite>
 type Favorite struct {
 	ID      int64 `gorm:"column:id;type:bigint;primaryKey;autoIncrement:true" json:"id"`
-	UserID  int64 `gorm:"column:user_id;type:bigint;not null;index:idx_favorite_user_id,priority:1;comment:用户id" json:"user_id"`    // 用户id
-	VideoID int64 `gorm:"column:video_id;type:bigint;not null;index:idx_favorite_video_id,priority:1;comment:视频id" json:"video_id"` // 视频id
-	Cancel  int32 `gorm:"column:cancel;type:tinyint;not null;comment:取消赞是1，默认0" json:"cancel"`                                      // 取消赞是1，默认0
+	UserID  int64 `gorm:"column:user_id;type:bigint;not null;uniqueIndex:uq_favorite_user_id_video_id,priority:1;index:idx_favorite_user_id,priority:1;comment:用户id" json:"user_id"`    // 用户id
+	VideoID int64 `gorm:"column:video_id;type:bigint;not null;uniqueIndex:uq_favorite_user_id_video_id,priority:2;index:idx_favorite_video_id,priority:1;comment:视频id" json:"video_id"` // 视频id
+	Cancel  int32 `gorm:"column:cancel;type:tinyint;not null;comment:取消赞是1，默认0" json:"cancel"`                                                                                          // 取消赞是1，默认0
 }
 
 // TableName Favorite's table name

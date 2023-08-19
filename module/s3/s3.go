@@ -16,7 +16,7 @@ func Init() {
 	cfg := &config.S3Config
 	s3, err = goss.New(goss.WithConfig((*goss.Config)(cfg)))
 	if err != nil {
-		log.Logger.Fatalf("init goss faild: %v", err)
+		log.Logger.Errorf("init goss faild: %v", err)
 	}
 }
 
