@@ -1,11 +1,9 @@
 package relation
 
 import (
-	"biu-x.org/TikTok/dal/query"
 	"biu-x.org/TikTok/dao"
 	"biu-x.org/TikTok/model"
 	"biu-x.org/TikTok/module/response"
-	user_service "biu-x.org/TikTok/service/user"
 	"github.com/gin-gonic/gin"
 	"strconv"
 )
@@ -37,62 +35,4 @@ func Action(c *gin.Context) {
 	}
 
 	response.OKResp(c)
-}
-
-// FollowList 关注列表
-func FollowList(c *gin.Context) {
-	var follow model.Follow
-	//// 从 RequireAuth 处读取 user_id
-	follow.UserID, _ = strconv.ParseInt(c.GetString("user_id"), 10, 64)
-
-	// 查询关注列表
-	followListInfo, err := query.Follow.
-		Select(query.Follow.UserID).
-		Where(query.Follow.FollowerID.Eq(follow.UserID), query.Follow.Cancel.Eq(0)).Find()
-	if err != nil {
-		response.ErrRespWithMsg(c, err.Error())
-		return
-	}
-
-	// 遍历函数
-	var followInfo []user_service.UserResponse
-
-	for _, follow := range followListInfo {
-		followerID := follow.UserID
-		userInfo, err := user_service.GetUserInfoByID(followerID)
-		if err != nil {
-			// 处理错误，例如日志记录或其他操作
-			continue // 继续下一个迭代
-		}
-
-		// 进行类型转换
-		userResponse := user_service.UserResponse{
-			UserID:         userInfo.UserID,
-			Username:       userInfo.Username,
-			FollowCount:    userInfo.FollowCount,
-			FollowerCount:  userInfo.FollowerCount,
-			IsFollow:       true,
-			Avatar:         userInfo.Avatar,
-			BackGroudImage: userInfo.BackGroudImage,
-			Signature:      userInfo.Signature,
-			TotalFavorite:  userInfo.TotalFavorite,
-			WorkCount:      userInfo.WorkCount,
-			FavoriteCount:  userInfo.FavoriteCount,
-		}
-
-		followInfo = append(followInfo, userResponse)
-	}
-
-	if followInfo == nil {
-		// 根据数组followerIDs里的数据，进行推演，获取需要返回的json
-		response.OKRespWithData(c, map[string]interface{}{
-			"user_list": nil,
-		})
-	} else {
-		// 根据数组followerIDs里的数据，进行推演，获取需要返回的json
-		response.OKRespWithData(c, map[string]interface{}{
-			"user_list": followInfo,
-		})
-	}
-
 }
