@@ -275,7 +275,8 @@ func GetUserInfoByID(id int64) (*response.UserResponse, error) {
 		return nil, err
 	}
 
-	// 求用户关注了多少个用户，即求表中关注者 ID 为 userId 的列数
+	// 求用户关注了多少个用户，即求表中关注者 ID 为 userId  的列数
+
 	followCount, err := dao.GetFollowingCountByFollowerID(id)
 	if err != nil {
 		return nil, err
@@ -288,6 +289,7 @@ func GetUserInfoByID(id int64) (*response.UserResponse, error) {
 	}
 
 	// 作品获赞数量（需要去 Video 表中查询该用户所有的 Video_ID，然后再去 Favorite 表中查询每一个 Video_ID 的获赞数）
+	//
 	videoIDs, err := dao.GetVideoIDByAuthorID(id)
 	if err != nil {
 		return nil, err
