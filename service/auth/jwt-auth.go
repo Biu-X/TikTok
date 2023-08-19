@@ -8,6 +8,9 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+/*
+* 本实现暂时用不到，需要网页端时直接修改为这种持久化存储实现即可
+ */
 // 使用 cookie 持久化
 func RequireAuth1(c *gin.Context) {
 	// get the coolie off request

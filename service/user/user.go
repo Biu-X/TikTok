@@ -6,7 +6,6 @@ import (
 	"strconv"
 
 	"biu-x.org/TikTok/module/log"
-	"biu-x.org/TikTok/module/response"
 
 	"biu-x.org/TikTok/dal/query"
 	"biu-x.org/TikTok/model"
@@ -174,7 +173,6 @@ func Login(c *gin.Context) {
 			Token:  "",
 		})
 	}
-	c.Set("user_id", user.ID)
 }
 
 // token 验证通过后，可以根据用户 id 查询用户的信息
@@ -183,28 +181,13 @@ func UserInfo(c *gin.Context) {
 	favorite := query.Favorite
 	follow := query.Follow
 	v := query.Video
-	// // 从 RequireAuth 处读取 user_id
-	// userId := c.GetString("user_id")
-	// id, _ := strconv.ParseInt(userId, 10, 64)
-	token := c.Query("token")
-	if token == "" {
-		c.JSON(http.StatusBadRequest, response.ErrReponse{
-			StatusCode: -1,
-			Message:    "acquire token failed",
-		})
-		return
-	}
 
-	tokenCliam, err := jwt.ParseToken(token)
-	if checkError(c, err) {
-		log.Logger.Infof(err.Error())
-		return
-	}
-
-	id, _ := strconv.Atoi(tokenCliam.ID)
+	// 从 RequireAuth 处读取 user_id
+	userId := c.GetString("user_id")
+	id, _ := strconv.ParseInt(userId, 10, 64)
 	user, err := u.Where(u.ID.Eq(int64(id))).First()
 	if checkError(c, err) {
-		log.Logger.Infof(err.Error())
+		log.Logger.Info(err.Error())
 		return
 	}
 
