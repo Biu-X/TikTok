@@ -5,11 +5,12 @@ import (
 	"net/http"
 	"strconv"
 
-	"biu-x.org/TikTok/module/log"
-
 	"biu-x.org/TikTok/dal/query"
+	"biu-x.org/TikTok/dao"
 	"biu-x.org/TikTok/model"
+	"biu-x.org/TikTok/module/log"
 	"biu-x.org/TikTok/module/middleware/jwt"
+
 	"github.com/gin-gonic/gin"
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
@@ -177,64 +178,53 @@ func Login(c *gin.Context) {
 
 // token 验证通过后，可以根据用户 id 查询用户的信息
 func UserInfo(c *gin.Context) {
-	u := query.User
-	favorite := query.Favorite
-	follow := query.Follow
-	v := query.Video
-
 	// 从 RequireAuth 处读取 user_id
 	userId := c.GetString("user_id")
 	id, _ := strconv.ParseInt(userId, 10, 64)
-	user, err := u.Where(u.ID.Eq(int64(id))).First()
+	user, err := dao.GetUserByID(id)
+	// 错误处理和错误日志输出统一处理，本层只负责错误提前返回
 	if checkError(c, err) {
-		log.Logger.Info(err.Error())
 		return
 	}
 
 	// 求用户关注了多少个用户，即求表中关注者 ID 为 userId 的列数
-	followCount, err := follow.Where(follow.FollowerID.Eq(int64(id))).Count()
+	followCount, err := dao.GetFollowingCountByUserID(id)
 	if checkError(c, err) {
-		log.Logger.Fatal(err.Error())
 		return
 	}
 
 	// 求用户的关注者数量，即求表中用户 id 等于 userId 的列数
-	followerCount, err := follow.Where(follow.UserID.Eq(int64(id))).Count()
+	followerCount, err := dao.GetFollowerCountByUserID(id)
 	if checkError(c, err) {
-		log.Logger.Fatal(err.Error())
 		return
 	}
 
 	// 作品获赞数量（需要去 Video 表中查询该用户所有的 Video_ID，然后再去 Favorite 表中查询每一个 Video_ID 的获赞数）
-	// todo: 需要增加一个限制条件 cancel=0
-	var videos []*model.Video
-	err = v.Where(v.AuthorID.Eq(int64(id))).Select(v.ID).Scan(&videos)
+	videoIds, err := dao.GetVideoIDByAuthorID(id)
 	if checkError(c, err) {
-		log.Logger.Fatal(err.Error())
 		return
 	}
 
 	acquireFavoriteTotal := int64(0)
-	for _, video := range videos {
+	for _, videoId := range videoIds {
 		// 收集每一条视频的获赞量
-		count, err := favorite.Where(favorite.VideoID.Eq(video.ID)).Count()
+		count, err := dao.GetFavoriteCountByVideoID(videoId)
 		if checkError(c, err) {
-			log.Logger.Fatal(err.Error())
 			return
 		}
+
 		acquireFavoriteTotal += count
 	}
+
 	// 总的作品数量
-	totalWork, err := v.Where(v.AuthorID.Eq(int64(id))).Count()
+	totalWork, err := dao.GetVideoCountByAuthorID(id)
 	if checkError(c, err) {
-		log.Logger.Fatal(err.Error())
 		return
 	}
 
 	// 总的喜欢作品量
-	totalFavorite, err := favorite.Where(favorite.UserID.Eq(int64(id))).Count()
+	totalFavorite, err := dao.GetFavoriteCountByUserID(id)
 	if checkError(c, err) {
-		log.Logger.Fatal(err.Error())
 		return
 	}
 
@@ -248,7 +238,7 @@ func UserInfo(c *gin.Context) {
 			Username:       user.Name,
 			FollowCount:    followCount,
 			FollowerCount:  followerCount,
-			IsFollow:       false, // todo: 关注 who？是否和 cancel 相关
+			IsFollow:       false,
 			Avatar:         user.Avatar,
 			BackGroudImage: user.BackgroundImage,
 			Signature:      user.Signature,
@@ -262,6 +252,7 @@ func UserInfo(c *gin.Context) {
 func checkError(c *gin.Context, err error) bool {
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{}) // 查询失败时允许返回 null
+		log.Logger.Error(err.Error())
 		return true
 	}
 	return false

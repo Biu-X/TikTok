@@ -1,6 +1,10 @@
 package publish
 
 import (
+	"fmt"
+	"os"
+	"strconv"
+
 	"biu-x.org/TikTok/dao"
 	"biu-x.org/TikTok/model"
 	"biu-x.org/TikTok/module/config"
@@ -8,11 +12,8 @@ import (
 	"biu-x.org/TikTok/module/log"
 	"biu-x.org/TikTok/module/response"
 	"biu-x.org/TikTok/module/s3"
-	"fmt"
 	"github.com/disintegration/imaging"
 	"github.com/gin-gonic/gin"
-	"os"
-	"strconv"
 )
 
 // Action 投稿操作 /douyin/publish/action/

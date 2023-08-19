@@ -17,42 +17,42 @@ func init() {
 }
 
 func Test_FollowDAO(t *testing.T) {
-	f := &model.Follow{
-		UserID:     0,
-		FollowerID: 0,
-	}
-
 	// ----------------------------
-	// Test for CreateFollow
+	// Test for CreateFollow 每次测试的时候，需要增加参数的值，下次测试是 2, 2（不允许重复关注）
 	// ----------------------------
-	err := CreateFollow(f)
+	err := CreateFollow(1, 1)
 	if err != nil {
-		t.Error("CreateFollow fail", err)
+		t.Error("Create Follow fail", err)
 		return
 	}
 
 	// ----------------------------
 	// Test for GetFollowByBoth
 	// ----------------------------
-	follow, err := GetFollowByBoth(f.UserID, f.FollowerID)
+	follow, err := GetFollowRelation(1, 1)
 	if err != nil {
 		t.Error("GetFollowByBoth fail", err)
-		return
 	}
-	if !reflect.DeepEqual(follow, f) {
-		t.Error("GetFollowByBoth result error")
-		t.Error(follow)
+
+	expect := &model.Follow{
+		UserID:     1,
+		FollowerID: 1,
+	}
+
+	if follow.UserID != expect.UserID || follow.FollowerID != expect.FollowerID {
+		t.Errorf("we expect userId = %v, followId = %v, but got userId = %v, followId = %v", expect.UserID, expect.FollowerID, follow.UserID, follow.FollowerID)
 	}
 
 	// ----------------------------
 	// Test for GetFollowByID
 	// ----------------------------
-	follow, err = GetFollowByID(f.ID)
+	followRecord, err := GetFollowRecordByID(follow.ID)
 	if err != nil {
 		t.Error("GetFollowByID fail", err)
 		return
 	}
-	if !reflect.DeepEqual(follow, f) {
+
+	if !reflect.DeepEqual(follow, followRecord) {
 		t.Error("GetFollowByID result error")
 		t.Error(follow)
 	}
@@ -60,12 +60,12 @@ func Test_FollowDAO(t *testing.T) {
 	// ----------------------------
 	// Test for SetFollowCancelByID
 	// ----------------------------
-	err = SetFollowCancelByID(f.ID, true)
+	err = SetFollowRelationByID(follow.ID, true)
 	if err != nil {
 		t.Error("SetFollowCancelByID fail", err)
 		return
 	}
-	test_cancel_f, _ := GetFollowByID(f.ID)
+	test_cancel_f, _ := GetFollowRecordByID(follow.ID)
 	if test_cancel_f.Cancel == 0 {
 		t.Error("SetFollowCancelByID result wrong")
 		t.Error(test_cancel_f)

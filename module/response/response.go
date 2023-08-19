@@ -1,9 +1,10 @@
 package response
 
 import (
+	"net/http"
+
 	"biu-x.org/TikTok/dao"
 	"github.com/gin-gonic/gin"
-	"net/http"
 )
 
 func OKResp(c *gin.Context) {
@@ -43,7 +44,10 @@ func ErrRespWithMsg(c *gin.Context, msg string) {
 
 // 返回用户信息，id 为要获取的用户 id，userID 为当前登录用户 id
 func GetUserResponseByID(id int64, userID int64) (*UserResponse, error) {
-	isFollow := dao.GetIsFollowByBoth(id, userID) // 判断 要获取的用户 是否被 当前登录用户 关注
+	isFollow, err := dao.GetIsFollowByBothID(id, userID)
+	if err != nil { // 日志在上层调用时已经打印无需再打印
+		return nil, err
+	}
 
 	user, err := dao.GetUserByID(id)
 	if err != nil {
@@ -51,7 +55,7 @@ func GetUserResponseByID(id int64, userID int64) (*UserResponse, error) {
 	}
 
 	// 求用户关注了多少个用户，即求表中关注者 ID 为 userId 的列数
-	followCount, err := dao.GetFollowingCountByFollowerID(id)
+	followCount, err := dao.GetFollowingCountByUserID(id)
 	if err != nil {
 		return nil, err
 	}
@@ -67,12 +71,14 @@ func GetUserResponseByID(id int64, userID int64) (*UserResponse, error) {
 	if err != nil {
 		return nil, err
 	}
+
 	acquireFavoriteTotal := int64(0)
 	for _, videoID := range videoIDs {
 		count, err := dao.GetFavoriteCountByVideoID(videoID)
 		if err != nil {
 			return nil, err
 		}
+
 		acquireFavoriteTotal += count
 	}
 
@@ -98,5 +104,6 @@ func GetUserResponseByID(id int64, userID int64) (*UserResponse, error) {
 		WorkCount:      totalWork,
 		FavoriteCount:  totalFavorite,
 	}
+
 	return &userResponse, nil
 }

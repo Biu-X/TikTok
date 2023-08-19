@@ -1,11 +1,11 @@
 package relation
 
 import (
+	"strconv"
+
 	"biu-x.org/TikTok/dao"
-	"biu-x.org/TikTok/model"
 	"biu-x.org/TikTok/module/response"
 	"github.com/gin-gonic/gin"
-	"strconv"
 )
 
 // Action /douyin/relation/action/ - 关系操作
@@ -18,10 +18,7 @@ func Action(c *gin.Context) {
 
 	// 根据 action_type 执行不同的操作
 	if actionType == 1 {
-		err := dao.CreateFollow(&model.Follow{
-			UserID:     toUserId,
-			FollowerID: userId,
-		})
+		err := dao.CreateFollow(userId, toUserId)
 		if err != nil {
 			response.ErrRespWithMsg(c, err.Error())
 			return
