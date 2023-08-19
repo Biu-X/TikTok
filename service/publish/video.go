@@ -1,7 +1,7 @@
 package publish
 
 import (
-	"biu-x.org/TikTok/dal/query"
+	"biu-x.org/TikTok/dao"
 	"biu-x.org/TikTok/model"
 	"biu-x.org/TikTok/module/config"
 	"biu-x.org/TikTok/module/ffmpeg"
@@ -16,7 +16,8 @@ import (
 	"sync"
 )
 
-func PublishVideo(c *gin.Context) {
+// Action 投稿操作 /douyin/publish/action/
+func Action(c *gin.Context) {
 	wg := sync.WaitGroup{}
 	wg.Add(1)
 	defer func(wg *sync.WaitGroup) {
@@ -81,13 +82,7 @@ func PublishVideo(c *gin.Context) {
 		log.Logger.Error(err)
 	}
 
-	v := query.Video
-	if err != nil {
-		response.ErrResp(c)
-		return
-	}
-
-	err = v.Create(&model.Video{
+	err = dao.CreateVideo(&model.Video{
 		AuthorID: int64(aid),
 		PlayURL:  fmt.Sprintf("https://%v.%v/%v", config.S3Config.Bucket, config.S3Config.Endpoint, fileName),
 		CoverURL: fmt.Sprintf("https://%v.%v/%v", config.S3Config.Bucket, config.S3Config.Endpoint, cover),

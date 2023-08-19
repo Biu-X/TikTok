@@ -9,9 +9,9 @@ const TableNameFollow = "follow"
 // Follow mapped from table <follow>
 type Follow struct {
 	ID         int64 `gorm:"column:id;type:bigint;primaryKey;autoIncrement:true" json:"id"`
-	UserID     int64 `gorm:"column:user_id;type:bigint;not null;uniqueIndex:uq_follow_user_id_follow_id,priority:1;index:idx_follow_user_id,priority:1;comment:用户id" json:"user_id"`              // 用户id
-	FollowerID int64 `gorm:"column:follower_id;type:bigint;not null;uniqueIndex:uq_follow_user_id_follow_id,priority:2;index:idx_follow_follow_id,priority:1;comment:被关注用户id" json:"follower_id"` // 被关注用户id
-	Cancel     int32 `gorm:"column:cancel;type:tinyint;not null;comment:取消关注是1，默认0" json:"cancel"`                                                                                                // 取消关注是1，默认0
+	UserID     int64 `gorm:"column:user_id;type:bigint;not null;uniqueIndex:uq_follow_user_id_follow_id,priority:1;index:idx_follow_user_id,priority:1;comment:用户id即被关注的用户" json:"user_id"`     // 用户id即被关注的用户
+	FollowerID int64 `gorm:"column:follower_id;type:bigint;not null;uniqueIndex:uq_follow_user_id_follow_id,priority:2;index:idx_follow_follow_id,priority:1;comment:关注者id" json:"follower_id"` // 关注者id
+	Cancel     int32 `gorm:"column:cancel;type:tinyint;not null;comment:取消关注是1，默认0" json:"cancel"`                                                                                              // 取消关注是1，默认0
 }
 
 // TableName Follow's table name

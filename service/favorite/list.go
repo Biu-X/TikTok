@@ -34,37 +34,17 @@ func List(c *gin.Context) {
 			return
 		}
 
-		followCount, err := dao.GetFollowingCountByFollowerID(userId) // 查询关注数
-		if err != nil {
-			response.ErrRespWithMsg(c, err.Error())
-			return
-		}
-
-		followerCount, err := dao.GetFollowerCountByUserID(userId) // 查询粉丝数
-		if err != nil {
-			response.ErrRespWithMsg(c, err.Error())
-			return
-		}
-
 		// 待实现...
 
-		resUser := response.UserResponse{
-			UserID:         user.ID,
-			Username:       user.Name,
-			FollowCount:    followCount,
-			FollowerCount:  followerCount,
-			IsFollow:       false,
-			Avatar:         user.Avatar,
-			BackGroudImage: user.BackgroundImage,
-			Signature:      user.Signature,
-			TotalFavorite:  1,
-			WorkCount:      1,
-			FavoriteCount:  1,
+		resUser, err := response.GetUserResponseByID(user.ID, userId)
+		if err != nil {
+			response.ErrRespWithMsg(c, err.Error())
+			return
 		}
 
 		resVideo := response.VideoResponse{
 			VideoID:       video.ID,
-			Author:        resUser,
+			Author:        *resUser,
 			PlayURL:       video.PlayURL,
 			CoverURL:      video.CoverURL,
 			FavoriteCount: 1,

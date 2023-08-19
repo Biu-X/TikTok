@@ -1,14 +1,14 @@
 package v1
 
 import (
-	"net/http"
-
 	"biu-x.org/TikTok/service/auth"
+	comment_service "biu-x.org/TikTok/service/comment"
 	favorite_service "biu-x.org/TikTok/service/favorite"
 	publish_service "biu-x.org/TikTok/service/publish"
+	relation_service "biu-x.org/TikTok/service/relation"
 	user_service "biu-x.org/TikTok/service/user"
-	comment_service "biu-x.org/Tiktok/service/comment"
 	"github.com/gin-gonic/gin"
+	"net/http"
 )
 
 func NewAPI() *gin.Engine {
@@ -41,9 +41,9 @@ func NewAPI() *gin.Engine {
 		{
 			publish.Use(auth.RequireAuth())
 			// 投稿接口
-			publish.POST("action/", publish_service.PublishVideo)
+			publish.POST("action/", publish_service.Action)
 			// 发布列表
-			publish.GET("list/", publish_service.GetPublishList)
+			publish.GET("list/", publish_service.List)
 		}
 
 		favorite := tiktok.Group("favorite/")
@@ -68,12 +68,12 @@ func NewAPI() *gin.Engine {
 		{
 			relation.Use(auth.RequireAuth())
 			// 关注操作
-			relation.POST("action/")
+			relation.POST("action/", relation_service.Action)
 
 			follow := relation.Group("follow/")
 			{
 				// 关注列表
-				follow.GET("list/")
+				follow.GET("list/", relation_service.FollowList)
 			}
 
 			follower := relation.Group("follower/")
