@@ -19,7 +19,7 @@ func List(c *gin.Context) {
 	// 自己的 id
 	ownerID, _ := strconv.ParseInt(c.GetString("user_id"), 10, 64)
 	log.Logger.Infof("owner id is: %v", ownerID)
-	userResponse, err := response.GetUserInfoByUserId(targetID)
+	userResponse, err := response.GetUserResponseByUserId(targetID)
 	if err != nil {
 		log.Logger.Error(err)
 		if errors.As(err, &gorm.ErrRecordNotFound) {
