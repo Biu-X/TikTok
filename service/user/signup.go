@@ -63,7 +63,7 @@ func Signup(c *gin.Context) {
 	// 打印注册信息
 	// 注册成功时并不生成 token，第一次登录成功时才会生成
 	response.OKRespWithData(c, map[string]interface{}{
-		"UserId": user.ID,
-		"Token":  "",
+		"user_id": user.ID,
+		"token":   "",
 	})
 }

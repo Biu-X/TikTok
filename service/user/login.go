@@ -24,8 +24,8 @@ func Login(c *gin.Context) {
 
 	if len(username) == 0 || len(password) == 0 {
 		response.ErrRespWithData(c, "username and password is required...", map[string]interface{}{
-			"UserId": 0,
-			"Token":  "",
+			"user_id": 0,
+			"token":   "",
 		})
 		return
 	}
@@ -42,13 +42,13 @@ func Login(c *gin.Context) {
 		token := jwt.GenerateToken(username)
 		// 打印相应信息和用户信息以及生成的 token 值
 		response.OKRespWithData(c, map[string]interface{}{
-			"UserId": user.ID,
-			"Token":  token,
+			"user_id": user.ID,
+			"token":   token,
 		})
 	} else {
 		response.ErrRespWithData(c, "Invalid Username or Password", map[string]interface{}{
-			"UserId": 0,
-			"Token":  "",
+			"user_id": 0,
+			"token":   "",
 		})
 	}
 }
