@@ -1,11 +1,12 @@
 package relation
 
 import (
+	"strconv"
+
 	"biu-x.org/TikTok/dao"
 	"biu-x.org/TikTok/module/log"
 	"biu-x.org/TikTok/module/response"
 	"github.com/gin-gonic/gin"
-	"strconv"
 )
 
 // FollowList /douyin/relatioin/follow/list/ - 用户关注列表

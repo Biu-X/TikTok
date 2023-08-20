@@ -25,13 +25,3 @@ func DeleteCommentByID(id int64) (err error) {
 	_, err = c.Where(c.ID.Eq(id)).Delete()
 	return err
 }
-
-// 通过视频 ID 获取评论总量
-func GetCommentCountByVideoID(id int64) (int64, error) {
-	c := query.Comment
-	count, err := c.Where(c.VideoID.Eq(id)).Count()
-	if err != nil {
-		return 0, err
-	}
-	return count, nil
-}

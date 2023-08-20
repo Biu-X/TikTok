@@ -1,12 +1,13 @@
 package auth
 
 import (
+	"net/http"
+	"time"
+
 	"biu-x.org/TikTok/module/log"
 	"biu-x.org/TikTok/module/middleware/jwt"
 	"biu-x.org/TikTok/module/response"
 	"github.com/gin-gonic/gin"
-	"net/http"
-	"time"
 )
 
 // RequireAuth 鉴权中间件
@@ -22,9 +23,9 @@ func RequireAuth() gin.HandlerFunc {
 
 		if len(token) == 0 {
 			// 终止调用链，并不是返回
-			c.AbortWithStatusJSON(http.StatusUnauthorized, response.AuthResponse{
-				StatusCode: -1,
-				Message:    "JSON WEB TOKEN IS NULL",
+			c.AbortWithStatusJSON(http.StatusOK, response.AuthResponse{
+				StatusCode:    -1,
+				StatusMessage: "JSON WEB TOKEN IS NULL",
 			})
 			return
 		}
@@ -34,17 +35,17 @@ func RequireAuth() gin.HandlerFunc {
 		// 解析 token
 		claims, err := jwt.ParseToken(token)
 		if err != nil {
-			c.AbortWithStatusJSON(http.StatusUnauthorized, response.AuthResponse{
-				StatusCode: -1,
-				Message:    "ERR_INVALID_TOKEN",
+			c.AbortWithStatusJSON(http.StatusOK, response.AuthResponse{
+				StatusCode:    -1,
+				StatusMessage: "ERR_INVALID_TOKEN",
 			})
 			return
 		}
 		// validate expire time
 		if time.Now().Unix() > claims.ExpiresAt.Unix() {
-			c.AbortWithStatusJSON(http.StatusUnauthorized, response.AuthResponse{
-				StatusCode: -1,
-				Message:    "TOKEN IS ALREADY EXPIRED",
+			c.AbortWithStatusJSON(http.StatusOK, response.AuthResponse{
+				StatusCode:    -1,
+				StatusMessage: "TOKEN IS ALREADY EXPIRED, Please Log In Again",
 			})
 			return
 		}
@@ -65,9 +66,9 @@ func RequireAuthWithoutLogin() gin.HandlerFunc {
 		if len(token) != 0 {
 			cliams, err := jwt.ParseToken(token)
 			if err != nil {
-				c.AbortWithStatusJSON(http.StatusUnauthorized, response.AuthResponse{
-					StatusCode: -1,
-					Message:    "ERR_INVALID_TOKEN",
+				c.AbortWithStatusJSON(http.StatusOK, response.AuthResponse{
+					StatusCode:    -1,
+					StatusMessage: "ERR_INVALID_TOKEN",
 				})
 				return
 			}
@@ -76,7 +77,7 @@ func RequireAuthWithoutLogin() gin.HandlerFunc {
 			c.Set("user_id", userId)
 			c.Next()
 		} else {
-			c.AbortWithStatus(http.StatusUnauthorized)
+			c.AbortWithStatus(http.StatusOK)
 		}
 	}
 }

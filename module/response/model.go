@@ -2,7 +2,7 @@ package response
 
 type AuthResponse struct {
 	StatusCode int    `json:"status_code"`
-	Message    string `json:"message"`
+	StatusMessage    string `json:"status_msg"`
 }
 
 type CommentResponse struct {
