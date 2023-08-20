@@ -31,13 +31,12 @@ func CreateFollow(userId, followerId int64) error {
 func GetFollowRecordByID(id int64) (*model.Follow, error) {
 	f := query.Follow
 
-	followingRecord, err := f.Where(f.ID.Eq(id)).First()
-	if err != nil {
-		log.Logger.Error(err.Error())
-		return followingRecord, err
+	if count, _ := f.Where(f.ID.Eq(id)).Count(); count == 0 {
+		log.Logger.Debug("record not found")
+		return &model.Follow{}, errors.New("record not found")
 	}
 
-	return followingRecord, nil
+	return f.Where(f.ID.Eq(id)).First()
 }
 
 // 1 Follower 部分
@@ -75,14 +74,7 @@ func GetFollowerIDsByUserID(userID int64) ([]int64, error) {
 // 查询用户粉丝数量
 func GetFollowerCountByUserID(userID int64) (int64, error) {
 	f := query.Follow
-
-	count, err := f.Where(f.UserID.Eq(int64(userID)), f.Cancel.Eq(0)).Count()
-	if err != nil {
-		log.Logger.Error(err.Error())
-		return count, err
-	}
-
-	return count, nil
+	return f.Where(f.UserID.Eq(int64(userID)), f.Cancel.Eq(0)).Count()
 }
 
 // 2. Following
@@ -117,14 +109,7 @@ func GetFollowingIdsByUserID(userID int64) ([]int64, error) {
 // 查询指定用户关注的人的数量
 func GetFollowingCountByUserID(userID int64) (int64, error) {
 	f := query.Follow
-
-	count, err := f.Where(f.FollowerID.Eq(int64(userID)), f.Cancel.Eq(0)).Count()
-	if err != nil {
-		log.Logger.Error(err.Error())
-		return 0, err
-	}
-
-	return count, nil
+	return f.Where(f.FollowerID.Eq(int64(userID)), f.Cancel.Eq(0)).Count()
 }
 
 // 查询两个用户之间的关注信息
@@ -132,6 +117,11 @@ func GetFollowingCountByUserID(userID int64) (int64, error) {
 // 查询 UserID = userID 并且 FollowID = FollowId 的那条记录并返回
 func GetFollowRelation(userID int64, followerID int64) (*model.Follow, error) {
 	f := query.Follow
+
+	if count, _ := f.Where(f.UserID.Eq(userID), f.FollowerID.Eq(followerID)).Count(); count == 0 {
+		log.Logger.Debug("record not found")
+		return &model.Follow{}, errors.New("record not found")
+	}
 
 	follow, err := f.Where(f.UserID.Eq(userID), f.FollowerID.Eq(followerID)).First()
 	if err != nil {
@@ -151,6 +141,11 @@ func GetIsFollowByBothID(userID int64, followerID int64) (bool, error) {
 	}
 
 	follow, err := GetFollowRelation(userID, followerID)
+
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		return false, nil
+	}
+
 	if err != nil {
 		log.Logger.Error(err.Error())
 		return false, err
@@ -189,25 +184,28 @@ func SetFollowCancelByBoth(userID int64, followerID int64) error {
 func SetFollowFollowByBoth(userID int64, followerID int64) error {
 	// 查询两人之间的关注关系，若不存在则创建
 	_, err := GetFollowRelation(userID, followerID)
+	// 1. 非常规错误
+	if err != nil {
+		log.Logger.Error(err.Error())
+		return err
+	}
+	// 2. 关系不存在时的处理
 	if errors.Is(err, gorm.ErrRecordNotFound) {
 		err = CreateFollow(userID, followerID)
 		if err != nil {
-			log.Logger.Debug(err.Error())
+			log.Logger.Error(err.Error())
 			return err
 		}
 		return nil
-	} else if err != nil {
-		log.Logger.Debug(err.Error())
-		return err
 	}
 
-	// 若存在则修改脏位
+	// 3. 若关系存在则修改脏位
 	f := query.Follow
-
 	_, err = f.Where(f.UserID.Eq(userID), f.FollowerID.Eq(followerID)).Update(f.Cancel, false)
 	if err != nil {
 		log.Logger.Error(err.Error())
 		return err
 	}
+
 	return nil
 }
