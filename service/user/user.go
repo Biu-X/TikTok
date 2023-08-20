@@ -2,14 +2,13 @@ package user
 
 import (
 	"errors"
-	"net/http"
 	"strconv"
-
-	"biu-x.org/TikTok/module/log"
 
 	"biu-x.org/TikTok/dal/query"
 	"biu-x.org/TikTok/model"
 	"biu-x.org/TikTok/module/middleware/jwt"
+	"biu-x.org/TikTok/module/response"
+
 	"github.com/gin-gonic/gin"
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
@@ -61,10 +60,8 @@ func Signup(c *gin.Context) {
 	}
 
 	if len(username) == 0 || len(password) == 0 {
-		c.AbortWithStatusJSON(http.StatusBadRequest, Response{
-			StatusCode: -1,
-			Message:    "username or password is required",
-		})
+		c.Abort()
+		response.ErrRespWithMsg(c, "username or password is required")
 		return
 	}
 
@@ -72,19 +69,16 @@ func Signup(c *gin.Context) {
 	// 使用 First 查询时，如果查询不到结果默认报错，因此使用计数方法
 	count, _ := u.Where(u.Name.Eq(username)).Count()
 	if count > 0 {
-		c.AbortWithStatusJSON(http.StatusBadRequest, Response{
-			StatusCode: -1,
-			Message:    "user already exist",
-		})
+		c.Abort()
+		response.ErrRespWithMsg(c, "user already exist")
 		return
 	}
 
 	// 生成密码的 hash 值
 	hash, err := bcrypt.GenerateFromPassword([]byte(password), 10)
 	if err != nil {
-		log.Logger.Errorf("signup: get password's hash failed...., error: %v", err)
-		println()
-		c.JSON(http.StatusInternalServerError, gin.H{})
+		c.Abort()
+		response.ErrRespWithMsg(c, "generate hash from password failed")
 		return
 	}
 
@@ -95,26 +89,22 @@ func Signup(c *gin.Context) {
 	// pass pointer of data to Create
 	err = u.Create(&newuser)
 	if err != nil {
-		log.Logger.Errorf("singup: create new user failed, err: %v", err)
-		c.JSON(http.StatusServiceUnavailable, gin.H{})
+		response.ErrRespWithMsg(c, "singup: create new user failed")
 		return
 	}
 
 	user, err := u.Where(u.Name.Eq(username)).First()
 	// 数据库查询出现错误，服务端错误
 	if err != nil {
-		log.Logger.Errorf("signup: insert user success but search failed, err: %v", err)
-		c.JSON(http.StatusInternalServerError, gin.H{})
+		response.ErrRespWithMsg(c, "signup: insert user success but search failed")
 		return
 	}
+
 	// 打印注册信息
-	c.JSON(http.StatusOK, UserSignupAndLoginResponse{
-		Response: Response{
-			StatusCode: 0,
-			Message:    "newuser signup success...",
-		},
-		UserId: user.ID,
-		Token:  "", // 注册成功时并不生成 token，第一次登录成功时才会生成
+	// 注册成功时并不生成 token，第一次登录成功时才会生成
+	response.OKRespWithData(c, map[string]interface{}{
+		"UserId": user.ID,
+		"Token":  "",
 	})
 }
 
@@ -130,23 +120,16 @@ func Login(c *gin.Context) {
 	}
 
 	if len(username) == 0 || len(password) == 0 {
-		c.AbortWithStatusJSON(http.StatusBadRequest, UserSignupAndLoginResponse{
-			Response: Response{
-				StatusCode: -1,
-				Message:    "username or password is required",
-			},
-			UserId: 0,
-			Token:  "",
+		response.ErrRespWithData(c, "username and password is required...", map[string]interface{}{
+			"UserId": 0,
+			"Token":  "",
 		})
 		return
 	}
 
 	user, err := u.Where(u.Name.Eq(username)).First()
 	if errors.Is(err, gorm.ErrRecordNotFound) {
-		c.AbortWithStatusJSON(http.StatusBadRequest, Response{
-			StatusCode: -1,
-			Message:    "You have not signup",
-		})
+		response.ErrRespWithMsg(c, "You have not signup")
 		return
 	}
 	// verify password
@@ -155,114 +138,29 @@ func Login(c *gin.Context) {
 		// 注册之后的下次登录成功，才会为其生成 token
 		token := jwt.GenerateToken(username)
 		// 打印相应信息和用户信息以及生成的 token 值
-		c.JSON(http.StatusOK, UserSignupAndLoginResponse{
-			Response: Response{
-				StatusCode: 0,
-				Message:    "Login Success",
-			},
-			UserId: user.ID,
-			Token:  token,
+		response.OKRespWithData(c, map[string]interface{}{
+			"UserId": user.ID,
+			"Token":  token,
 		})
 	} else {
-		c.JSON(http.StatusBadRequest, UserSignupAndLoginResponse{
-			Response: Response{
-				StatusCode: 1,
-				Message:    "Invalid Username or Password",
-			},
-			UserId: 0,
-			Token:  "",
+		response.ErrRespWithData(c, "Invalid Username or Password", map[string]interface{}{
+			"UserId": 0,
+			"Token":  "",
 		})
 	}
 }
 
 // token 验证通过后，可以根据用户 id 查询用户的信息
 func UserInfo(c *gin.Context) {
-	u := query.User
-	favorite := query.Favorite
-	follow := query.Follow
-	v := query.Video
-
-	// 从 RequireAuth 处读取 user_id
-	userId := c.GetString("user_id")
-	id, _ := strconv.ParseInt(userId, 10, 64)
-	user, err := u.Where(u.ID.Eq(int64(id))).First()
-	if checkError(c, err) {
-		log.Logger.Info(err.Error())
-		return
-	}
-
-	// 求用户关注了多少个用户，即求表中关注者 ID 为 userId 的列数
-	followCount, err := follow.Where(follow.FollowerID.Eq(int64(id))).Count()
-	if checkError(c, err) {
-		log.Logger.Fatal(err.Error())
-		return
-	}
-
-	// 求用户的关注者数量，即求表中用户 id 等于 userId 的列数
-	followerCount, err := follow.Where(follow.UserID.Eq(int64(id))).Count()
-	if checkError(c, err) {
-		log.Logger.Fatal(err.Error())
-		return
-	}
-
-	// 作品获赞数量（需要去 Video 表中查询该用户所有的 Video_ID，然后再去 Favorite 表中查询每一个 Video_ID 的获赞数）
-	// todo: 需要增加一个限制条件 cancel=0
-	var videos []*model.Video
-	err = v.Where(v.AuthorID.Eq(int64(id))).Select(v.ID).Scan(&videos)
-	if checkError(c, err) {
-		log.Logger.Fatal(err.Error())
-		return
-	}
-
-	acquireFavoriteTotal := int64(0)
-	for _, video := range videos {
-		// 收集每一条视频的获赞量
-		count, err := favorite.Where(favorite.VideoID.Eq(video.ID)).Count()
-		if checkError(c, err) {
-			log.Logger.Fatal(err.Error())
-			return
-		}
-		acquireFavoriteTotal += count
-	}
-	// 总的作品数量
-	totalWork, err := v.Where(v.AuthorID.Eq(int64(id))).Count()
-	if checkError(c, err) {
-		log.Logger.Fatal(err.Error())
-		return
-	}
-
-	// 总的喜欢作品量
-	totalFavorite, err := favorite.Where(favorite.UserID.Eq(int64(id))).Count()
-	if checkError(c, err) {
-		log.Logger.Fatal(err.Error())
-		return
-	}
-
-	c.JSON(http.StatusOK, UserInfoResponse{
-		Response: Response{
-			StatusCode: 0,
-			Message:    "query success",
-		},
-		UserResponse: UserResponse{
-			UserID:         user.ID,
-			Username:       user.Name,
-			FollowCount:    followCount,
-			FollowerCount:  followerCount,
-			IsFollow:       false, // todo: 关注 who？是否和 cancel 相关
-			Avatar:         user.Avatar,
-			BackGroudImage: user.BackgroundImage,
-			Signature:      user.Signature,
-			TotalFavorite:  totalFavorite,
-			WorkCount:      totalWork,
-			FavoriteCount:  totalFavorite,
-		},
-	})
-}
-
-func checkError(c *gin.Context, err error) bool {
+	idStr := c.GetString("user_id")
+	id, _ := strconv.Atoi(idStr)
+	userinfo, err := response.GetUserInfoByUserId(int64(id))
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{}) // 查询失败时允许返回 null
-		return true
+		response.ErrRespWithMsg(c, "User not found")
+		return
 	}
-	return false
+
+	response.OKRespWithData(c, map[string]interface{}{
+		"user": userinfo,
+	})
 }
