@@ -1,5 +1,10 @@
 package response
 
+type AuthResponse struct {
+	StatusCode int    `json:"status_code"`
+	Message    string `json:"message"`
+}
+
 type CommentResponse struct {
 	CommentID  int64        `json:"id"`          // 评论ID
 	User       UserResponse `json:"user"`        // 评论用户
