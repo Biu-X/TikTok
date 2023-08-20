@@ -1,4 +1,4 @@
-package s3
+package oss
 
 import (
 	"biu-x.org/TikTok/module/config"
@@ -13,7 +13,7 @@ var (
 )
 
 func Init() {
-	cfg := &config.S3Config
+	cfg := &config.OSSConfig
 	s3, err = goss.New(goss.WithConfig((*goss.Config)(cfg)))
 	if err != nil {
 		log.Logger.Errorf("init goss faild: %v", err)
