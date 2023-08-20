@@ -1,52 +1,16 @@
 package user
 
 import (
-	"errors"
-	"strconv"
-
 	"biu-x.org/TikTok/dal/query"
 	"biu-x.org/TikTok/model"
 	"biu-x.org/TikTok/module/middleware/jwt"
 	"biu-x.org/TikTok/module/response"
-
+	"errors"
 	"github.com/gin-gonic/gin"
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
+	"strconv"
 )
-
-//包含响应状态码和响应信息
-//field：StatusCode 状态码 ，值为 0（正常） 或者 1（异常）
-//field：Message 状态信息，描述响应
-
-type Response struct {
-	StatusCode int    `json:"status_code"`
-	Message    string `json:"status_message"`
-}
-
-type UserSignupAndLoginResponse struct {
-	Response
-	UserId int64  `json:"user_id,omitempty"`
-	Token  string `json:"token"`
-}
-
-type UserInfoResponse struct {
-	Response
-	UserResponse `json:"user"`
-}
-
-type UserResponse struct {
-	UserID         int64  `json:"id"`               // 用户ID
-	Username       string `json:"name"`             // 用户名
-	FollowCount    int64  `json:"follow_count"`     // 该用户关注了多少个其他用户
-	FollowerCount  int64  `json:"follower_count"`   // 该用户粉丝总数
-	IsFollow       bool   `json:"is_follow"`        // true: 已关注 false: 未关注
-	Avatar         string `json:"avatar"`           // 头像
-	BackGroudImage string `json:"background_image"` // 背景大图
-	Signature      string `json:"signature"`        // 个人简介
-	TotalFavorite  int64  `json:"total_favorite"`   // 该用户获赞总量
-	WorkCount      int64  `json:"work_count"`       // 作品数量
-	FavoriteCount  int64  `json:"favorite_count"`   // 喜欢的作品数量
-}
 
 // Signup 用户注册 /douyin/user/signup/
 func Signup(c *gin.Context) {
@@ -154,13 +118,13 @@ func Login(c *gin.Context) {
 func UserInfo(c *gin.Context) {
 	idStr := c.GetString("user_id")
 	id, _ := strconv.Atoi(idStr)
-	userinfo, err := response.GetUserInfoByUserId(int64(id))
+	userinfo, err := response.GetUserResponseByUserId(int64(id))
 	if err != nil {
 		response.ErrRespWithMsg(c, "User not found")
 		return
 	}
 
 	response.OKRespWithData(c, map[string]interface{}{
-		"user": userinfo,
+		"user": *userinfo,
 	})
 }
