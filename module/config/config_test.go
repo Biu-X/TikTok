@@ -9,5 +9,5 @@ func TestConfig(t *testing.T) {
 	Init()
 	fmt.Println(GetString("mysql.host"))
 	fmt.Println(MySQLDSN())
-	fmt.Printf("%#v\n", S3Config)
+	fmt.Printf("%#v\n", OSSConfig)
 }
