@@ -1,123 +1,180 @@
 package dao
 
 import (
+	"biu-x.org/TikTok/module/log"
+
 	"biu-x.org/TikTok/dal/query"
 	"biu-x.org/TikTok/model"
 )
 
-// CreateFollow 创建关注记录
-// FollowerID ->关注 UserID，则写成
-//
-//	&model.Follow{
-//		 UserID:     UserID, // 用户id
-//		 FollowerID: FollowerID, // 粉丝id
-//	}
-func CreateFollow(follow *model.Follow) (err error) {
+// CreateFollow 创建用户和粉丝之间的关系记录
+func CreateFollow(userId, followerId int64) error {
 	f := query.Follow
-	err = f.Create(follow)
-	return err
+
+	newFollow := &model.Follow{
+		UserID:     userId,
+		FollowerID: followerId,
+	}
+
+	err := f.Create(newFollow)
+	if err != nil {
+		log.Logger.Error(err.Error())
+		return err
+	}
+
+	return nil
 }
 
-// 通过ID获取关注记录
-func GetFollowByID(id int64) (follow *model.Follow, err error) {
+// 通过 follow 表的主键 ID 获取对应的关注记录
+func GetFollowRecordByID(id int64) (*model.Follow, error) {
 	f := query.Follow
-	follow, err = f.Where(f.ID.Eq(id)).First()
-	return follow, err
+
+	followingRecord, err := f.Where(f.ID.Eq(id)).First()
+	if err != nil {
+		log.Logger.Error(err.Error())
+		return followingRecord, err
+	}
+
+	return followingRecord, nil
 }
 
-// 查询粉丝的follow表记录 cancel=0
-func GetFollowByUserID(userID int64) (follows []*model.Follow, err error) {
+// 1 Follower 部分
+// 查询该用户被哪些粉丝关注，找出那些记录
+func GetFollowerRecordsByUserID(userID int64) ([]*model.Follow, error) {
 	f := query.Follow
-	follows, err = f.Where(f.UserID.Eq(userID), f.Cancel.Eq(0)).Find()
-	return follows, err
+
+	followerRecords, err := f.Where(f.UserID.Eq(userID), f.Cancel.Eq(0)).Find()
+	if err != nil {
+		log.Logger.Error(err.Error())
+		return followerRecords, err
+	}
+
+	return followerRecords, nil
 }
 
-// 返回 userID 的所有 粉丝，Follow.FollowerID 是粉丝的ID
-func GetFollowFollowerIDsByUserID(userID int64) (followerIDs []int64, err error) {
-	follows, err := GetFollowByUserID(userID)
+// 返回指定用户的所有粉丝 id 并以切片形式返回
+func GetFollowerIDsByUserID(userID int64) ([]int64, error) {
+	// 1. 找到所有粉丝的记录
+	follows, err := GetFollowerRecordsByUserID(userID)
+	if err != nil {
+		log.Logger.Error(err.Error())
+		return []int64{}, err
+	}
+
+	followerIDs := []int64{}
+	// 2. 获取粉丝记录中的粉丝 id 以切片形式返回
 	for _, follow := range follows {
 		followerIDs = append(followerIDs, follow.FollowerID)
 	}
-	return followerIDs, err
-}
 
-// 查询关注的人的follow表记录 cancel=0
-func GetFollowByFollowerID(userID int64) (follows []*model.Follow, err error) {
-	f := query.Follow
-	follows, err = f.Where(f.FollowerID.Eq(userID), f.Cancel.Eq(0)).Find()
-	return follows, err
-}
-
-// 返回 userID 关注的所有人，Follow.UserID 是关注的人的ID
-func GetFollowUserIDsByUserID(userID int64) (userIDs []int64, err error) {
-	follows, err := GetFollowByFollowerID(userID)
-	for _, follow := range follows {
-		userIDs = append(userIDs, follow.UserID)
-	}
-	return userIDs, err
-}
-
-// 查询关注的人的ID
-func GetFollowingIDByFollowerID(userID int64) (id []int64, err error) {
-	follows, err := GetFollowByFollowerID(userID)
-	for _, follow := range follows {
-		id = append(id, follow.UserID)
-	}
-	return id, err
-}
-
-// 查询关注的人的数量
-func GetFollowingCountByFollowerID(userID int64) (count int64, err error) {
-	f := query.Follow
-	count, err = f.Where(f.FollowerID.Eq(int64(userID)), f.Cancel.Eq(0)).Count()
-	return count, err
-}
-
-// 查询用户的粉丝的ID
-func GetFollowerIDByUserID(userID int64) (id []int64, err error) {
-	follows, err := GetFollowByFollowerID(userID)
-	for _, follow := range follows {
-		id = append(id, follow.FollowerID)
-	}
-	return id, err
+	return followerIDs, nil
 }
 
 // 查询用户粉丝数量
-func GetFollowerCountByUserID(userID int64) (count int64, err error) {
+func GetFollowerCountByUserID(userID int64) (int64, error) {
 	f := query.Follow
-	count, err = f.Where(f.UserID.Eq(int64(userID)), f.Cancel.Eq(0)).Count()
-	return count, err
-}
 
-// 查询两人的关注信息, 可获取 第二个用户 是否关注了 第一个用户，返回 follow表记录
-func GetFollowByBoth(userID int64, followerID int64) (follow *model.Follow, err error) {
-	f := query.Follow
-	follow, err = f.Where(f.UserID.Eq(userID), f.FollowerID.Eq(followerID)).First()
-	return follow, err
-}
-
-// 查询两人的关注信息, 可获取 第二个用户 是否关注了 第一个用户，返回值为 bool
-func GetIsFollowByBoth(userID int64, followerID int64) bool {
-	follow, err := GetFollowByBoth(userID, followerID)
+	count, err := f.Where(f.UserID.Eq(int64(userID)), f.Cancel.Eq(0)).Count()
 	if err != nil {
-		return false
+		log.Logger.Error(err.Error())
+		return count, err
 	}
-	return follow.Cancel == 0
+
+	return count, nil
 }
 
-// 通过记录ID设置是否取关
-func SetFollowCancelByID(id int64, cancel bool) (err error) {
+// 2. Following
+// 查询用户所有关注的人的记录
+func GetFollowingRecordsByUserID(userID int64) ([]*model.Follow, error) {
 	f := query.Follow
-	_, err = f.Where(f.ID.Eq(id)).Update(f.Cancel, cancel)
-	return err
+
+	followingRecords, err := f.Where(f.FollowerID.Eq(userID), f.Cancel.Eq(0)).Find()
+	if err != nil {
+		log.Logger.Error(err.Error())
+		return followingRecords, err
+	}
+
+	return followingRecords, nil
 }
 
-// SetFollowCancelByBoth 取消关注，第二个用户取消关注第一个用户
-// FollowerID ->取关 userId，则应该是
-//
-// err := dao.SetFollowCancelByBoth(userId, FollowerID) // 粉丝取关用户
-func SetFollowCancelByBoth(userID int64, followerID int64) (err error) {
+// 查询用户所有关注的人的用户 id，并以切片形式返回
+func GetFollowingIdsByUserID(userID int64) ([]int64, error) {
+	followingRecords, err := GetFollowingRecordsByUserID(userID)
+	if err != nil {
+		return []int64{}, err
+	}
+
+	followingIds := []int64{}
+	for _, following := range followingRecords {
+		followingIds = append(followingIds, following.UserID)
+	}
+
+	return followingIds, nil
+}
+
+// 查询指定用户关注的人的数量
+func GetFollowingCountByUserID(userID int64) (int64, error) {
 	f := query.Follow
-	_, err = f.Where(f.UserID.Eq(userID), f.FollowerID.Eq(followerID)).Update(f.Cancel, true)
-	return err
+
+	count, err := f.Where(f.FollowerID.Eq(int64(userID)), f.Cancel.Eq(0)).Count()
+	if err != nil {
+		log.Logger.Error(err.Error())
+		return 0, err
+	}
+
+	return count, nil
+}
+
+// 查询两个用户之间的关注信息
+// 第一个参数是指定用户 ID，第二个参数是粉丝 ID
+// 查询 UserID = userID 并且 FollowID = FollowId 的那条记录并返回
+func GetFollowRelation(userID int64, followerID int64) (*model.Follow, error) {
+	f := query.Follow
+
+	follow, err := f.Where(f.UserID.Eq(userID), f.FollowerID.Eq(followerID)).First()
+	if err != nil {
+		log.Logger.Error(err.Error())
+		return follow, err
+	}
+
+	return follow, nil
+}
+
+// 查询两人的关注信息, 第二个 Id 表示粉丝的 ID，第一个 Id 代表用户的 ID
+// 我们将要判断粉丝 ID 对应的用户是否关注了指定的用户
+// 我们可以通过判断这条记录的 Cancel 字段是否为 0 得知
+func GetIsFollowByBothID(userID int64, followerID int64) (bool, error) {
+	follow, err := GetFollowRelation(userID, followerID)
+	if err != nil {
+		log.Logger.Error(err.Error())
+		return false, err
+	}
+
+	return follow.Cancel == 0, nil
+}
+
+// 设置某条记录的关注关系
+func SetFollowRelationByID(id int64, cancel bool) error {
+	f := query.Follow
+
+	_, err := f.Where(f.ID.Eq(id)).Update(f.Cancel, cancel)
+	if err != nil {
+		log.Logger.Error(err.Error())
+		return err
+	}
+
+	return nil
+}
+
+// 粉丝取关用户
+func SetFollowCancelByBoth(userID int64, followerID int64) error {
+	f := query.Follow
+
+	_, err := f.Where(f.UserID.Eq(userID), f.FollowerID.Eq(followerID)).Update(f.Cancel, true)
+	if err != nil {
+		log.Logger.Error(err.Error())
+		return err
+	}
+
+	return nil
 }

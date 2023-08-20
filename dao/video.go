@@ -26,6 +26,13 @@ func GetVideoByAuthorID(authorID int64) (videos []*model.Video, err error) {
 	return videos, err
 }
 
+// 通过作者 ID 获取作品数量
+func GetVideoCountByAuthorID(authorID int64) (count int64, err error) {
+	v := query.Video
+	count, err = v.Where(v.AuthorID.Eq(authorID)).Count()
+	return count, err
+}
+
 // 通过作者ID获取视频ID表
 func GetVideoIDByAuthorID(authorID int64) (id []int64, err error) {
 	videos, err := GetVideoByAuthorID(authorID)
