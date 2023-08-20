@@ -4,6 +4,7 @@ import (
 	"strconv"
 
 	"biu-x.org/TikTok/dao"
+	"biu-x.org/TikTok/module/log"
 	"biu-x.org/TikTok/module/response"
 	"github.com/gin-gonic/gin"
 )
@@ -14,6 +15,7 @@ func Chat(c *gin.Context) {
 
 	messages, err := dao.GetMessageByBoth(userID, toUserID)
 	if err != nil {
+		log.Logger.Errorf("chat: GetMessageByBoth failed, err: %v", err)
 		response.ErrRespWithMsg(c, err.Error())
 		return
 	}

@@ -25,7 +25,6 @@ func FollowList(c *gin.Context) {
 	for _, followID := range followIDs {
 		userRes, err := response.GetUserResponseByID(followID, userId)
 		if err != nil {
-			log.Logger.Error(err)
 			response.ErrRespWithMsg(c, err.Error())
 			return
 		}
