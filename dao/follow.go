@@ -144,6 +144,10 @@ func GetFollowRelation(userID int64, followerID int64) (*model.Follow, error) {
 // 我们将要判断粉丝 ID 对应的用户是否关注了指定的用户
 // 我们可以通过判断这条记录的 Cancel 字段是否为 0 得知
 func GetIsFollowByBothID(userID int64, followerID int64) (bool, error) {
+	if userID == followerID {
+		return false, nil
+	}
+
 	follow, err := GetFollowRelation(userID, followerID)
 	if err != nil {
 		log.Logger.Error(err.Error())
@@ -176,5 +180,29 @@ func SetFollowCancelByBoth(userID int64, followerID int64) error {
 		return err
 	}
 
+	return nil
+}
+
+// 粉丝关注用户，若之前已经关注又取关，则修改脏位
+func SetFollowFollowByBoth(userID int64, followerID int64) error {
+	// 查询两人之间的关注关系，若不存在则创建
+	_, err := GetFollowRelation(userID, followerID)
+	if err != nil {
+		log.Logger.Debug(err.Error())
+		err = CreateFollow(userID, followerID)
+		if err != nil {
+			log.Logger.Debug(err.Error())
+			return err
+		}
+		return nil
+	}
+	// 若存在则修改脏位
+	f := query.Follow
+
+	_, err = f.Where(f.UserID.Eq(userID), f.FollowerID.Eq(followerID)).Update(f.Cancel, false)
+	if err != nil {
+		log.Logger.Error(err.Error())
+		return err
+	}
 	return nil
 }
