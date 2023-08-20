@@ -15,9 +15,8 @@ func FriendList(c *gin.Context) {
 
 	var userList []response.FriendUserResponse
 
-	followerIDs, err := dao.GetFollowerIDsByUserID(userId)
+	followerIDs, err := dao.GetFollowFollowerIDsByUserID(userId)
 	if err != nil {
-		log.Logger.Error(err)
 		response.ErrRespWithMsg(c, err.Error())
 		return
 	}
