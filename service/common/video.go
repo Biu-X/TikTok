@@ -7,6 +7,7 @@ import (
 	"biu-x.org/TikTok/module/response"
 	"errors"
 	"gorm.io/gorm"
+	"strconv"
 	"time"
 )
 
@@ -21,15 +22,20 @@ func GetVideoList(targetID, ownerID int64, latestTime ...string) ([]response.Vid
 			return nil, err
 		}
 	} else if latestTime[0] == "0" {
-		now := time.Now()
+		now := time.Now().UnixMilli()
 		log.Logger.Debugf("now: %v", now)
-		videoList, err = dao.GetVideoListByLatestTimeOrderByDESC(now)
+		log.Logger.Debugf("now to time: %v", time.UnixMilli(now))
+		videoList, err = dao.GetVideoListByLatestTimeOrderByDESC(time.UnixMilli(now))
 		if err != nil {
 			return nil, err
 		}
 	} else {
-		latesttime, err := time.Parse(time.DateTime, latestTime[0])
-		videoList, err = dao.GetVideoListByLatestTimeOrderByDESC(latesttime)
+		ms, err := strconv.ParseInt(latestTime[0], 10, 64)
+		if err != nil {
+			log.Logger.Error(err)
+			return nil, err
+		}
+		videoList, err = dao.GetVideoListByLatestTimeOrderByDESC(time.UnixMilli(ms))
 		if err != nil {
 			return nil, err
 		}
