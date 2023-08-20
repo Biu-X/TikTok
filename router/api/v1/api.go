@@ -6,6 +6,7 @@ import (
 	"biu-x.org/TikTok/service/auth"
 	comment_service "biu-x.org/TikTok/service/comment"
 	favorite_service "biu-x.org/TikTok/service/favorite"
+	feed_service "biu-x.org/TikTok/service/feed"
 	message_service "biu-x.org/TikTok/service/message"
 	publish_service "biu-x.org/TikTok/service/publish"
 	relation_service "biu-x.org/TikTok/service/relation"
@@ -26,7 +27,7 @@ func NewAPI() *gin.Engine {
 	tiktok := r.Group("/douyin/")
 	{
 		// 视频流接口
-		tiktok.GET("feed/")
+		tiktok.GET("feed/", feed_service.List)
 
 		user := tiktok.Group("user/")
 		{

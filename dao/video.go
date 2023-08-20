@@ -3,6 +3,8 @@ package dao
 import (
 	"biu-x.org/TikTok/dal/query"
 	"biu-x.org/TikTok/model"
+	"biu-x.org/TikTok/module/log"
+	"time"
 )
 
 // 创建视频记录
@@ -47,4 +49,25 @@ func DeleteVideoByID(id int64) (err error) {
 	v := query.Video
 	_, err = v.Where(v.ID.Eq(id)).Delete()
 	return err
+}
+
+// 通过时间点来获取比该时间点早的十个视频
+func GetVideoListByLatestTimeOrderByDESC(latestTime time.Time) ([]*model.Video, error) {
+	v := query.Video
+	videos, err := v.Where(v.CreatedAt.Lt(latestTime)).Order().Limit(10).Find()
+	if err != nil {
+		log.Logger.Error(err)
+		return nil, err
+	}
+	return videos, nil
+}
+
+// 通过视频 ID 获取视频的创建时间
+func GetVideoCreateTimeByID(id int64) (time.Time, error) {
+	v := query.Video
+	video, err := v.Where(v.ID.Eq(id)).First()
+	if err != nil {
+		return time.Time{}, err
+	}
+	return video.CreatedAt, nil
 }
