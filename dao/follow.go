@@ -161,7 +161,7 @@ func GetIsFollowByBothID(userID int64, followerID int64) (bool, error) {
 
 // 设置某条记录的关注关系
 func SetFollowRelationByID(id int64, cancel bool) error {
-	var flag int64
+	var flag int32
 	if cancel {
 		flag = 1
 	} else {
