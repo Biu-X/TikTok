@@ -26,7 +26,7 @@ type Redis struct {
 	Database int    `yaml:"database"`
 }
 
-type S3 struct {
+type OSS struct {
 	Endpoint  string `yaml:"endpoint"`
 	AccessKey string `yaml:"accessKey"`
 	SecretKey string `yaml:"secretKey"`
@@ -40,9 +40,9 @@ type S3 struct {
 }
 
 var (
-	mysql    MySQL
-	redis    Redis
-	S3Config S3
+	mysql     MySQL
+	redis     Redis
+	OSSConfig OSS
 )
 
 func Init() {
@@ -106,26 +106,26 @@ func Init() {
 	if err != nil {
 		log.Fatalf("unable to decode into redis struct, %v", err)
 	}
-	err = config.UnmarshalKey("s3", &S3Config)
+	err = config.UnmarshalKey("oss", &OSSConfig)
 	if err != nil {
-		log.Fatalf("unable to decode into s3 struct, %v", err)
+		log.Fatalf("unable to decode into oss struct, %v", err)
 	}
 
-	// use env var to set S3 config when some field is nil
-	if S3Config.Endpoint == "" {
-		S3Config.Endpoint = config.GetString("s3.endpoint")
+	// use env var to set oss config when some field is nil
+	if OSSConfig.Endpoint == "" {
+		OSSConfig.Endpoint = config.GetString("oss.endpoint")
 	}
-	if S3Config.AccessKey == "" {
-		S3Config.AccessKey = config.GetString("s3.accesskey")
+	if OSSConfig.AccessKey == "" {
+		OSSConfig.AccessKey = config.GetString("oss.accesskey")
 	}
-	if S3Config.SecretKey == "" {
-		S3Config.SecretKey = config.GetString("s3.secretkey")
+	if OSSConfig.SecretKey == "" {
+		OSSConfig.SecretKey = config.GetString("oss.secretkey")
 	}
-	if S3Config.Region == "" {
-		S3Config.Region = config.GetString("s3.region")
+	if OSSConfig.Region == "" {
+		OSSConfig.Region = config.GetString("oss.region")
 	}
-	if S3Config.Bucket == "" {
-		S3Config.Bucket = config.GetString("s3.bucket")
+	if OSSConfig.Bucket == "" {
+		OSSConfig.Bucket = config.GetString("oss.bucket")
 	}
 }
 

@@ -1,6 +1,8 @@
 package dao
 
 import (
+	"errors"
+
 	"biu-x.org/TikTok/dal/query"
 	"biu-x.org/TikTok/model"
 )
@@ -16,6 +18,12 @@ func CreateFavorite(favorite *model.Favorite) (err error) {
 // 可获取：用户是否曾今点赞视频
 func GetFavoriteByBoth(userID int64, videoID int64) (favorite *model.Favorite, err error) {
 	f := query.Favorite
+
+	count, _ := f.Where(f.UserID.Eq(userID), f.VideoID.Eq(videoID)).Count()
+	if count == 0 {
+		return &model.Favorite{}, errors.New("record not found")
+	}
+
 	favorite, err = f.Where(f.UserID.Eq(userID), f.VideoID.Eq(videoID)).First()
 	return favorite, err
 }
@@ -30,6 +38,12 @@ func GetFavoriteByUserID(userID int64) (favorites []*model.Favorite, err error) 
 // 通过点赞ID获取对应点赞记录信息
 func GetFavoriteByID(id int64) (favorite *model.Favorite, err error) {
 	f := query.Favorite
+
+	count, _ := f.Where(f.ID.Eq(id)).Count()
+	if count == 0 {
+		return &model.Favorite{}, errors.New("record not found")
+	}
+
 	favorite, err = f.Where(f.ID.Eq(id)).First()
 	return favorite, err
 }
