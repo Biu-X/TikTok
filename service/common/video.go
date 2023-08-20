@@ -14,10 +14,17 @@ func GetVideoList(targetID, ownerID int64, latestTime ...string) ([]response.Vid
 	var videoRespList []response.VideoResponse
 	var videoList []*model.Video
 	var err error
-	if len(latestTime[0]) == 0 {
+	if latestTime == nil {
 		videoList, err = dao.GetVideoByAuthorID(targetID)
 		if err != nil {
 			log.Logger.Error(err)
+			return nil, err
+		}
+	} else if latestTime[0] == "0" {
+		now := time.Now()
+		log.Logger.Debugf("now: %v", now)
+		videoList, err = dao.GetVideoListByLatestTimeOrderByDESC(now)
+		if err != nil {
 			return nil, err
 		}
 	} else {
@@ -76,5 +83,58 @@ func GetVideoList(targetID, ownerID int64, latestTime ...string) ([]response.Vid
 			Title:         video.Title,
 		})
 	}
+	return videoRespList, nil
+}
+
+// 在没有登陆的情况下调用
+func GetVideoListDefault() ([]response.VideoResponse, error) {
+	now := time.Now()
+	videos, err := dao.GetVideoListByLatestTimeOrderByDESC(now)
+	if err != nil {
+		log.Logger.Error(err)
+		return nil, err
+	}
+
+	var videoRespList []response.VideoResponse
+	for _, video := range videos {
+		userResponse, err := response.GetUserResponseByUserId(video.AuthorID)
+		if err != nil {
+			log.Logger.Error(err)
+			if errors.As(err, &gorm.ErrRecordNotFound) {
+				userResponse = &response.UserResponse{}
+			} else {
+				continue
+			}
+		}
+		favoriteCount, err := dao.GetFavoriteCountByVideoID(video.ID)
+		if err != nil {
+			log.Logger.Error(err)
+			if errors.As(err, &gorm.ErrRecordNotFound) {
+				favoriteCount = 0
+			} else {
+				continue
+			}
+		}
+		count, err := dao.GetCommentCountByVideoID(video.ID)
+		if err != nil {
+			log.Logger.Error(err)
+			if errors.As(err, &gorm.ErrRecordNotFound) {
+				count = 0
+			} else {
+				continue
+			}
+		}
+		videoRespList = append(videoRespList, response.VideoResponse{
+			VideoID:       video.ID,
+			Author:        *userResponse,
+			PlayURL:       video.PlayURL,
+			CoverURL:      video.CoverURL,
+			FavoriteCount: favoriteCount,
+			CommentCount:  count,
+			IsFavorite:    false,
+			Title:         video.Title,
+		})
+	}
+
 	return videoRespList, nil
 }
