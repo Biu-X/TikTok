@@ -1,5 +1,10 @@
 package response
 
+type AuthResponse struct {
+	StatusCode int    `json:"status_code"`
+	StatusMessage    string `json:"status_msg"`
+}
+
 type CommentResponse struct {
 	CommentID  int64        `json:"id"`          // 评论ID
 	User       UserResponse `json:"user"`        // 评论用户
@@ -30,6 +35,12 @@ type UserResponse struct {
 	TotalFavorite  int64  `json:"total_favorite"`   // 该用户获赞总量
 	WorkCount      int64  `json:"work_count"`       // 作品数量
 	FavoriteCount  int64  `json:"favorite_count"`   // 喜欢的作品数量
+}
+
+type FriendUserResponse struct {
+	UserResponse
+	Message string `json:"message"`  // 和该好友的最新聊天消息
+	MsgType int64  `json:"msg_type"` // message消息的类型，0 => 当前请求用户接收的消息， 1 => 当前请求用户发送的消息
 }
 
 type MessageResponse struct {

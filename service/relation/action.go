@@ -2,7 +2,7 @@ package relation
 
 import (
 	"biu-x.org/TikTok/dao"
-	"biu-x.org/TikTok/model"
+	"biu-x.org/TikTok/module/log"
 	"biu-x.org/TikTok/module/response"
 	"github.com/gin-gonic/gin"
 	"strconv"
@@ -18,17 +18,16 @@ func Action(c *gin.Context) {
 
 	// 根据 action_type 执行不同的操作
 	if actionType == 1 {
-		err := dao.CreateFollow(&model.Follow{
-			UserID:     toUserId,
-			FollowerID: userId,
-		})
+		err := dao.SetFollowFollowByBoth(userId, toUserId)
 		if err != nil {
+			log.Logger.Error(err.Error())
 			response.ErrRespWithMsg(c, err.Error())
 			return
 		}
 	} else {
 		err := dao.SetFollowCancelByBoth(toUserId, userId)
 		if err != nil {
+			log.Logger.Error(err.Error())
 			response.ErrRespWithMsg(c, err.Error())
 			return
 		}

@@ -1,11 +1,12 @@
 package jwt
 
 import (
-	"biu-x.org/TikTok/module/log"
 	"errors"
 	"fmt"
 	"strconv"
 	"time"
+
+	"biu-x.org/TikTok/module/log"
 
 	"biu-x.org/TikTok/dal/query"
 	"biu-x.org/TikTok/model"
@@ -24,7 +25,7 @@ import (
 
 // 根据使用情况调整 jwt 过期时间
 const (
-	TokenExpiredDuration = time.Hour * 6
+	TokenExpiredDuration = time.Hour * 24
 )
 
 var mySigningKey = []byte("tiktok")

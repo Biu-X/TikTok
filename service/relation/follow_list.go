@@ -1,11 +1,12 @@
 package relation
 
 import (
+	"strconv"
+
 	"biu-x.org/TikTok/dao"
 	"biu-x.org/TikTok/module/log"
 	"biu-x.org/TikTok/module/response"
 	"github.com/gin-gonic/gin"
-	"strconv"
 )
 
 // FollowList /douyin/relatioin/follow/list/ - 用户关注列表
@@ -15,7 +16,7 @@ func FollowList(c *gin.Context) {
 
 	var userList []response.UserResponse
 
-	followIDs, err := dao.GetFollowUserIDsByUserID(userId)
+	followIDs, err := dao.GetFollowingIdsByUserID(userId)
 	if err != nil {
 		response.ErrRespWithMsg(c, err.Error())
 		return
@@ -23,7 +24,11 @@ func FollowList(c *gin.Context) {
 
 	for _, followID := range followIDs {
 		userRes, err := response.GetUserResponseByID(followID, userId)
-		log.Logger.Error(err)
+		if err != nil {
+			log.Logger.Error(err)
+			response.ErrRespWithMsg(c, err.Error())
+			return
+		}
 		userList = append(userList, *userRes)
 	}
 

@@ -25,3 +25,13 @@ func GetMessageByBoth(userA int64, userB int64) (messages []*model.Message, err 
 	messages, err = f.Where(f.FromUserID.Eq(userA), f.ToUserID.Eq(userB)).Or(f.FromUserID.Eq(userB), f.ToUserID.Eq(userA)).Order(f.CreatedAt).Find()
 	return messages, err
 }
+
+// 返回两个用户之间的最新消息
+func GetLatestBidirectionalMessage(userA int64, userB int64) (message *model.Message, err error) {
+	f := query.Message
+	message, err =
+		f.Where(f.FromUserID.Eq(userA), f.ToUserID.Eq(userB)).
+			Or(f.FromUserID.Eq(userB), f.ToUserID.Eq(userA)).
+			Last()
+	return message, err
+}
