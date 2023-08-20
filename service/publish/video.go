@@ -13,6 +13,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"os"
 	"strconv"
+	"time"
 )
 
 // Action 投稿操作 /douyin/publish/action/
@@ -35,7 +36,14 @@ func Action(c *gin.Context) {
 		return
 	}
 
-	log.Logger.Infof("file name: %v", file.Filename)
+	log.Logger.Infof("file name: %v, size: %v", file.Filename, file.Size)
+
+	// 上传文件大小限制为 30M
+	if file.Size > 31457280 {
+		log.Logger.Infof("file is too large, size limit is 30M, you file size is: %v", file.Size)
+		response.ErrRespWithMsg(c, "file is too large, size limit 30M")
+		return
+	}
 
 	userID, exists := c.Get("user_id")
 	if !exists {
@@ -49,13 +57,19 @@ func Action(c *gin.Context) {
 		return
 	}
 
+	ts := time.Now().Local().UnixNano()
+	log.Logger.Infof("timestamp: %v", ts)
 	// fileName 即是保存临时文件的路径与文件名，也是上传到对象存储的路径也文件名
-	fileName := fmt.Sprintf("%v/%v", userID, file.Filename)
+	fileName := fmt.Sprintf("%v/%v-%v", userID, ts, file.Filename)
+	cover := fmt.Sprintf("%v/%v-%v-cover.jpeg", aid, ts, file.Filename)
+
+	// 接收完视频后，提前返回，防止超时, 实际存入数据库还是等待所有文件上传完成才写入
+	response.OKResp(c)
+
 	// 上传文件至指定的完整文件路径
 	err = c.SaveUploadedFile(file, fileName)
 	if err != nil {
 		log.Logger.Error(err)
-		response.ErrRespWithMsg(c, err.Error())
 		return
 	}
 
@@ -63,24 +77,19 @@ func Action(c *gin.Context) {
 	image, err := ffmpeg.GetCoverFromVideo(fileName, 10)
 	if err != nil {
 		log.Logger.Error(err)
-		response.ErrRespWithMsg(c, err.Error())
 		return
 	}
 
 	img, err := imaging.Decode(image)
 	if err != nil {
 		log.Logger.Error(err)
-		response.ErrRespWithMsg(c, err.Error())
 		return
 	}
-
-	cover := fmt.Sprintf("%v/%v-cover.jpeg", aid, file.Filename)
 
 	// 保存截图到临时文件
 	err = imaging.Save(img, cover)
 	if err != nil {
 		log.Logger.Error(err)
-		response.ErrRespWithMsg(c, err.Error())
 		return
 	}
 
@@ -88,7 +97,6 @@ func Action(c *gin.Context) {
 	err = s3.PutFromFile(fileName, fileName)
 	if err != nil {
 		log.Logger.Error(err)
-		response.ErrRespWithMsg(c, "upload to s3 field")
 		return
 	}
 
@@ -96,7 +104,6 @@ func Action(c *gin.Context) {
 	err = s3.PutFromFile(cover, cover)
 	if err != nil {
 		log.Logger.Error(err)
-		response.ErrRespWithMsg(c, err.Error())
 		return
 	}
 
@@ -108,8 +115,6 @@ func Action(c *gin.Context) {
 	})
 	if err != nil {
 		log.Logger.Error(err)
-		response.ErrResp(c)
 		return
 	}
-	response.OKResp(c)
 }
