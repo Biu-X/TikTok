@@ -46,6 +46,9 @@ func Action(c *gin.Context) {
 		return
 	}
 
+	// 接收完视频后，提前返回，防止超时, 实际存入数据库还是等待所有文件上传完成才写入
+	response.OKResp(c)
+
 	userID, exists := c.Get("user_id")
 	if !exists {
 		response.ErrRespWithMsg(c, "user id is null")
@@ -63,9 +66,6 @@ func Action(c *gin.Context) {
 	// fileName 即是保存临时文件的路径与文件名，也是上传到对象存储的路径也文件名
 	fileName := fmt.Sprintf("%v/%v-%v", userID, ts, file.Filename)
 	cover := fmt.Sprintf("%v/%v-%v-cover.jpeg", aid, ts, file.Filename)
-
-	// 接收完视频后，提前返回，防止超时, 实际存入数据库还是等待所有文件上传完成才写入
-	response.OKResp(c)
 
 	// 上传文件至指定的完整文件路径
 	err = c.SaveUploadedFile(file, fileName)
