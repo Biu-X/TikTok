@@ -111,7 +111,7 @@ func Init() {
 		log.Fatalf("unable to decode into oss struct, %v", err)
 	}
 
-	// use env var to set S3 config when some field is nil
+	// use env var to set oss config when some field is nil
 	if OSSConfig.Endpoint == "" {
 		OSSConfig.Endpoint = config.GetString("oss.endpoint")
 	}
