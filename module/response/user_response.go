@@ -24,7 +24,7 @@ func GetUserResponseByID(id int64, userID int64) (*UserResponse, error) {
 		return nil, err
 	}
 
-	// 求用户的关注者数量，即求表中用户 id 等于 userId 的列数
+	// 求用户的粉丝数量，即求表中用户 id 等于 userId 的列数
 	followerCount, err := dao.GetFollowerCountByUserID(id)
 	if err != nil {
 		return nil, err
