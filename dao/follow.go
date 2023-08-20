@@ -31,6 +31,12 @@ func CreateFollow(userId, followerId int64) error {
 func GetFollowRecordByID(id int64) (*model.Follow, error) {
 	f := query.Follow
 
+	count, _ := f.Where(f.ID.Eq(id)).Count()
+	if count == 0 {
+		return &model.Follow{}, errors.New("record not found")
+	}
+
+	// 到这里就一定可以查询到记录了
 	followingRecord, err := f.Where(f.ID.Eq(id)).First()
 	if err != nil {
 		log.Logger.Error(err.Error())
@@ -132,6 +138,11 @@ func GetFollowingCountByUserID(userID int64) (int64, error) {
 // 查询 UserID = userID 并且 FollowID = FollowId 的那条记录并返回
 func GetFollowRelation(userID int64, followerID int64) (*model.Follow, error) {
 	f := query.Follow
+
+	count, _ := f.Where(f.UserID.Eq(userID), f.FollowerID.Eq(followerID)).Count()
+	if count == 0 {
+		return &model.Follow{}, errors.New("record not found")
+	}
 
 	follow, err := f.Where(f.UserID.Eq(userID), f.FollowerID.Eq(followerID)).First()
 	if err != nil {

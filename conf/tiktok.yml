@@ -21,7 +21,7 @@ redis:
   port: 6379
   password: 123456
   db: 0
-s3:
+oss:
   endpoint:
   accessKey:
   secretKey:

@@ -1,6 +1,8 @@
 package dao
 
 import (
+	"errors"
+
 	"biu-x.org/TikTok/dal/query"
 	"biu-x.org/TikTok/model"
 	"biu-x.org/TikTok/module/log"
@@ -17,6 +19,12 @@ func CreateVideo(video *model.Video) (err error) {
 // 通过视频ID获取对应记录
 func GetVideoByID(id int64) (video *model.Video, err error) {
 	v := query.Video
+
+	count, _ := v.Where(v.ID.Eq(id)).Count()
+	if count == 0 {
+		return &model.Video{}, errors.New("record not found")
+	}
+
 	video, err = v.Where(v.ID.Eq(id)).First()
 	return video, err
 }
