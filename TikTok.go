@@ -1,9 +1,8 @@
 package main
 
 import (
-	"os"
-
 	"log"
+	"os"
 
 	"biu-x.org/TikTok/cmd"
 )
