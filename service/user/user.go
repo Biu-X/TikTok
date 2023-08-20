@@ -1,15 +1,16 @@
 package user
 
 import (
+	"errors"
+	"strconv"
+
 	"biu-x.org/TikTok/dal/query"
 	"biu-x.org/TikTok/model"
 	"biu-x.org/TikTok/module/middleware/jwt"
 	"biu-x.org/TikTok/module/response"
-	"errors"
 	"github.com/gin-gonic/gin"
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
-	"strconv"
 )
 
 // Signup 用户注册 /douyin/user/signup/
