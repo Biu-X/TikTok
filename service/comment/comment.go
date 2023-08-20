@@ -33,7 +33,7 @@ func Action(c *gin.Context) {
 			response.ErrRespWithMsg(c, err.Error())
 			return
 		}
-		user, err := response.GetUserResponseByID(comment.UserID, userID)
+		user, err := response.GetUserResponseByBothID(comment.UserID, userID)
 		if err != nil {
 			log.Logger.Errorf("action: GetUserResponseByID failed, err: %v", err)
 			response.ErrRespWithMsg(c, err.Error())
@@ -76,7 +76,7 @@ func List(c *gin.Context) {
 
 	commentResponseList := []response.CommentResponse{}
 	for _, comment := range commentList {
-		user, err := response.GetUserResponseByID(comment.UserID, userID)
+		user, err := response.GetUserResponseByBothID(comment.UserID, userID)
 		if err != nil {
 			log.Logger.Errorf("list: GetUserResponseByID failed, err: %v", err)
 			response.ErrRespWithMsg(c, err.Error())

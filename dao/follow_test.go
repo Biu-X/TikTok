@@ -20,7 +20,7 @@ func Test_FollowDAO(t *testing.T) {
 	// ----------------------------
 	// Test for CreateFollow 每次测试的时候，需要增加参数的值，下次测试是 2, 2（不允许重复关注）
 	// ----------------------------
-	err := CreateFollow(1, 1)
+	err := CreateFollow(5, 0)
 	if err != nil {
 		t.Error("Create Follow fail", err)
 		return
@@ -29,14 +29,14 @@ func Test_FollowDAO(t *testing.T) {
 	// ----------------------------
 	// Test for GetFollowByBoth
 	// ----------------------------
-	follow, err := GetFollowRelation(1, 1)
+	follow, err := GetFollowRelation(3, 0)
 	if err != nil {
 		t.Error("GetFollowByBoth fail", err)
 	}
 
 	expect := &model.Follow{
-		UserID:     1,
-		FollowerID: 1,
+		UserID:     3,
+		FollowerID: 4,
 	}
 
 	if follow.UserID != expect.UserID || follow.FollowerID != expect.FollowerID {

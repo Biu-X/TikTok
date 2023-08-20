@@ -24,7 +24,7 @@ func FriendList(c *gin.Context) {
 	}
 
 	for _, followerID := range followerIDs {
-		userRes, err := response.GetUserResponseByID(followerID, userId)
+		userRes, err := response.GetUserResponseByBothID(followerID, userId)
 		if err != nil {
 			log.Logger.Error(err)
 			continue

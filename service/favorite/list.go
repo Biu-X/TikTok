@@ -1,10 +1,11 @@
 package favorite
 
 import (
+	"strconv"
+
 	"biu-x.org/TikTok/dao"
 	"biu-x.org/TikTok/module/response"
 	"github.com/gin-gonic/gin"
-	"strconv"
 )
 
 // List /douyin/favorite/list/ - 喜欢列表
@@ -36,7 +37,7 @@ func List(c *gin.Context) {
 
 		// 待实现...
 
-		resUser, err := response.GetUserResponseByID(user.ID, userId)
+		resUser, err := response.GetUserResponseByBothID(user.ID, userId)
 		if err != nil {
 			response.ErrRespWithMsg(c, err.Error())
 			return
