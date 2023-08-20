@@ -11,8 +11,11 @@ import (
 )
 
 func List(c *gin.Context) {
+	_, ok := c.Get("user_id")
+	log.Logger.Infof("login: %v", ok)
 	if _, ok := c.Get("user_id"); !ok {
 		videoListDefault, err := common.GetVideoListDefault()
+		log.Logger.Debugf("videoListDefault: %v", videoListDefault)
 		if err != nil {
 			log.Logger.Error(err)
 			response.ErrRespWithMsg(c, err.Error())
@@ -32,7 +35,6 @@ func List(c *gin.Context) {
 			"next_time":  t.Format(time.DateTime),
 			"video_list": videoListDefault,
 		})
-		return
 	}
 	targetID, _ := strconv.ParseInt(c.Query("user_id"), 10, 64)
 	ownerID, _ := strconv.ParseInt(c.GetString("user_id"), 10, 64)
