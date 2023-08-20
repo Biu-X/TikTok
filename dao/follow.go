@@ -1,10 +1,11 @@
 package dao
 
 import (
-	"biu-x.org/TikTok/module/log"
-
 	"biu-x.org/TikTok/dal/query"
 	"biu-x.org/TikTok/model"
+	"biu-x.org/TikTok/module/log"
+	"errors"
+	"gorm.io/gorm"
 )
 
 // CreateFollow 创建用户和粉丝之间的关系记录
@@ -187,15 +188,18 @@ func SetFollowCancelByBoth(userID int64, followerID int64) error {
 func SetFollowFollowByBoth(userID int64, followerID int64) error {
 	// 查询两人之间的关注关系，若不存在则创建
 	_, err := GetFollowRelation(userID, followerID)
-	if err != nil {
-		log.Logger.Debug(err.Error())
+	if errors.Is(err, gorm.ErrRecordNotFound) {
 		err = CreateFollow(userID, followerID)
 		if err != nil {
 			log.Logger.Debug(err.Error())
 			return err
 		}
 		return nil
+	} else if err != nil {
+		log.Logger.Debug(err.Error())
+		return err
 	}
+
 	// 若存在则修改脏位
 	f := query.Follow
 
