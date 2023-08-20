@@ -161,9 +161,15 @@ func GetIsFollowByBothID(userID int64, followerID int64) (bool, error) {
 
 // 设置某条记录的关注关系
 func SetFollowRelationByID(id int64, cancel bool) error {
+	var flag int32
+	if cancel {
+		flag = 1
+	} else {
+		flag = 0
+	}
 	f := query.Follow
 
-	_, err := f.Where(f.ID.Eq(id)).Update(f.Cancel, cancel)
+	_, err := f.Where(f.ID.Eq(id)).Update(f.Cancel, flag)
 	if err != nil {
 		log.Logger.Error(err.Error())
 		return err
@@ -176,7 +182,7 @@ func SetFollowRelationByID(id int64, cancel bool) error {
 func SetFollowCancelByBoth(userID int64, followerID int64) error {
 	f := query.Follow
 
-	_, err := f.Where(f.UserID.Eq(userID), f.FollowerID.Eq(followerID)).Update(f.Cancel, true)
+	_, err := f.Where(f.UserID.Eq(userID), f.FollowerID.Eq(followerID)).Update(f.Cancel, 1)
 	if err != nil {
 		log.Logger.Error(err.Error())
 		return err
@@ -204,7 +210,7 @@ func SetFollowFollowByBoth(userID int64, followerID int64) error {
 	// 若存在则修改脏位
 	f := query.Follow
 
-	_, err = f.Where(f.UserID.Eq(userID), f.FollowerID.Eq(followerID)).Update(f.Cancel, false)
+	_, err = f.Where(f.UserID.Eq(userID), f.FollowerID.Eq(followerID)).Update(f.Cancel, 0)
 	if err != nil {
 		log.Logger.Error(err.Error())
 		return err
