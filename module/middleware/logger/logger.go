@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"io"
+	"strconv"
 	"strings"
 	"time"
 
@@ -13,16 +14,18 @@ import (
 
 // LogLayout 日志layout
 type LogLayout struct {
-	Time      time.Time
-	Metadata  map[string]interface{} // 存储自定义原数据
-	Path      string                 // 访问路径
-	Query     string                 // 携带query
-	Body      string                 // 携带body数据
-	IP        string                 // ip地址
-	UserAgent string                 // 代理
-	Error     string                 // 错误
-	Cost      time.Duration          // 花费时间
-	Source    string                 // 来源
+	RequestMethod string // 请求方法字段
+	StatusCode    int    // 状态码
+	Time          time.Time
+	Metadata      map[string]interface{} // 存储自定义原数据
+	Path          string                 // 访问路径
+	Query         string                 // 携带query
+	Body          string                 // 携带body数据
+	IP            string                 // ip地址
+	UserAgent     string                 // 代理
+	Error         string                 // 错误
+	Cost          time.Duration          // 花费时间
+	Source        string                 // 来源
 }
 
 type Logger struct {
@@ -53,14 +56,16 @@ func (l Logger) SetLoggerMiddleware() gin.HandlerFunc {
 
 		cost := time.Since(start)
 		layout := LogLayout{
-			Time:      time.Now(),
-			Path:      path,
-			Query:     query,
-			IP:        c.ClientIP(),
-			UserAgent: c.Request.UserAgent(),
-			Error:     strings.TrimRight(c.Errors.ByType(gin.ErrorTypePrivate).String(), "\n"),
-			Cost:      cost,
-			Source:    l.Source,
+			RequestMethod: c.Request.Method,
+			StatusCode:    c.Writer.Status(),
+			Time:          time.Now(),
+			Path:          path,
+			Query:         query,
+			IP:            c.ClientIP(),
+			UserAgent:     c.Request.UserAgent(),
+			Error:         strings.TrimRight(c.Errors.ByType(gin.ErrorTypePrivate).String(), "\n"),
+			Cost:          cost,
+			Source:        l.Source,
 		}
 
 		if l.Filter != nil && !l.Filter(c) {
@@ -79,14 +84,36 @@ func (l Logger) SetLoggerMiddleware() gin.HandlerFunc {
 	}
 }
 
+// 高亮颜色map
+var colorMap = map[string]string{
+	"green":   "\033[97;42m",
+	"white":   "\033[90;47m",
+	"yellow":  "\033[90;43m",
+	"red":     "\033[97;41m",
+	"blue":    "\033[97;44m",
+	"magenta": "\033[97;45m",
+	"cyan":    "\033[97;46m",
+	"reset":   "\033[0m",
+}
+
+// highlightString 高亮字符串
+func highlightString(color string, str string) string {
+	// 判断是否存在颜色，不存在返回绿色
+	if _, ok := colorMap[color]; !ok {
+		return colorMap["green"] + str + colorMap["reset"]
+	}
+	return colorMap[color] + str + colorMap["reset"]
+}
+
 func DefaultLogger() gin.HandlerFunc {
 	return Logger{
 		Print: func(layout LogLayout) {
 			v, _ := json.Marshal(layout)
+			StatusMessage := layout.RequestMethod + ": " + strconv.Itoa(layout.StatusCode)
 			if layout.Error == "" {
-				log.Logger.Info(string(v))
+				log.Logger.Info(highlightString("green", StatusMessage) + " - " + string(v))
 			} else {
-				log.Logger.Error(string(v))
+				log.Logger.Error(highlightString("red", StatusMessage) + " - " + string(v))
 			}
 		},
 		Source: "TikTok",
