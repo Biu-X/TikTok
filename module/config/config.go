@@ -40,9 +40,10 @@ type OSS struct {
 }
 
 var (
-	mysql     MySQL
-	redis     Redis
-	OSSConfig OSS
+	mysql      MySQL
+	redis      Redis
+	OSSConfig  OSS
+	OSS_PREFIX string
 )
 
 func Init() {
@@ -127,6 +128,18 @@ func Init() {
 	if OSSConfig.Bucket == "" {
 		OSSConfig.Bucket = config.GetString("oss.bucket")
 	}
+
+	ossType := config.GetString("oss.type")
+	fmt.Printf("oss type: %v\n", ossType)
+	switch ossType {
+	case "minio":
+		OSS_PREFIX = fmt.Sprintf("http://%v/%v/", OSSConfig.Endpoint, OSSConfig.Bucket)
+	case "cos":
+		OSS_PREFIX = fmt.Sprintf("https://%v.%v/", OSSConfig.Bucket, OSSConfig.Endpoint)
+	default:
+		OSS_PREFIX = fmt.Sprintf("http://%v/%v/", OSSConfig.Endpoint, OSSConfig.Bucket)
+	}
+	fmt.Printf("OSS PREFIX: %v\n", OSS_PREFIX)
 }
 
 func Get(key string) interface{} {
