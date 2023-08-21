@@ -7,7 +7,7 @@ import (
 	"strings"
 
 	"biu-x.org/TikTok/dao"
-	"biu-x.org/TikTok/model"
+	"biu-x.org/TikTok/dal/model"
 	"biu-x.org/TikTok/module/config"
 	"biu-x.org/TikTok/module/ffmpeg"
 	"biu-x.org/TikTok/module/log"

@@ -9,7 +9,7 @@ import (
 	"fmt"
 	"testing"
 
-	"biu-x.org/TikTok/model"
+	"biu-x.org/TikTok/dal/model"
 	"gorm.io/gen"
 	"gorm.io/gen/field"
 	"gorm.io/gorm/clause"
