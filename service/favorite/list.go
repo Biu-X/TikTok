@@ -1,10 +1,13 @@
 package favorite
 
 import (
+	"errors"
+	"strconv"
+
 	"biu-x.org/TikTok/dao"
 	"biu-x.org/TikTok/module/response"
 	"github.com/gin-gonic/gin"
-	"strconv"
+	"gorm.io/gorm"
 )
 
 // List /douyin/favorite/list/ - 喜欢列表
@@ -23,12 +26,20 @@ func List(c *gin.Context) {
 
 	for _, favorite := range favorites {
 		video, err := dao.GetVideoByID(favorite.VideoID) // 根据 video_id 查询视频信息
+		if errors.Is(err, gorm.ErrRecordNotFound) {      // 如果没查询到该 videoId 的记录，那么跳过这个即可
+			continue
+		}
+
 		if err != nil {
 			response.ErrRespWithMsg(c, err.Error())
 			return
 		}
 
 		user, err := dao.GetUserByID(video.AuthorID) // 根据 author_id 查询作者信息
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			continue
+		}
+
 		if err != nil {
 			response.ErrRespWithMsg(c, err.Error())
 			return

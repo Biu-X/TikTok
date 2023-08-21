@@ -9,6 +9,14 @@ import (
 	"gorm.io/gorm"
 )
 
+// 使用须知
+// 一、所有以 Find()、Count() Finisher 函数结尾的调用都不会触发 "record not found" 错误
+// 二、所有以 First() Finisher 函数结尾的调用在查询不到指定记录时会报错，因此在调用 First() 函数前，我们先使用查询空记录也不会报错的 Find() 或者 Count() （推荐），
+// 判断 Count() 返回结果是否为 0，如果是说明查询不到指定记录，这时我们直接向上层返回 gorm.ErrRecordNotFound 错误，上层逻辑只要再对返回的 err 使用 errors.Is 进行判断即可知道调用的三种返回状态：
+// 1. 未查询到 errors.Is(err, gorm.ErrRecordNotFound)
+// 2. 查询错误 err != nil
+// 3. 查询成功 err == nil
+
 // CreateFollow 创建用户和粉丝之间的关系记录
 func CreateFollow(userId, followerId int64) error {
 	f := query.Follow
@@ -33,7 +41,7 @@ func GetFollowRecordByID(id int64) (*model.Follow, error) {
 
 	count, _ := f.Where(f.ID.Eq(id)).Count()
 	if count == 0 {
-		return &model.Follow{}, errors.New("record not found")
+		return &model.Follow{}, gorm.ErrRecordNotFound
 	}
 
 	// 到这里就一定可以查询到记录了
@@ -141,7 +149,7 @@ func GetFollowRelation(userID int64, followerID int64) (*model.Follow, error) {
 
 	count, _ := f.Where(f.UserID.Eq(userID), f.FollowerID.Eq(followerID)).Count()
 	if count == 0 {
-		return &model.Follow{}, errors.New("record not found")
+		return &model.Follow{}, gorm.ErrRecordNotFound
 	}
 
 	follow, err := f.Where(f.UserID.Eq(userID), f.FollowerID.Eq(followerID)).First()
@@ -162,9 +170,9 @@ func GetIsFollowByBothID(userID int64, followerID int64) (bool, error) {
 	}
 
 	follow, err := GetFollowRelation(userID, followerID)
-	if err != nil {
-		log.Logger.Error(err.Error())
-		return false, err
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		log.Logger.Info(err.Error())
+		return false, nil // 查询不到直接返回 false 即可，这不是错误
 	}
 
 	return follow.Cancel == 0, nil
