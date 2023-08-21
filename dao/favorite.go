@@ -1,10 +1,9 @@
 package dao
 
 import (
-	"errors"
-
 	"biu-x.org/TikTok/dal/query"
 	"biu-x.org/TikTok/model"
+	"gorm.io/gorm"
 )
 
 // 创建点赞记录
@@ -14,18 +13,11 @@ func CreateFavorite(favorite *model.Favorite) (err error) {
 	return err
 }
 
-// 获取用户对某视频的点赞记录
-// 可获取：用户是否曾点赞视频
-func GetFavoriteByBoth(userID int64, videoID int64) (favorite *model.Favorite, err error) {
+// 获取用户是否对某视频点赞
+func GetUserIsFavoriteVideo(userID int64, videoID int64) bool {
 	f := query.Favorite
-	// 查询是否存在这条记录，不存在直接返回
-	count, _ := f.Where(f.UserID.Eq(userID), f.VideoID.Eq(videoID)).Count()
-	if count == 0 {
-		return &model.Favorite{}, errors.New("record not found")
-	}
-
-	favorite, err = f.Where(f.UserID.Eq(userID), f.VideoID.Eq(videoID)).First()
-	return favorite, err
+	count, _ := f.Where(f.UserID.Eq(userID), f.VideoID.Eq(videoID), f.Cancel.Eq(0)).Count()
+	return count == 1
 }
 
 // 通过用户ID获取用户的所有点赞记录 cancel=0
@@ -42,7 +34,7 @@ func GetFavoriteByID(id int64) (favorite *model.Favorite, err error) {
 	// 因为接下来使用 First() 调用，避免报错先用 Count 检查
 	count, _ := f.Where(f.ID.Eq(id)).Count()
 	if count == 0 {
-		return &model.Favorite{}, errors.New("record not found")
+		return &model.Favorite{}, gorm.ErrRecordNotFound
 	}
 
 	favorite, err = f.Where(f.ID.Eq(id)).First()

@@ -1,8 +1,9 @@
 package v1
 
 import (
-	"github.com/gin-gonic/gin"
 	"net/http"
+
+	"github.com/gin-gonic/gin"
 
 	"biu-x.org/TikTok/module/middleware/jwt"
 	"biu-x.org/TikTok/module/middleware/logger"
@@ -28,7 +29,7 @@ func NewAPI() *gin.Engine {
 	tiktok := r.Group("/douyin/")
 	{
 		// 视频流接口
-		tiktok.GET("feed/", feed_service.List)
+		tiktok.GET("feed/", jwt.RequireAuthWithoutLogin(), feed_service.List)
 
 		user := tiktok.Group("user/")
 		{
