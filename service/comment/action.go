@@ -12,13 +12,13 @@ import (
 
 // Action 评论操作 /douyin/comment/action/
 func Action(c *gin.Context) {
-	userIDStr := c.GetString("user_id")
-	userID, _ := strconv.ParseInt(userIDStr, 10, 64)
+	// 从 RequireAuth 处读取 user_id
+	userID, _ := strconv.ParseInt(c.GetString("user_id"), 10, 64)
 	videoIDStr := c.Query("video_id")
 	actionTypeStr := c.Query("action_type")
 	videoID, _ := strconv.ParseInt(videoIDStr, 10, 64)
-	actionType, _ := strconv.Atoi(actionTypeStr)
-
+	actionType, _ := strconv.Atoi(actionTypeStr) // 1-评论, 2-删除评论
+	
 	if actionType == 1 {
 		// create comment
 		commentText := c.Query("comment_text")
@@ -59,37 +59,4 @@ func Action(c *gin.Context) {
 		}
 		response.OKResp(c)
 	}
-}
-
-// List 评论操作 /douyin/comment/list/
-func List(c *gin.Context) {
-	videoIDStr := c.Query("video_id")
-	videoID, _ := strconv.ParseInt(videoIDStr, 10, 64)
-	userIDStr := c.GetString("user_id")
-	userID, _ := strconv.ParseInt(userIDStr, 10, 64)
-	commentList, err := dao.GetCommentByVideoID(videoID)
-	if err != nil {
-		log.Logger.Errorf("list: GetCommentByVideoID failed, err: %v", err)
-		response.ErrRespWithMsg(c, err.Error())
-		return
-	}
-
-	commentResponseList := []response.CommentResponse{}
-	for _, comment := range commentList {
-		user, err := response.GetUserResponseByID(comment.UserID, userID)
-		if err != nil {
-			log.Logger.Errorf("list: GetUserResponseByID failed, err: %v", err)
-			response.ErrRespWithMsg(c, err.Error())
-			return
-		}
-		commentResponseList = append(commentResponseList, response.CommentResponse{
-			CommentID:  comment.ID,
-			User:       *user,
-			Content:    comment.Content,
-			CreateDate: comment.CreatedAt.Format("01-02"),
-		})
-	}
-	response.OKRespWithData(c, map[string]interface{}{
-		"comment_list": commentResponseList,
-	})
 }
