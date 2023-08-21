@@ -2,7 +2,7 @@ package favorite
 
 import (
 	"biu-x.org/TikTok/dao"
-	"biu-x.org/TikTok/model"
+	"biu-x.org/TikTok/dal/model"
 	"biu-x.org/TikTok/module/response"
 	"github.com/gin-gonic/gin"
 	"strconv"

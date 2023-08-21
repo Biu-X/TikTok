@@ -15,7 +15,7 @@ func Init() {
 	g := gen.NewGenerator(gen.Config{
 		OutPath:      "dal/query",
 		Mode:         gen.WithDefaultQuery | gen.WithoutContext | gen.WithQueryInterface,
-		ModelPkgPath: "./model",
+		ModelPkgPath: "dal/model",
 
 		WithUnitTest: true,
 
