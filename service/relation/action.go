@@ -18,7 +18,7 @@ func Action(c *gin.Context) {
 
 	// 根据 action_type 执行不同的操作
 	if actionType == 1 {
-		err := dao.SetFollowFollowByBoth(toUserId, userId)
+		err := dao.SetFollowingByBoth(toUserId, userId)
 		if err != nil {
 			log.Logger.Error(err.Error())
 			response.ErrRespWithMsg(c, err.Error())

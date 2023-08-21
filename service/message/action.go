@@ -11,11 +11,14 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// Action 发送消息 /douyin/message/action/
 func Action(c *gin.Context) {
+	// 从 RequireAuth 处读取 user_id
 	userID, _ := strconv.ParseInt(c.GetString("user_id"), 10, 64)
 	toUserID, _ := strconv.ParseInt(c.Query("to_user_id"), 10, 64)
-	actionType, _ := strconv.ParseInt(c.Query("action_type"), 10, 32)
+	actionType, _ := strconv.ParseInt(c.Query("action_type"), 10, 32) // 1-发送消息
 	content := c.Query("content")
+
 	if actionType == 1 {
 		err := dao.CreateMessage(&model.Message{
 			ToUserID:   toUserID,
