@@ -6,7 +6,7 @@ import (
 	"testing"
 
 	"biu-x.org/TikTok/dal/query"
-	"biu-x.org/TikTok/model"
+	"biu-x.org/TikTok/dal/model"
 	"biu-x.org/TikTok/module/config"
 	"biu-x.org/TikTok/module/db"
 	"biu-x.org/TikTok/module/middleware/jwt"

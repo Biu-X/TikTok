@@ -16,7 +16,7 @@ import (
 
 	"gorm.io/plugin/dbresolver"
 
-	"biu-x.org/TikTok/model"
+	"biu-x.org/TikTok/dal/model"
 )
 
 func newFollow(db *gorm.DB, opts ...gen.DOOption) follow {

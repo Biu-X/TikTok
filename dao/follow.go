@@ -3,8 +3,8 @@ package dao
 import (
 	"errors"
 
+	"biu-x.org/TikTok/dal/model"
 	"biu-x.org/TikTok/dal/query"
-	"biu-x.org/TikTok/model"
 	"biu-x.org/TikTok/module/log"
 	"gorm.io/gorm"
 )
