@@ -2,23 +2,22 @@ package relation
 
 import (
 	"errors"
-	"strconv"
 
 	"biu-x.org/TikTok/dao"
 	"biu-x.org/TikTok/module/log"
 	"biu-x.org/TikTok/module/response"
+	"biu-x.org/TikTok/module/util"
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 )
 
 // FriendList /douyin/relation/friend/list/ - 用户好友列表
 func FriendList(c *gin.Context) {
-	// 从 RequireAuth 处读取 user_id
-	userId, _ := strconv.ParseInt(c.GetString("user_id"), 10, 64)
+	userID := util.GetUserIDFromGinContext(c)
 
 	var userList []response.FriendUserResponse
 
-	followerIDs, err := dao.GetFollowerIDsByUserID(userId)
+	followerIDs, err := dao.GetFollowerIDsByUserID(userID)
 	if err != nil {
 		log.Logger.Error(err)
 		response.ErrRespWithMsg(c, err.Error())
@@ -26,13 +25,14 @@ func FriendList(c *gin.Context) {
 	}
 
 	for _, followerID := range followerIDs {
-		userRes, err := response.GetUserResponseByID(followerID, userId)
+		userRes, err := response.GetUserResponseByID(followerID, userID)
+
 		if err != nil {
 			log.Logger.Error(err)
 			continue
 		}
 
-		message, err := dao.GetLatestBidirectionalMessage(userId, followerID)
+		message, err := dao.GetLatestBidirectionalMessage(userID, followerID)
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			continue
 		}
@@ -43,7 +43,7 @@ func FriendList(c *gin.Context) {
 		}
 
 		var msgType int64
-		if message.FromUserID == userId {
+		if message.FromUserID == userID {
 			msgType = 1
 		} else {
 			msgType = 0

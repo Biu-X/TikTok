@@ -1,18 +1,16 @@
 package favorite
 
 import (
-	"strconv"
-
 	"biu-x.org/TikTok/module/response"
+	"biu-x.org/TikTok/module/util"
 	"github.com/gin-gonic/gin"
 )
 
 // List /douyin/favorite/list/ - 喜欢列表
 func List(c *gin.Context) {
-	// 从 RequireAuth 处读取 user_id
-	userId, _ := strconv.ParseInt(c.GetString("user_id"), 10, 64)
+	userID := util.GetUserIDFromGinContext(c)
 
-	videoList, err := response.GetFavoriteVideoListResponseByOwnerID(userId)
+	videoList, err := response.GetFavoriteVideoListResponseByOwnerID(userID)
 	if err != nil {
 		response.ErrRespWithMsg(c, err.Error())
 		return

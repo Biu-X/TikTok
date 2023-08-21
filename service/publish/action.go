@@ -6,8 +6,8 @@ import (
 	"strconv"
 	"strings"
 
-	"biu-x.org/TikTok/dao"
 	"biu-x.org/TikTok/dal/model"
+	"biu-x.org/TikTok/dao"
 	"biu-x.org/TikTok/module/config"
 	"biu-x.org/TikTok/module/ffmpeg"
 	"biu-x.org/TikTok/module/log"
@@ -18,7 +18,7 @@ import (
 	"time"
 )
 
-// Action 投稿操作 /douyin/publish/action/
+// Action /douyin/publish/action/ - 视频投稿
 func Action(c *gin.Context) {
 	// 在完成上传视频后把临时文件都删除
 	defer func() {
