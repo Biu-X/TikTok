@@ -1,11 +1,12 @@
 package favorite
 
 import (
+	"strconv"
+
 	"biu-x.org/TikTok/dao"
 	"biu-x.org/TikTok/dal/model"
 	"biu-x.org/TikTok/module/response"
 	"github.com/gin-gonic/gin"
-	"strconv"
 )
 
 // Action /douyin/favorite/action/ - 赞操作
@@ -27,7 +28,7 @@ func Action(c *gin.Context) {
 			return
 		}
 	} else {
-		err := dao.SetFavoriteCancelByID(videoId, true)
+		err := dao.SetFavoriteCancelByVideoID(videoId, 1)
 		if err != nil {
 			response.ErrRespWithMsg(c, err.Error())
 			return

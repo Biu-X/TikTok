@@ -1,14 +1,13 @@
 package common
 
 import (
+	"strconv"
+	"time"
+
 	"biu-x.org/TikTok/dao"
 	"biu-x.org/TikTok/dal/model"
 	"biu-x.org/TikTok/module/log"
 	"biu-x.org/TikTok/module/response"
-	"errors"
-	"gorm.io/gorm"
-	"strconv"
-	"time"
 )
 
 func GetVideoList(targetID, ownerID int64, latestTime string) ([]response.VideoResponse, error) {
@@ -44,47 +43,30 @@ func GetVideoList(targetID, ownerID int64, latestTime string) ([]response.VideoR
 	}
 
 	for _, video := range videoList {
+		// GetUserResponseByID 中返回的 error 不会涉及 ErrRecordNotFound
 		userResponse, err := response.GetUserResponseByID(video.AuthorID, ownerID)
 		if err != nil {
-			if errors.As(err, &gorm.ErrRecordNotFound) {
-				log.Logger.Info(gorm.ErrRecordNotFound)
-				userResponse = &response.UserResponse{}
-			} else {
-				log.Logger.Error(err)
-				continue
-			}
+			userResponse = &response.UserResponse{}
+			continue
 		}
+
 		favoriteCount, err := dao.GetFavoriteCountByVideoID(video.ID)
+		log.Logger.Info("favoriteCount", favoriteCount)
 		if err != nil {
-			if errors.As(err, &gorm.ErrRecordNotFound) {
-				log.Logger.Info(gorm.ErrRecordNotFound)
-				favoriteCount = 0
-			} else {
-				log.Logger.Error(err)
-				continue
-			}
+			log.Logger.Error("favoriteCount query failed")
+			favoriteCount = 0
+			continue
 		}
-		favorite, err := dao.GetFavoriteByBoth(ownerID, video.ID)
-		if err != nil {
-			if errors.As(err, &gorm.ErrRecordNotFound) {
-				log.Logger.Info(gorm.ErrRecordNotFound)
-				favorite = &model.Favorite{}
-			} else {
-				log.Logger.Error(err)
-				continue
-			}
-		}
+
+		isFavorite := dao.GetUserIsFavoriteVideo(ownerID, video.ID)
+		log.Logger.Info("isFavorite: ", isFavorite)
 		count, err := dao.GetCommentCountByVideoID(video.ID)
 		if err != nil {
 			log.Logger.Error(err)
-			if errors.As(err, &gorm.ErrRecordNotFound) {
-				log.Logger.Info(gorm.ErrRecordNotFound)
-				count = 0
-			} else {
-				log.Logger.Error(err)
-				continue
-			}
+			count = 0
+			continue
 		}
+
 		videoRespList = append(videoRespList, response.VideoResponse{
 			VideoID:       video.ID,
 			Author:        *userResponse,
@@ -92,7 +74,7 @@ func GetVideoList(targetID, ownerID int64, latestTime string) ([]response.VideoR
 			CoverURL:      video.CoverURL,
 			FavoriteCount: favoriteCount,
 			CommentCount:  count,
-			IsFavorite:    favorite.Cancel == 0,
+			IsFavorite:    isFavorite,
 			Title:         video.Title,
 		})
 	}
