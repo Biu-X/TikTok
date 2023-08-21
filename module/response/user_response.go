@@ -2,36 +2,37 @@ package response
 
 import "biu-x.org/TikTok/dao"
 
-func GetUserResponseByUserId(id int64) (*UserResponse, error) {
-	return GetUserResponseByID(id, id)
+// GetUserResponseByOwnerId 返回用户信息，ownerID 为当前登录用户 id
+func GetUserResponseByOwnerId(ownerID int64) (*UserResponse, error) {
+	return GetUserResponseByID(ownerID, ownerID)
 }
 
-// 返回用户信息，id 为要获取的用户 id，userID 为当前登录用户 id
-func GetUserResponseByID(id int64, userID int64) (*UserResponse, error) {
-	isFollow, err := dao.GetIsFollowByBothID(id, userID)
+// GetUserResponseByID 返回用户信息，targetID 为目标用户 id，ownerID 为当前登录用户 id
+func GetUserResponseByID(targetID int64, ownerID int64) (*UserResponse, error) {
+	isFollow, err := dao.GetIsFollowByBothID(targetID, ownerID)
 	if err != nil { // 日志在上层调用时已经打印无需再打印
 		return nil, err
 	}
 
-	user, err := dao.GetUserByID(id)
+	user, err := dao.GetUserByID(targetID)
 	if err != nil {
 		return nil, err
 	}
 
 	// 求用户关注了多少个用户，即求表中关注者 ID 为 userId 的列数
-	followCount, err := dao.GetFollowingCountByUserID(id)
+	followCount, err := dao.GetFollowingCountByUserID(targetID)
 	if err != nil {
 		return nil, err
 	}
 
-	// 求用户的粉丝数量，即求表中用户 id 等于 userId 的列数
-	followerCount, err := dao.GetFollowerCountByUserID(id)
+	// 求用户的粉丝数量，即求表中用户 targetID 等于 userId 的列数
+	followerCount, err := dao.GetFollowerCountByUserID(targetID)
 	if err != nil {
 		return nil, err
 	}
 
 	// 作品获赞数量（需要去 Video 表中查询该用户所有的 Video_ID，然后再去 Favorite 表中查询每一个 Video_ID 的获赞数）
-	videoIDs, err := dao.GetVideoIDByAuthorID(id)
+	videoIDs, err := dao.GetVideoIDByAuthorID(targetID)
 	if err != nil {
 		return nil, err
 	}
@@ -50,7 +51,7 @@ func GetUserResponseByID(id int64, userID int64) (*UserResponse, error) {
 	totalWork := int64(len(videoIDs))
 
 	// 总的喜欢作品量
-	totalFavorite, err := dao.GetFavoriteCountByUserID(id)
+	totalFavorite, err := dao.GetFavoriteCountByUserID(targetID)
 	if err != nil {
 		return nil, err
 	}
