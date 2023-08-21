@@ -1,21 +1,23 @@
 package v1
 
 import (
+	"github.com/gin-gonic/gin"
 	"net/http"
 
-	"biu-x.org/TikTok/service/auth"
+	"biu-x.org/TikTok/module/middleware/jwt"
+	"biu-x.org/TikTok/module/middleware/logger"
 	comment_service "biu-x.org/TikTok/service/comment"
 	favorite_service "biu-x.org/TikTok/service/favorite"
 	message_service "biu-x.org/TikTok/service/message"
 	publish_service "biu-x.org/TikTok/service/publish"
 	relation_service "biu-x.org/TikTok/service/relation"
 	user_service "biu-x.org/TikTok/service/user"
-	"github.com/gin-gonic/gin"
 )
 
 func NewAPI() *gin.Engine {
 	r := gin.New()
 	r.Use(gin.Logger(), gin.Recovery())
+	r.Use(logger.DefaultLogger()) // 日志中间件
 
 	r.GET("/", func(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{
@@ -35,13 +37,13 @@ func NewAPI() *gin.Engine {
 			// 用户登录
 			user.POST("login/", user_service.Login)
 			// 用户信息
-			user.Use(auth.RequireAuth())
+			user.Use(jwt.RequireAuth())
 			user.GET("", user_service.UserInfo)
 		}
 
 		publish := tiktok.Group("publish/")
 		{
-			publish.Use(auth.RequireAuth())
+			publish.Use(jwt.RequireAuth())
 			// 投稿接口
 			publish.POST("action/", publish_service.Action)
 			// 发布列表
@@ -50,7 +52,7 @@ func NewAPI() *gin.Engine {
 
 		favorite := tiktok.Group("favorite/")
 		{
-			favorite.Use(auth.RequireAuth())
+			favorite.Use(jwt.RequireAuth())
 			// 赞操作
 			favorite.POST("action/", favorite_service.Action)
 			// 喜欢列表
@@ -59,7 +61,7 @@ func NewAPI() *gin.Engine {
 
 		comment := tiktok.Group("comment/")
 		{
-			comment.Use(auth.RequireAuth())
+			comment.Use(jwt.RequireAuth())
 			// 评论操作
 			comment.POST("action/", comment_service.Action)
 			// 评论列表
@@ -68,7 +70,7 @@ func NewAPI() *gin.Engine {
 
 		relation := tiktok.Group("relation/")
 		{
-			relation.Use(auth.RequireAuth())
+			relation.Use(jwt.RequireAuth())
 			// 关注操作
 			relation.POST("action/", relation_service.Action)
 
@@ -93,7 +95,7 @@ func NewAPI() *gin.Engine {
 
 		message := tiktok.Group("message/")
 		{
-			message.Use(auth.RequireAuth())
+			message.Use(jwt.RequireAuth())
 			// 发送消息
 			message.POST("action/", message_service.Action)
 			// 聊天记录
