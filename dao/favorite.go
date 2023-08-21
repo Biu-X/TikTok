@@ -80,12 +80,7 @@ func SetFavoriteCancelByUserIDAndVideoID(userID, videoID int64) (err error) {
 // SetFavoriteByUserIDAndVideoID 通过 用户ID 和 视频ID 点赞
 func SetFavoriteByUserIDAndVideoID(userID, videoID int64) (err error) {
 	f := query.Favorite
-	isLove := GetUserIsFavoriteVideo(userID, videoID)
-	if isLove {
-		log.Logger.Info("用户已经点赞过该视频")
-		return nil
-	}
-	// 如果用户曾经点赞过该视频，但是取消了点赞，那么就修改脏位以重新点赞；否则就创建点赞记录
+	// 如果用户曾经点赞过该视频，那么就直接修改脏位以重新点赞；否则就创建点赞记录
 	if GetFavoriteIsExistByUserIDAndVideoID(userID, videoID) {
 		_, err = f.Where(f.VideoID.Eq(videoID), f.UserID.Eq(userID)).Update(f.Cancel, 0)
 		if err != nil {
