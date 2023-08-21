@@ -21,11 +21,12 @@ redis:
   port: 6379
   password: 123456
   db: 0
-s3:
-  endpoint:
-  accessKey:
-  secretKey:
-  region:
-  bucket:
-  useSsl: true
+oss:
+  type: minio # minio,cos 等等
+  endpoint: 192.168.1.4:9000
+  accessKey: ChYm7ufIwNAOzq6PQPCA
+  secretKey: udicP52IwRbmo2hf6lFvjUS7NP5BhlAdsGNIuDE5
+  region: local
+  bucket: tiktok
+  useSsl: false
   hostnameImmutable: true
