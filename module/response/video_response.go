@@ -46,17 +46,17 @@ func GetVideoResponseByVideoAndUserID(video *model.Video, userID int64) (*VideoR
 	}, nil
 }
 
-// GetVideoListResponseByUserIDAndLatestTime 根据 当前登录用户 id 和 时间戳 来获取视频
+// GetVideoListResponseByUserIDAndLatestTime 根据 当前登录用户 id 和 时间戳 来获取视频列表
 func GetVideoListResponseByUserIDAndLatestTime(userID int64, latestTime string) ([]VideoResponse, error) {
 	return GetVideoListResponseByIDAndLatestTime(0, userID, latestTime)
 }
 
-// GetVideoListResponseByID 根据 当前登录用户 id 和 时间戳 来获取视频
+// GetVideoListResponseByID 根据两个用户 id 来获取视频列表
 func GetVideoListResponseByID(targetID, ownerID int64) ([]VideoResponse, error) {
 	return GetVideoListResponseByIDAndLatestTime(targetID, ownerID, "")
 }
 
-// GetVideoListResponseByIDAndLatestTime 根据两个用户 id 获取视频列表，如果 targetID 或者 ownerID 为 0，则通过时间戳来获取视频, 即未登录状态
+// GetVideoListResponseByIDAndLatestTime 根据两个用户 id 来获取视频列表，如果 targetID 或者 ownerID 为 0，则通过时间戳来获取视频, 即未登录状态
 func GetVideoListResponseByIDAndLatestTime(targetID, ownerID int64, latestTime string) ([]VideoResponse, error) {
 	var videoRespList []VideoResponse
 	var videoList []*model.Video
