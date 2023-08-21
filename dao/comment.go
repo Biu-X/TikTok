@@ -12,7 +12,7 @@ func CreateComment(comment *model.Comment) (err error) {
 	return err
 }
 
-// 通过视频ID获得评论数组 按CreatedAt的Desc顺序
+// 通过视频ID获得评论数组 按CreatedAt的Desc顺序排序
 func GetCommentByVideoID(videoID int64) (comments []*model.Comment, err error) {
 	c := query.Comment
 	comments, err = c.Where(c.VideoID.Eq(videoID)).Order(c.CreatedAt.Desc()).Find()
