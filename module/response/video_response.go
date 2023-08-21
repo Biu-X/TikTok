@@ -10,10 +10,10 @@ import (
 	"time"
 )
 
-// GetVideoResponseByVideoAndUserID 根据 video 和 userID 来获取视频
-func GetVideoResponseByVideoAndUserID(video *model.Video, userID int64) (*VideoResponse, error) {
+// GetVideoResponseByVideoAndOwnerID 根据 video 和 ownerID 来获取视频
+func GetVideoResponseByVideoAndOwnerID(video *model.Video, ownerID int64) (*VideoResponse, error) {
 	// GetUserResponseByID 中返回的 error 不会涉及 ErrRecordNotFound
-	userResponse, err := GetUserResponseByID(video.AuthorID, userID)
+	userResponse, err := GetUserResponseByID(video.AuthorID, ownerID)
 	if err != nil {
 		userResponse = &UserResponse{}
 		return nil, err
@@ -25,7 +25,7 @@ func GetVideoResponseByVideoAndUserID(video *model.Video, userID int64) (*VideoR
 		return nil, err
 	}
 
-	isFavorite := dao.GetUserIsFavoriteVideo(userID, video.ID)
+	isFavorite := dao.GetUserIsFavoriteVideo(ownerID, video.ID)
 	log.Logger.Info("isFavorite: ", isFavorite)
 
 	count, err := dao.GetCommentCountByVideoID(video.ID)
@@ -46,9 +46,9 @@ func GetVideoResponseByVideoAndUserID(video *model.Video, userID int64) (*VideoR
 	}, nil
 }
 
-// GetVideoListResponseByUserIDAndLatestTime 根据 当前登录用户 id 和 时间戳 来获取视频列表
-func GetVideoListResponseByUserIDAndLatestTime(userID int64, latestTime string) ([]VideoResponse, error) {
-	return GetVideoListResponseByIDAndLatestTime(0, userID, latestTime)
+// GetVideoListResponseByOwnerIDAndLatestTime 根据 当前登录用户 id 和 时间戳 来获取视频列表
+func GetVideoListResponseByOwnerIDAndLatestTime(ownerID int64, latestTime string) ([]VideoResponse, error) {
+	return GetVideoListResponseByIDAndLatestTime(0, ownerID, latestTime)
 }
 
 // GetVideoListResponseByID 根据两个用户 id 来获取视频列表
@@ -90,7 +90,7 @@ func GetVideoListResponseByIDAndLatestTime(targetID, ownerID int64, latestTime s
 	}
 
 	for _, video := range videoList {
-		videoRes, err := GetVideoResponseByVideoAndUserID(video, ownerID)
+		videoRes, err := GetVideoResponseByVideoAndOwnerID(video, ownerID)
 		if err != nil {
 			log.Logger.Error(err)
 			continue
@@ -100,10 +100,10 @@ func GetVideoListResponseByIDAndLatestTime(targetID, ownerID int64, latestTime s
 	return videoRespList, nil
 }
 
-// GetFavoriteVideoListResponseByUserID 根据用户 id 获取喜欢列表
-func GetFavoriteVideoListResponseByUserID(userID int64) ([]VideoResponse, error) {
+// GetFavoriteVideoListResponseByOwnerID 根据用户 id 获取喜欢列表
+func GetFavoriteVideoListResponseByOwnerID(ownerID int64) ([]VideoResponse, error) {
 	// 根据 user_id 查询喜欢列表
-	favorites, err := dao.GetFavoriteByUserID(userID)
+	favorites, err := dao.GetFavoriteByUserID(ownerID)
 	if err != nil {
 		return nil, err
 	}
@@ -119,7 +119,7 @@ func GetFavoriteVideoListResponseByUserID(userID int64) ([]VideoResponse, error)
 			return nil, err
 		}
 
-		videoRes, err := GetVideoResponseByVideoAndUserID(video, userID)
+		videoRes, err := GetVideoResponseByVideoAndOwnerID(video, ownerID)
 		if err != nil {
 			log.Logger.Error(err)
 			continue

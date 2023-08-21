@@ -11,7 +11,7 @@ import (
 func UserInfo(c *gin.Context) {
 	idStr := c.GetString("user_id")
 	id, _ := strconv.Atoi(idStr)
-	userinfo, err := response.GetUserResponseByUserId(int64(id))
+	userinfo, err := response.GetUserResponseByOwnerId(int64(id))
 	if err != nil {
 		response.ErrRespWithMsg(c, "User not found")
 		return

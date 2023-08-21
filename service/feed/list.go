@@ -31,7 +31,7 @@ func List(c *gin.Context) {
 	}
 	log.Logger.Infof("owner id: %v", ownerID)
 
-	videoList, err := response.GetVideoListResponseByUserIDAndLatestTime(ownerID, latest_time)
+	videoList, err := response.GetVideoListResponseByOwnerIDAndLatestTime(ownerID, latest_time)
 	if err != nil {
 		response.ErrRespWithMsg(c, err.Error())
 		return
