@@ -16,8 +16,7 @@ import (
 
 func NewAPI() *gin.Engine {
 	r := gin.New()
-	r.Use(gin.Logger(), gin.Recovery())
-	r.Use(logger.DefaultLogger()) // 日志中间件
+	r.Use(logger.DefaultLogger(), gin.Recovery())
 
 	r.GET("/", func(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{
