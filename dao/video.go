@@ -1,11 +1,10 @@
 package dao
 
 import (
-	"errors"
-
 	"biu-x.org/TikTok/dal/query"
 	"biu-x.org/TikTok/model"
 	"biu-x.org/TikTok/module/log"
+	"gorm.io/gorm"
 	"time"
 )
 
@@ -22,7 +21,7 @@ func GetVideoByID(id int64) (video *model.Video, err error) {
 
 	count, _ := v.Where(v.ID.Eq(id)).Count()
 	if count == 0 {
-		return &model.Video{}, errors.New("record not found")
+		return &model.Video{}, gorm.ErrRecordNotFound
 	}
 
 	video, err = v.Where(v.ID.Eq(id)).First()

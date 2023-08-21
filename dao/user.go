@@ -3,6 +3,7 @@ package dao
 import (
 	"biu-x.org/TikTok/dal/query"
 	"biu-x.org/TikTok/model"
+	"gorm.io/gorm"
 )
 
 // 创建User记录
@@ -15,6 +16,9 @@ func CreateUser(user *model.User) (err error) {
 // 通过ID获得对应用户信息
 func GetUserByID(id int64) (user *model.User, err error) {
 	u := query.User
+	if count, _ := u.Where(u.ID.Eq(id)).Count(); count == 0 {
+		return &model.User{}, gorm.ErrRecordNotFound
+	}
 	user, err = u.Where(u.ID.Eq(id)).First()
 	return user, err
 }
