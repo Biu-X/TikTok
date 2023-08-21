@@ -15,7 +15,7 @@ func List(c *gin.Context) {
 	// 自己的 id
 	ownerID, _ := strconv.ParseInt(c.GetString("user_id"), 10, 64)
 	log.Logger.Infof("owner id is: %v", ownerID)
-	videoRespList, err := response.GetVideoListResponseByIDAndLatestTime(targetID, ownerID, "")
+	videoRespList, err := response.GetVideoListResponseByID(targetID, ownerID)
 	if err != nil {
 		log.Logger.Error(err)
 		response.ErrRespWithMsg(c, err.Error())
