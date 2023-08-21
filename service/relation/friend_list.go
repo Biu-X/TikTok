@@ -1,12 +1,14 @@
 package relation
 
 import (
+	"errors"
 	"strconv"
 
 	"biu-x.org/TikTok/dao"
 	"biu-x.org/TikTok/module/log"
 	"biu-x.org/TikTok/module/response"
 	"github.com/gin-gonic/gin"
+	"gorm.io/gorm"
 )
 
 // FriendList /douyin/relation/friend/list/ - 用户好友列表
@@ -31,9 +33,13 @@ func FriendList(c *gin.Context) {
 		}
 
 		message, err := dao.GetLatestBidirectionalMessage(userId, followerID)
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			continue
+		}
+		// 后端数据库错误，直接返回
 		if err != nil {
 			log.Logger.Error(err)
-			continue
+			return
 		}
 
 		var msgType int64

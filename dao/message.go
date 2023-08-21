@@ -3,6 +3,7 @@ package dao
 import (
 	"biu-x.org/TikTok/dal/query"
 	"biu-x.org/TikTok/model"
+	"gorm.io/gorm"
 )
 
 // 创建聊天消息
@@ -29,6 +30,11 @@ func GetMessageByBoth(userA int64, userB int64) (messages []*model.Message, err 
 // 返回两个用户之间的最新消息
 func GetLatestBidirectionalMessage(userA int64, userB int64) (message *model.Message, err error) {
 	f := query.Message
+
+	if count, _ := f.Where(f.FromUserID.Eq(userA), f.ToUserID.Eq(userB)).Count(); count == 0 {
+		return &model.Message{}, gorm.ErrRecordNotFound
+	}
+
 	message, err =
 		f.Where(f.FromUserID.Eq(userA), f.ToUserID.Eq(userB)).
 			Or(f.FromUserID.Eq(userB), f.ToUserID.Eq(userA)).
