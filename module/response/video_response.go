@@ -12,47 +12,28 @@ import (
 
 // GetVideoResponseByVideoAndUserID 根据 video 和 userID 来获取视频
 func GetVideoResponseByVideoAndUserID(video *model.Video, userID int64) (*VideoResponse, error) {
+	// GetUserResponseByID 中返回的 error 不会涉及 ErrRecordNotFound
 	userResponse, err := GetUserResponseByID(video.AuthorID, userID)
 	if err != nil {
-		if errors.As(err, &gorm.ErrRecordNotFound) {
-			log.Logger.Info(gorm.ErrRecordNotFound)
-			userResponse = &UserResponse{}
-		} else {
-			log.Logger.Error(err)
-			return nil, err
-		}
+		userResponse = &UserResponse{}
+		return nil, err
 	}
+
 	favoriteCount, err := dao.GetFavoriteCountByVideoID(video.ID)
 	if err != nil {
-		if errors.As(err, &gorm.ErrRecordNotFound) {
-			log.Logger.Info(gorm.ErrRecordNotFound)
-			favoriteCount = 0
-		} else {
-			log.Logger.Error(err)
-			return nil, err
-		}
+		log.Logger.Error("favoriteCount query failed")
+		return nil, err
 	}
-	favorite, err := dao.GetFavoriteByBoth(userID, video.ID)
-	if err != nil {
-		if errors.As(err, &gorm.ErrRecordNotFound) {
-			log.Logger.Info(gorm.ErrRecordNotFound)
-			favorite = &model.Favorite{}
-		} else {
-			log.Logger.Error(err)
-			return nil, err
-		}
-	}
+
+	isFavorite := dao.GetUserIsFavoriteVideo(userID, video.ID)
+	log.Logger.Info("isFavorite: ", isFavorite)
+
 	count, err := dao.GetCommentCountByVideoID(video.ID)
 	if err != nil {
 		log.Logger.Error(err)
-		if errors.As(err, &gorm.ErrRecordNotFound) {
-			log.Logger.Info(gorm.ErrRecordNotFound)
-			count = 0
-		} else {
-			log.Logger.Error(err)
-			return nil, err
-		}
+		return nil, err
 	}
+
 	return &VideoResponse{
 		VideoID:       video.ID,
 		Author:        *userResponse,
@@ -60,7 +41,7 @@ func GetVideoResponseByVideoAndUserID(video *model.Video, userID int64) (*VideoR
 		CoverURL:      video.CoverURL,
 		FavoriteCount: favoriteCount,
 		CommentCount:  count,
-		IsFavorite:    favorite.Cancel == 0,
+		IsFavorite:    isFavorite,
 		Title:         video.Title,
 	}, nil
 }

@@ -33,12 +33,11 @@ func List(c *gin.Context) {
 
 	videoList, err := response.GetVideoListResponseByUserIDAndLatestTime(ownerID, latest_time)
 	if err != nil {
-		log.Logger.Error(err)
 		response.ErrRespWithMsg(c, err.Error())
 		return
 	}
 
-	log.Logger.Infof("video list: %v", videoList)
+	log.Logger.Infof("video list: %v", *videoList)
 
 	nextTime := ""
 	length := len(*videoList) - 1
