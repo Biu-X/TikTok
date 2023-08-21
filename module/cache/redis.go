@@ -1,4 +1,4 @@
-package redis
+package cache
 
 import (
 	"biu-x.org/TikTok/module/config"

@@ -10,8 +10,8 @@ import (
 	"biu-x.org/TikTok/module/config"
 	"biu-x.org/TikTok/module/ffmpeg"
 	"biu-x.org/TikTok/module/log"
+	"biu-x.org/TikTok/module/oss"
 	"biu-x.org/TikTok/module/response"
-	"biu-x.org/TikTok/module/s3"
 	"github.com/disintegration/imaging"
 	"github.com/gin-gonic/gin"
 	"time"
@@ -95,14 +95,14 @@ func Action(c *gin.Context) {
 	}
 
 	// 上传视频到对象存储
-	err = s3.PutFromFile(fileName, fileName)
+	err = oss.PutFromFile(fileName, fileName)
 	if err != nil {
 		log.Logger.Error(err)
 		return
 	}
 
 	// 上传封面到对象存储
-	err = s3.PutFromFile(cover, cover)
+	err = oss.PutFromFile(cover, cover)
 	if err != nil {
 		log.Logger.Error(err)
 		return
@@ -110,8 +110,8 @@ func Action(c *gin.Context) {
 
 	err = dao.CreateVideo(&model.Video{
 		AuthorID: int64(aid),
-		PlayURL:  fmt.Sprintf("https://%v.%v/%v", config.S3Config.Bucket, config.S3Config.Endpoint, fileName),
-		CoverURL: fmt.Sprintf("https://%v.%v/%v", config.S3Config.Bucket, config.S3Config.Endpoint, cover),
+		PlayURL:  fmt.Sprintf("%v%v", config.OSS_PREFIX, fileName),
+		CoverURL: fmt.Sprintf("%v%v", config.OSS_PREFIX, cover),
 		Title:    c.PostForm("title"),
 	})
 	if err != nil {
