@@ -8,6 +8,7 @@ import (
 	"biu-x.org/TikTok/module/middleware/logger"
 	comment_service "biu-x.org/TikTok/service/comment"
 	favorite_service "biu-x.org/TikTok/service/favorite"
+	feed_service "biu-x.org/TikTok/service/feed"
 	message_service "biu-x.org/TikTok/service/message"
 	publish_service "biu-x.org/TikTok/service/publish"
 	relation_service "biu-x.org/TikTok/service/relation"
@@ -16,7 +17,7 @@ import (
 
 func NewAPI() *gin.Engine {
 	r := gin.New()
-	r.Use(logger.DefaultLogger(), gin.Recovery())
+	r.Use(logger.DefaultLogger(), gin.Recovery()) // 日志中间件
 
 	r.GET("/", func(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{
@@ -27,7 +28,7 @@ func NewAPI() *gin.Engine {
 	tiktok := r.Group("/douyin/")
 	{
 		// 视频流接口
-		tiktok.GET("feed/")
+		tiktok.GET("feed/", feed_service.List)
 
 		user := tiktok.Group("user/")
 		{

@@ -200,7 +200,6 @@ func SetFollowRelationByID(id int64, cancel bool) error {
 // 粉丝取关用户
 func SetFollowCancelByBoth(userID int64, followerID int64) error {
 	f := query.Follow
-
 	_, err := f.Where(f.UserID.Eq(userID), f.FollowerID.Eq(followerID)).Update(f.Cancel, 1)
 	if err != nil {
 		log.Logger.Error(err.Error())
@@ -211,7 +210,7 @@ func SetFollowCancelByBoth(userID int64, followerID int64) error {
 }
 
 // 粉丝关注用户，若之前已经关注又取关，则修改脏位
-func SetFollowFollowByBoth(userID int64, followerID int64) error {
+func SetFollowingByBoth(userID int64, followerID int64) error {
 	// 查询两人之间的关注关系，若不存在则创建
 	_, err := GetFollowRelation(userID, followerID)
 	if errors.Is(err, gorm.ErrRecordNotFound) {
@@ -225,6 +224,7 @@ func SetFollowFollowByBoth(userID int64, followerID int64) error {
 		log.Logger.Debug(err.Error())
 		return err
 	}
+	log.Logger.Info("GetFollowRelation Success")
 
 	// 若存在则修改脏位
 	f := query.Follow
