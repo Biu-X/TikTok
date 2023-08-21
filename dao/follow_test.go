@@ -18,10 +18,10 @@ func init() {
 }
 
 // 测试正常插入关注关系和查询插入关系的逻辑
+// ----------------------------
+// Test for CreateFollow 每次测试的时候，需要修改参数的值（不允许重复关注）
+// ----------------------------
 func Test_FollowDAO(t *testing.T) {
-	// ----------------------------
-	// Test for CreateFollow 每次测试的时候，需要修改参数的值（不允许重复关注）
-	// ----------------------------
 	userId, followId := 11, 12
 	err := CreateFollow(int64(userId), int64(followId))
 	if err != nil {
@@ -51,10 +51,10 @@ func Test_FollowDAO(t *testing.T) {
 }
 
 // 测试获取不到记录时的逻辑
+// ----------------------------
+// Test for CreateFollow 每次测试的时候，需要修改参数的值（不允许重复关注）
+// ----------------------------
 func Test_FollowRelationNotFound(t *testing.T) {
-	// ----------------------------
-	// Test for CreateFollow 每次测试的时候，需要修改参数的值（不允许重复关注）
-	// ----------------------------
 	_, err := GetFollowRelation(0, 0) // 故意触发 record not found，不允许报错，应该输出的是 Info 信息
 	if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
 		t.Error("GetFollowByBoth fail", err)
