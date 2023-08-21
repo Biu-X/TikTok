@@ -130,7 +130,7 @@ func Init() {
 	}
 
 	ossType := config.GetString("oss.type")
-	fmt.Printf("oss type: %v", ossType)
+	fmt.Printf("oss type: %v\n", ossType)
 	switch ossType {
 	case "minio":
 		OSS_PREFIX = fmt.Sprintf("http://%v/%v/", OSSConfig.Endpoint, OSSConfig.Bucket)
@@ -139,7 +139,7 @@ func Init() {
 	default:
 		OSS_PREFIX = fmt.Sprintf("http://%v/%v/", OSSConfig.Endpoint, OSSConfig.Bucket)
 	}
-	fmt.Printf("OSS PREFIX: %v", OSS_PREFIX)
+	fmt.Printf("OSS PREFIX: %v\n", OSS_PREFIX)
 }
 
 func Get(key string) interface{} {
