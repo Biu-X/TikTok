@@ -3,9 +3,7 @@ package favorite
 import (
 	"strconv"
 
-	"biu-x.org/TikTok/dal/model"
 	"biu-x.org/TikTok/dao"
-	"biu-x.org/TikTok/module/log"
 	"biu-x.org/TikTok/module/response"
 	"biu-x.org/TikTok/module/util"
 	"github.com/gin-gonic/gin"
@@ -20,21 +18,13 @@ func Action(c *gin.Context) {
 
 	// 根据 action_type 执行不同的操作
 	if actionType == 1 {
-		isLove := dao.GetUserIsFavoriteVideo(userID, videoID)
-		if isLove {
-			log.Logger.Info("用户已经点赞过该视频")
-			return
-		}
-		err := dao.CreateFavorite(&model.Favorite{
-			UserID:  userID,
-			VideoID: videoID,
-		})
+		err := dao.SetFavoriteByUserIDAndVideoID(userID, videoID)
 		if err != nil {
 			response.ErrRespWithMsg(c, err.Error())
 			return
 		}
 	} else {
-		err := dao.SetFavoriteCancelByVideoID(videoID, 1)
+		err := dao.SetFavoriteCancelByUserIDAndVideoID(userID, videoID)
 		if err != nil {
 			response.ErrRespWithMsg(c, err.Error())
 			return
