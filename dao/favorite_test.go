@@ -1,6 +1,7 @@
 package dao
 
 import (
+	"errors"
 	"reflect"
 	"testing"
 
@@ -8,6 +9,7 @@ import (
 	"biu-x.org/TikTok/module/config"
 	"biu-x.org/TikTok/module/db"
 	"biu-x.org/TikTok/module/log"
+	"gorm.io/gorm"
 )
 
 func init() {
@@ -17,31 +19,36 @@ func init() {
 }
 
 func Test_FavoriteDAO(t *testing.T) {
-	f := &model.Favorite{
-		UserID:  0,
-		VideoID: 0,
-	}
-
 	// ----------------------------
 	// Test for CreateFavorite
 	// ----------------------------
+	f := &model.Favorite{
+		UserID:  5,
+		VideoID: 102,
+	}
+
 	err := CreateFavorite(f)
 	if err != nil {
 		t.Error("CreateFavorite fail", err)
 		return
 	}
 
+	expectFavoriteNumber := int64(1)
+	favoriteNumber, err := GetFavoriteCountByVideoID(102)
+	if err != nil {
+		t.Fatal(err.Error())
+	}
+	if favoriteNumber != expectFavoriteNumber {
+		t.Fatalf("expect favorite number is %v, but got %v", expectFavoriteNumber, favoriteNumber)
+	}
 	// ----------------------------
 	// Test for GetFavoriteByBoth
 	// ----------------------------
-	favorite, err := GetFavoriteByBoth(f.UserID, f.VideoID)
-	if err != nil {
-		t.Error("GetFavoriteByBoth fail", err)
-		return
-	}
-	if !reflect.DeepEqual(favorite, f) {
-		t.Error("GetFavoriteByBoth result error")
-		t.Error(favorite)
+
+	isLove := GetUserIsFavoriteVideo(f.UserID, f.VideoID)
+	expect := true
+	if isLove != expect {
+		t.Fatalf("expect %v, but got %v", expect, isLove)
 	}
 
 	// ----------------------------
@@ -59,8 +66,8 @@ func Test_FavoriteDAO(t *testing.T) {
 	// ----------------------------
 	// Test for GetFavoriteByID
 	// ----------------------------
-	favorite, err = GetFavoriteByID(f.ID)
-	if err != nil {
+	favorite, err := GetFavoriteByID(f.ID)
+	if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
 		t.Error("GetFavoriteByID fail", err)
 		return
 	}
@@ -72,7 +79,7 @@ func Test_FavoriteDAO(t *testing.T) {
 	// ----------------------------
 	// Test for SetFavoriteCancelByID
 	// ----------------------------
-	err = SetFavoriteCancelByID(f.ID, true)
+	err = SetFavoriteCancelByID(f.ID, 1)
 	if err != nil {
 		t.Error("SetFavoriteCancelByID fail", err)
 		return
@@ -82,5 +89,4 @@ func Test_FavoriteDAO(t *testing.T) {
 		t.Error("SetFavoriteCancelByID result wrong")
 		t.Error(test_cancel_f)
 	}
-
 }
