@@ -37,10 +37,10 @@ func List(c *gin.Context) {
 		return
 	}
 
-	log.Logger.Infof("video list: %v", *videoList)
+	log.Logger.Infof("video list: %v", videoList)
 
 	nextTime := ""
-	length := len(*videoList) - 1
+	length := len(videoList) - 1
 	if length < 0 {
 		length = 0
 		nextTime = "0"
@@ -48,7 +48,7 @@ func List(c *gin.Context) {
 
 	if length > 0 {
 		log.Logger.Debugf("length: %v", length)
-		t, err := dao.GetVideoCreateTimeByID((*videoList)[length].VideoID)
+		t, err := dao.GetVideoCreateTimeByID(videoList[length].VideoID)
 		if err != nil {
 			log.Logger.Error(err)
 			nextTime = "0"
@@ -59,6 +59,6 @@ func List(c *gin.Context) {
 
 	response.OKRespWithData(c, map[string]interface{}{
 		"next_time":  nextTime,
-		"video_list": *videoList,
+		"video_list": videoList,
 	})
 }
