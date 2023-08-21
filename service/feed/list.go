@@ -20,9 +20,6 @@ func List(c *gin.Context) {
 	if latest_time == "0" || len(latest_time) == 0 {
 		latest_time = strconv.FormatInt(time.Now().UnixMilli(), 10)
 	}
-	// 判断是否登陆
-	_, ok := c.Get("is_login")
-	log.Logger.Infof("current login status: %v", ok)
 
 	videoList, err := response.GetVideoListResponseByOwnerIDAndLatestTime(ownerID, latest_time)
 	if err != nil {
