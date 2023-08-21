@@ -47,7 +47,7 @@ func List(c *gin.Context) {
 
 	nextTime := ""
 	length := len(videoList) - 1
-	if length <= 0 {
+	if length < 0 {
 		length = 0
 		nextTime = "0"
 	}

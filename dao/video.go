@@ -62,7 +62,7 @@ func DeleteVideoByID(id int64) (err error) {
 // GetVideosByLatestTimeOrderByDESC 通过时间点来获取比该时间点早的十个视频
 func GetVideosByLatestTimeOrderByDESC(latestTime time.Time) ([]*model.Video, error) {
 	v := query.Video
-	videos, err := v.Where(v.CreatedAt.Lt(latestTime)).Order().Limit(10).Find()
+	videos, err := v.Where(v.CreatedAt.Lt(latestTime)).Order(v.CreatedAt.Desc()).Limit(10).Find()
 	if err != nil {
 		log.Logger.Error(err)
 		return nil, err
