@@ -14,6 +14,8 @@ import (
 // 如果用户携带的 token 验证通过，将 user_id 存入上下文中然后执行下一个 Handler
 func RequireAuth() gin.HandlerFunc {
 	return func(c *gin.Context) {
+		url := c.Request.URL
+		log.Logger.Infof("url: %v", url.Path)
 		// 从输入的 url 中查询 token 值
 		token := c.Query("token")
 		if len(token) == 0 {
@@ -52,6 +54,7 @@ func RequireAuth() gin.HandlerFunc {
 
 		userId := claims.ID
 		c.Set("user_id", userId)
+		c.Set("is_login", true)
 		// 放行
 		c.Next()
 	}
@@ -61,6 +64,8 @@ func RequireAuth() gin.HandlerFunc {
 // 验证 token 有效性，如果有效，解析出用户 id 存入上下文，否则存入默认值 0
 func RequireAuthWithoutLogin() gin.HandlerFunc {
 	return func(c *gin.Context) {
+		url := c.Request.URL
+		log.Logger.Infof("url: %v", url.Path)
 		token := c.Query("token")
 		userId := "0"
 		if len(token) != 0 {
@@ -75,6 +80,7 @@ func RequireAuthWithoutLogin() gin.HandlerFunc {
 
 			userId = cliams.ID
 			c.Set("user_id", userId)
+			c.Set("is_login", true)
 			c.Next()
 		} else {
 			c.AbortWithStatus(http.StatusOK)

@@ -11,32 +11,34 @@ import (
 	"time"
 )
 
-func GetVideoList(targetID, ownerID int64, latestTime ...string) ([]response.VideoResponse, error) {
+func GetVideoList(targetID, ownerID int64, latestTime string) ([]response.VideoResponse, error) {
 	var videoRespList []response.VideoResponse
 	var videoList []*model.Video
 	var err error
-	if latestTime == nil {
-		videoList, err = dao.GetVideoByAuthorID(targetID)
-		if err != nil {
-			log.Logger.Error(err)
-			return nil, err
-		}
-	} else if latestTime[0] == "0" {
-		now := time.Now().UnixMilli()
-		log.Logger.Debugf("now: %v", now)
-		log.Logger.Debugf("now to time: %v", time.UnixMilli(now))
-		videoList, err = dao.GetVideoListByLatestTimeOrderByDESC(time.UnixMilli(now))
-		if err != nil {
-			return nil, err
-		}
+	var latest_time int64
+
+	if len(latestTime) == 0 {
+		latest_time = 0
 	} else {
-		ms, err := strconv.ParseInt(latestTime[0], 10, 64)
+		latest_time, _ = strconv.ParseInt(latestTime, 10, 64)
+	}
+	latest_time_ms := time.UnixMilli(latest_time)
+
+	if targetID == 0 || ownerID == 0 { // 如果 targetID 或者 ownerID 为 0，则通过时间戳来获取视频, 即未登录状态
+		videoList, err = dao.GetVideosByLatestTimeOrderByDESC(latest_time_ms)
 		if err != nil {
 			log.Logger.Error(err)
 			return nil, err
 		}
-		videoList, err = dao.GetVideoListByLatestTimeOrderByDESC(time.UnixMilli(ms))
+	} else if targetID > 0 && targetID != ownerID { // 查别人的视频列表
+		videoList, err = dao.GetVideosByAuthorID(targetID)
 		if err != nil {
+			return nil, err
+		}
+	} else { // 查自己的视频列表
+		videoList, err = dao.GetVideosByAuthorID(ownerID)
+		if err != nil {
+			log.Logger.Error(err)
 			return nil, err
 		}
 	}
@@ -44,28 +46,31 @@ func GetVideoList(targetID, ownerID int64, latestTime ...string) ([]response.Vid
 	for _, video := range videoList {
 		userResponse, err := response.GetUserResponseByID(video.AuthorID, ownerID)
 		if err != nil {
-			log.Logger.Error(err)
 			if errors.As(err, &gorm.ErrRecordNotFound) {
+				log.Logger.Info(gorm.ErrRecordNotFound)
 				userResponse = &response.UserResponse{}
 			} else {
+				log.Logger.Error(err)
 				continue
 			}
 		}
 		favoriteCount, err := dao.GetFavoriteCountByVideoID(video.ID)
 		if err != nil {
-			log.Logger.Error(err)
 			if errors.As(err, &gorm.ErrRecordNotFound) {
+				log.Logger.Info(gorm.ErrRecordNotFound)
 				favoriteCount = 0
 			} else {
+				log.Logger.Error(err)
 				continue
 			}
 		}
 		favorite, err := dao.GetFavoriteByBoth(ownerID, video.ID)
 		if err != nil {
-			log.Logger.Error(err)
 			if errors.As(err, &gorm.ErrRecordNotFound) {
+				log.Logger.Info(gorm.ErrRecordNotFound)
 				favorite = &model.Favorite{}
 			} else {
+				log.Logger.Error(err)
 				continue
 			}
 		}
@@ -73,8 +78,10 @@ func GetVideoList(targetID, ownerID int64, latestTime ...string) ([]response.Vid
 		if err != nil {
 			log.Logger.Error(err)
 			if errors.As(err, &gorm.ErrRecordNotFound) {
+				log.Logger.Info(gorm.ErrRecordNotFound)
 				count = 0
 			} else {
+				log.Logger.Error(err)
 				continue
 			}
 		}
@@ -89,58 +96,5 @@ func GetVideoList(targetID, ownerID int64, latestTime ...string) ([]response.Vid
 			Title:         video.Title,
 		})
 	}
-	return videoRespList, nil
-}
-
-// 在没有登陆的情况下调用
-func GetVideoListDefault() ([]response.VideoResponse, error) {
-	now := time.Now()
-	videos, err := dao.GetVideoListByLatestTimeOrderByDESC(now)
-	if err != nil {
-		log.Logger.Error(err)
-		return nil, err
-	}
-
-	var videoRespList []response.VideoResponse
-	for _, video := range videos {
-		userResponse, err := response.GetUserResponseByUserId(video.AuthorID)
-		if err != nil {
-			log.Logger.Error(err)
-			if errors.As(err, &gorm.ErrRecordNotFound) {
-				userResponse = &response.UserResponse{}
-			} else {
-				continue
-			}
-		}
-		favoriteCount, err := dao.GetFavoriteCountByVideoID(video.ID)
-		if err != nil {
-			log.Logger.Error(err)
-			if errors.As(err, &gorm.ErrRecordNotFound) {
-				favoriteCount = 0
-			} else {
-				continue
-			}
-		}
-		count, err := dao.GetCommentCountByVideoID(video.ID)
-		if err != nil {
-			log.Logger.Error(err)
-			if errors.As(err, &gorm.ErrRecordNotFound) {
-				count = 0
-			} else {
-				continue
-			}
-		}
-		videoRespList = append(videoRespList, response.VideoResponse{
-			VideoID:       video.ID,
-			Author:        *userResponse,
-			PlayURL:       video.PlayURL,
-			CoverURL:      video.CoverURL,
-			FavoriteCount: favoriteCount,
-			CommentCount:  count,
-			IsFavorite:    false,
-			Title:         video.Title,
-		})
-	}
-
 	return videoRespList, nil
 }
