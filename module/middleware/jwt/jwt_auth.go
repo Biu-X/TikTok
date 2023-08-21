@@ -1,11 +1,10 @@
-package auth
+package jwt
 
 import (
 	"net/http"
 	"time"
 
 	"biu-x.org/TikTok/module/log"
-	"biu-x.org/TikTok/module/middleware/jwt"
 	"biu-x.org/TikTok/module/response"
 	"github.com/gin-gonic/gin"
 )
@@ -33,7 +32,7 @@ func RequireAuth() gin.HandlerFunc {
 		log.Logger.Info("token 读取成功")
 		// auth = [[header][cliams][signature]]
 		// 解析 token
-		claims, err := jwt.ParseToken(token)
+		claims, err := ParseToken(token)
 		if err != nil {
 			c.AbortWithStatusJSON(http.StatusOK, response.AuthResponse{
 				StatusCode:    -1,
@@ -64,7 +63,7 @@ func RequireAuthWithoutLogin() gin.HandlerFunc {
 		token := c.Query("token")
 		userId := "0"
 		if len(token) != 0 {
-			cliams, err := jwt.ParseToken(token)
+			cliams, err := ParseToken(token)
 			if err != nil {
 				c.AbortWithStatusJSON(http.StatusOK, response.AuthResponse{
 					StatusCode:    -1,
@@ -80,4 +79,31 @@ func RequireAuthWithoutLogin() gin.HandlerFunc {
 			c.AbortWithStatus(http.StatusOK)
 		}
 	}
+}
+
+// RequireAuthCookie ，使用 cookie 持久化。 本实现暂时用不到，需要网页端时直接修改为这种持久化存储实现即可
+func RequireAuthCookie(c *gin.Context) {
+	// get the coolie off request
+	tokenString, err := c.Cookie("Authorization")
+	if err != nil {
+		c.AbortWithStatus(http.StatusUnauthorized)
+	}
+
+	// decode tokenString to jwt.token(user secret)
+	claims, err := ParseToken(tokenString)
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, gin.H{
+			"Messgae": err.Error(),
+		})
+		return
+	}
+
+	if float64(time.Now().Unix()) > float64(claims.ExpiresAt.Second()) {
+		c.AbortWithStatus(http.StatusUnauthorized)
+	}
+
+	// 验证通过，将用户 ID 添加到 context 中
+	c.Set("user_id", claims.ID)
+	// 放行
+	c.Next()
 }
