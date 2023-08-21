@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"strconv"
+	"strings"
 
 	"biu-x.org/TikTok/dao"
 	"biu-x.org/TikTok/model"
@@ -63,9 +64,12 @@ func Action(c *gin.Context) {
 
 	ts := time.Now().Local().UnixNano()
 	log.Logger.Infof("timestamp: %v", ts)
+
+	str := strings.Split(file.Filename, ".")
+	log.Logger.Infof("str: %v", str)
 	// fileName 即是保存临时文件的路径与文件名，也是上传到对象存储的路径也文件名
-	fileName := fmt.Sprintf("%v/%v-%v", userID, ts, file.Filename)
-	cover := fmt.Sprintf("%v/%v-%v-cover.jpeg", aid, ts, file.Filename)
+	fileName := fmt.Sprintf("%v/%v.%v", userID, ts, str[len(str)-1])
+	cover := fmt.Sprintf("%v/%v-cover.jpeg", aid, ts)
 
 	// 上传文件至指定的完整文件路径
 	err = c.SaveUploadedFile(file, fileName)

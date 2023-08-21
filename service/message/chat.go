@@ -9,7 +9,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// Char 聊天记录 /douyin/message/chat/
+// Chat 聊天记录 /douyin/message/chat/
 func Chat(c *gin.Context) {
 	userID, _ := strconv.ParseInt(c.GetString("user_id"), 10, 64)
 	toUserID, _ := strconv.ParseInt(c.Query("to_user_id"), 10, 64)
