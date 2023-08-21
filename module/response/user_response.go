@@ -2,11 +2,12 @@ package response
 
 import "biu-x.org/TikTok/dao"
 
+// GetUserResponseByUserId 返回用户信息，id 为当前登录用户 id
 func GetUserResponseByUserId(id int64) (*UserResponse, error) {
 	return GetUserResponseByID(id, id)
 }
 
-// 返回用户信息，id 为要获取的用户 id，userID 为当前登录用户 id
+// GetUserResponseByID 返回用户信息，id 为要获取的用户 id，userID 为当前登录用户 id
 func GetUserResponseByID(id int64, userID int64) (*UserResponse, error) {
 	isFollow, err := dao.GetIsFollowByBothID(id, userID)
 	if err != nil { // 日志在上层调用时已经打印无需再打印

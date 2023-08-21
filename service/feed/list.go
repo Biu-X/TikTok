@@ -4,7 +4,6 @@ import (
 	"biu-x.org/TikTok/dao"
 	"biu-x.org/TikTok/module/log"
 	"biu-x.org/TikTok/module/response"
-	"biu-x.org/TikTok/service/common"
 	"github.com/gin-gonic/gin"
 	"strconv"
 	"time"
@@ -22,21 +21,17 @@ func List(c *gin.Context) {
 	log.Logger.Infof("current login status: %v", ok)
 
 	var ownerID int64
-	var targetID int64
 	if !ok {
 		// 未登录
 		ownerID = 0
-		targetID = 0
 	} else {
 		// 已登录
 		// 从RequireAuth获取当前登陆的用户 id
 		ownerID, _ = strconv.ParseInt(c.GetString("user_id"), 10, 64)
-		targetID, _ = strconv.ParseInt(c.Query("user_id"), 10, 64)
 	}
 	log.Logger.Infof("owner id: %v", ownerID)
-	log.Logger.Infof("target id: %v", targetID)
 
-	videoList, err := common.GetVideoList(targetID, ownerID, latest_time)
+	videoList, err := response.GetVideoListResponseByUserIDAndLatestTime(ownerID, latest_time)
 	if err != nil {
 		log.Logger.Error(err)
 		response.ErrRespWithMsg(c, err.Error())
@@ -46,7 +41,7 @@ func List(c *gin.Context) {
 	log.Logger.Infof("video list: %v", videoList)
 
 	nextTime := ""
-	length := len(videoList) - 1
+	length := len(*videoList) - 1
 	if length < 0 {
 		length = 0
 		nextTime = "0"
@@ -54,7 +49,7 @@ func List(c *gin.Context) {
 
 	if length > 0 {
 		log.Logger.Debugf("length: %v", length)
-		t, err := dao.GetVideoCreateTimeByID(videoList[length].VideoID)
+		t, err := dao.GetVideoCreateTimeByID((*videoList)[length].VideoID)
 		if err != nil {
 			log.Logger.Error(err)
 			nextTime = "0"
@@ -65,6 +60,6 @@ func List(c *gin.Context) {
 
 	response.OKRespWithData(c, map[string]interface{}{
 		"next_time":  nextTime,
-		"video_list": videoList,
+		"video_list": *videoList,
 	})
 }
