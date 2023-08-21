@@ -18,8 +18,8 @@ func init() {
 
 func Test_FavoriteDAO(t *testing.T) {
 	f := &model.Favorite{
-		UserID:  0,
-		VideoID: 0,
+		UserID:  3,
+		VideoID: 3,
 	}
 
 	// ----------------------------
@@ -72,7 +72,7 @@ func Test_FavoriteDAO(t *testing.T) {
 	// ----------------------------
 	// Test for SetFavoriteCancelByID
 	// ----------------------------
-	err = SetFavoriteCancelByID(f.ID, true)
+	err = SetFavoriteCancelByID(f.ID, 1)
 	if err != nil {
 		t.Error("SetFavoriteCancelByID fail", err)
 		return
