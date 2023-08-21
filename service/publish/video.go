@@ -110,8 +110,8 @@ func Action(c *gin.Context) {
 
 	err = dao.CreateVideo(&model.Video{
 		AuthorID: int64(aid),
-		PlayURL:  fmt.Sprintf("https://%v.%v/%v", config.OSSConfig.Bucket, config.OSSConfig.Endpoint, fileName),
-		CoverURL: fmt.Sprintf("https://%v.%v/%v", config.OSSConfig.Bucket, config.OSSConfig.Endpoint, cover),
+		PlayURL:  fmt.Sprintf("%v%v", config.OSS_PREFIX, fileName),
+		CoverURL: fmt.Sprintf("%v%v", config.OSS_PREFIX, cover),
 		Title:    c.PostForm("title"),
 	})
 	if err != nil {
