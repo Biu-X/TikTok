@@ -23,6 +23,7 @@ func HighlightString(color string, str string) string {
 	return colorMap[color] + str + colorMap["reset"]
 }
 
+// StructToString 结构体转字符串
 func StructToString(s interface{}) string {
 	v, _ := json.Marshal(s)
 	return string(v)
