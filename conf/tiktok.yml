@@ -24,9 +24,9 @@ redis:
 
 oss:
   type: minio # minio,cos 等等
-  endpoint: 192.168.1.4:9000
-  accessKey: ChYm7ufIwNAOzq6PQPCA
-  secretKey: udicP52IwRbmo2hf6lFvjUS7NP5BhlAdsGNIuDE5
+  endpoint: 192.168.0.107:9000
+  accessKey: H6x2IwZ3AWaiJ5zf0x0w
+  secretKey: MIHvpgrBmFp8yb36DgVOaCS2hNjstyZlSxeeT7ez
   region: local
   bucket: tiktok
   useSsl: false
