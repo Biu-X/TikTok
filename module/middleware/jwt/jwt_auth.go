@@ -78,15 +78,15 @@ func RequireAuthWithoutLogin() gin.HandlerFunc {
 				return
 			}
 			log.Logger.Infof("token 获取成功并验证通过,无需登录")
-			log.Logger.Info("user_id:", userId)
 			userId = cliams.ID
 			isLogin = true
-			c.Next()
 		} else {
 			userId = "0"
 		}
 		c.Set("user_id", userId)
 		c.Set("is_login", isLogin)
+		log.Logger.Infof("user_id: %v", userId, "is_login: %v", isLogin)
+		// 放行
 		c.Next()
 	}
 }

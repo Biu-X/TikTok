@@ -62,11 +62,11 @@ func NewAPI() *gin.Engine {
 
 		comment := tiktok.Group("comment/")
 		{
+			// 评论列表
+			comment.GET("list/", comment_service.List)
 			comment.Use(jwt.RequireAuth())
 			// 评论操作
 			comment.POST("action/", comment_service.Action)
-			// 评论列表
-			comment.GET("list/", comment_service.List)
 		}
 
 		relation := tiktok.Group("relation/")
