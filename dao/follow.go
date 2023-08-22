@@ -85,7 +85,7 @@ func GetFollowerIDsByUserID(userID int64) ([]int64, error) {
 	return followerIDs, nil
 }
 
-// GetFollowerCountByUserID查询用户粉丝数量
+// GetFollowerCountByUserID 查询用户粉丝数量
 func GetFollowerCountByUserID(userID int64) (int64, error) {
 	f := query.Follow
 
