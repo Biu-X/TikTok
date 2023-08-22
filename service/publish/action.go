@@ -6,24 +6,25 @@ import (
 	"strconv"
 	"strings"
 
-	"biu-x.org/TikTok/dao"
 	"biu-x.org/TikTok/dal/model"
+	"biu-x.org/TikTok/dao"
 	"biu-x.org/TikTok/module/config"
 	"biu-x.org/TikTok/module/ffmpeg"
 	"biu-x.org/TikTok/module/log"
 	"biu-x.org/TikTok/module/oss"
 	"biu-x.org/TikTok/module/response"
-	"github.com/disintegration/imaging"
 	"github.com/gin-gonic/gin"
 	"time"
 )
 
-// Action 投稿操作 /douyin/publish/action/
+// Action /douyin/publish/action/ - 视频投稿
 func Action(c *gin.Context) {
+	tempfolder := "TikTokOSS"
+
 	// 在完成上传视频后把临时文件都删除
 	defer func() {
 		path := c.GetString("user_id")
-		err := os.RemoveAll(path)
+		err := os.RemoveAll(fmt.Sprintf("%v/%v", tempfolder, path))
 		if err != nil {
 			log.Logger.Error(err)
 			return
@@ -68,8 +69,8 @@ func Action(c *gin.Context) {
 	str := strings.Split(file.Filename, ".")
 	log.Logger.Infof("str: %v", str)
 	// fileName 即是保存临时文件的路径与文件名，也是上传到对象存储的路径也文件名
-	fileName := fmt.Sprintf("%v/%v.%v", userID, ts, str[len(str)-1])
-	cover := fmt.Sprintf("%v/%v-cover.jpeg", aid, ts)
+	fileName := fmt.Sprintf("%v/%v/%v.%v", tempfolder, userID, ts, str[len(str)-1])
+	cover := fmt.Sprintf("%v/%v/%v-cover.jpeg", tempfolder, aid, ts)
 
 	// 上传文件至指定的完整文件路径
 	err = c.SaveUploadedFile(file, fileName)
@@ -78,25 +79,7 @@ func Action(c *gin.Context) {
 		return
 	}
 
-	// 获取视频的第十帧截图
-	image, err := ffmpeg.GetCoverFromVideo(fileName, 10)
-	if err != nil {
-		log.Logger.Error(err)
-		return
-	}
-
-	img, err := imaging.Decode(image)
-	if err != nil {
-		log.Logger.Error(err)
-		return
-	}
-
-	// 保存截图到临时文件
-	err = imaging.Save(img, cover)
-	if err != nil {
-		log.Logger.Error(err)
-		return
-	}
+	ffmpeg.CoverSnap(fileName, cover)
 
 	// 上传视频到对象存储
 	err = oss.PutFromFile(fileName, fileName)

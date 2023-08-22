@@ -6,13 +6,13 @@ import (
 	"biu-x.org/TikTok/dao"
 	"biu-x.org/TikTok/module/log"
 	"biu-x.org/TikTok/module/response"
+	"biu-x.org/TikTok/module/util"
 	"github.com/gin-gonic/gin"
 )
 
-// List 评论列表 /douyin/comment/list/
+// List /douyin/comment/list/ - 视频评论列表
 func List(c *gin.Context) {
-	// 从 RequireAuth 处读取 user_id
-	userID, _ := strconv.ParseInt(c.GetString("user_id"), 10, 64)
+	userID := util.GetUserIDFromGinContext(c)
 	videoIDStr := c.Query("video_id")
 	videoID, _ := strconv.ParseInt(videoIDStr, 10, 64)
 	commentList, err := dao.GetCommentByVideoID(videoID)
@@ -22,7 +22,7 @@ func List(c *gin.Context) {
 		return
 	}
 
-	commentResponseList := []response.CommentResponse{}
+	var commentResponseList []response.CommentResponse
 	for _, comment := range commentList {
 		user, err := response.GetUserResponseByID(comment.UserID, userID)
 		if err != nil {

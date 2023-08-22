@@ -1,29 +1,27 @@
 package relation
 
 import (
-	"strconv"
-
 	"biu-x.org/TikTok/dao"
 	"biu-x.org/TikTok/module/log"
 	"biu-x.org/TikTok/module/response"
+	"biu-x.org/TikTok/module/util"
 	"github.com/gin-gonic/gin"
 )
 
 // FollowList /douyin/relatioin/follow/list/ - 用户关注列表
 func FollowList(c *gin.Context) {
-	// 从 RequireAuth 处读取 user_id
-	userId, _ := strconv.ParseInt(c.GetString("user_id"), 10, 64)
+	userID := util.GetUserIDFromGinContext(c)
 
 	var userList []response.UserResponse
 
-	followIDs, err := dao.GetFollowingIdsByUserID(userId)
+	followIDs, err := dao.GetFollowingIdsByUserID(userID)
 	if err != nil {
 		response.ErrRespWithMsg(c, err.Error())
 		return
 	}
 
 	for _, followID := range followIDs {
-		userRes, err := response.GetUserResponseByID(followID, userId)
+		userRes, err := response.GetUserResponseByID(followID, userID)
 		if err != nil {
 			log.Logger.Error(err)
 			response.ErrRespWithMsg(c, err.Error())

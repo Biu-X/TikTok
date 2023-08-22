@@ -3,28 +3,28 @@ package comment
 import (
 	"strconv"
 
-	"biu-x.org/TikTok/dao"
 	"biu-x.org/TikTok/dal/model"
+	"biu-x.org/TikTok/dao"
 	"biu-x.org/TikTok/module/log"
 	"biu-x.org/TikTok/module/response"
+	"biu-x.org/TikTok/module/util"
 	"github.com/gin-gonic/gin"
 )
 
-// Action 评论操作 /douyin/comment/action/
+// Action /douyin/comment/action/ - 评论操作
 func Action(c *gin.Context) {
-	// 从 RequireAuth 处读取 user_id
-	userID, _ := strconv.ParseInt(c.GetString("user_id"), 10, 64)
+	userID := util.GetUserIDFromGinContext(c)
 	videoIDStr := c.Query("video_id")
 	actionTypeStr := c.Query("action_type")
 	videoID, _ := strconv.ParseInt(videoIDStr, 10, 64)
 	actionType, _ := strconv.Atoi(actionTypeStr) // 1-评论, 2-删除评论
-	
+
 	if actionType == 1 {
 		// create comment
 		commentText := c.Query("comment_text")
 		comment := &model.Comment{
-			UserID:  int64(userID),
-			VideoID: int64(videoID),
+			UserID:  userID,
+			VideoID: videoID,
 			Content: commentText,
 		}
 		err := dao.CreateComment(comment)

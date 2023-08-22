@@ -39,11 +39,18 @@ type OSS struct {
 	HostnameImmutable *bool `yaml:"hostnameImmutable"`
 }
 
+type Default struct {
+	Avatar        string `json:"avatar"`
+	BackgroundIMG string `json:"backgroundIMG"`
+	Signature     string `json:"signature"`
+}
+
 var (
 	mysql      MySQL
 	redis      Redis
 	OSSConfig  OSS
 	OSS_PREFIX string
+	DEFAULT    Default
 )
 
 func Init() {
@@ -97,6 +104,12 @@ func Init() {
 				"password": "123456",
 				"database": 0,
 			})
+
+			config.SetDefault("default", map[string]interface{}{
+				"avatar":        "",
+				"backgroundIMG": "",
+				"signature":     "",
+			})
 		}
 	}
 	err := config.UnmarshalKey("mysql", &mysql)
@@ -110,6 +123,10 @@ func Init() {
 	err = config.UnmarshalKey("oss", &OSSConfig)
 	if err != nil {
 		log.Fatalf("unable to decode into oss struct, %v", err)
+	}
+	err = config.UnmarshalKey("default", &DEFAULT)
+	if err != nil {
+		log.Fatalf("unable to decode into default struct, %v", err)
 	}
 
 	// use env var to set oss config when some field is nil
@@ -140,6 +157,8 @@ func Init() {
 		OSS_PREFIX = fmt.Sprintf("http://%v/%v/", OSSConfig.Endpoint, OSSConfig.Bucket)
 	}
 	fmt.Printf("OSS PREFIX: %v\n", OSS_PREFIX)
+
+	fmt.Printf("default: %v\n", DEFAULT)
 }
 
 func Get(key string) interface{} {

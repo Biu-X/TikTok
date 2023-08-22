@@ -1,8 +1,9 @@
 package v1
 
 import (
-	"github.com/gin-gonic/gin"
 	"net/http"
+
+	"github.com/gin-gonic/gin"
 
 	"biu-x.org/TikTok/module/middleware/jwt"
 	"biu-x.org/TikTok/module/middleware/logger"
@@ -28,17 +29,17 @@ func NewAPI() *gin.Engine {
 	tiktok := r.Group("/douyin/")
 	{
 		// 视频流接口
-		tiktok.GET("feed/", feed_service.List)
+		tiktok.GET("feed/", jwt.RequireAuthWithoutLogin(), feed_service.List)
 
 		user := tiktok.Group("user/")
 		{
 			// 用户注册
-			user.POST("register/", user_service.Signup)
+			user.POST("register/", user_service.Register)
 			// 用户登录
 			user.POST("login/", user_service.Login)
 			// 用户信息
 			user.Use(jwt.RequireAuth())
-			user.GET("", user_service.UserInfo)
+			user.GET("", user_service.Info)
 		}
 
 		publish := tiktok.Group("publish/")
@@ -61,11 +62,11 @@ func NewAPI() *gin.Engine {
 
 		comment := tiktok.Group("comment/")
 		{
+			// 评论列表
+			comment.GET("list/", comment_service.List)
 			comment.Use(jwt.RequireAuth())
 			// 评论操作
 			comment.POST("action/", comment_service.Action)
-			// 评论列表
-			comment.GET("list/", comment_service.List)
 		}
 
 		relation := tiktok.Group("relation/")

@@ -2,13 +2,13 @@ package logger
 
 import (
 	"bytes"
-	"encoding/json"
 	"io"
 	"strconv"
 	"strings"
 	"time"
 
 	"biu-x.org/TikTok/module/log"
+	"biu-x.org/TikTok/module/util"
 	"github.com/gin-gonic/gin"
 )
 
@@ -84,36 +84,14 @@ func (l Logger) SetLoggerMiddleware() gin.HandlerFunc {
 	}
 }
 
-// 高亮颜色map
-var colorMap = map[string]string{
-	"green":   "\033[97;42m",
-	"white":   "\033[90;47m",
-	"yellow":  "\033[90;43m",
-	"red":     "\033[97;41m",
-	"blue":    "\033[97;44m",
-	"magenta": "\033[97;45m",
-	"cyan":    "\033[97;46m",
-	"reset":   "\033[0m",
-}
-
-// highlightString 高亮字符串
-func highlightString(color string, str string) string {
-	// 判断是否存在颜色，不存在返回绿色
-	if _, ok := colorMap[color]; !ok {
-		return colorMap["green"] + str + colorMap["reset"]
-	}
-	return colorMap[color] + str + colorMap["reset"]
-}
-
 func DefaultLogger() gin.HandlerFunc {
 	return Logger{
 		Print: func(layout LogLayout) {
-			v, _ := json.Marshal(layout)
 			StatusMessage := layout.RequestMethod + ": " + strconv.Itoa(layout.StatusCode)
 			if layout.Error == "" {
-				log.Logger.Info(highlightString("green", StatusMessage) + " - " + string(v))
+				log.Logger.Info(util.HighlightString("green", StatusMessage) + " - " + util.StructToString(layout))
 			} else {
-				log.Logger.Error(highlightString("red", StatusMessage) + " - " + string(v))
+				log.Logger.Error(util.HighlightString("red", StatusMessage) + " - " + util.StructToString(layout))
 			}
 		},
 		Source: "TikTok",

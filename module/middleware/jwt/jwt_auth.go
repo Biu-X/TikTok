@@ -67,6 +67,7 @@ func RequireAuthWithoutLogin() gin.HandlerFunc {
 		log.Logger.Infof("url: %v", url.Path)
 		token := c.Query("token")
 		userId := "0"
+		isLogin := false
 		if len(token) != 0 {
 			cliams, err := ParseToken(token)
 			if err != nil {
@@ -76,14 +77,17 @@ func RequireAuthWithoutLogin() gin.HandlerFunc {
 				})
 				return
 			}
-
+			log.Logger.Infof("token 获取成功并验证通过,无需登录")
 			userId = cliams.ID
-			c.Set("user_id", userId)
-			c.Set("is_login", true)
-			c.Next()
+			isLogin = true
 		} else {
-			c.AbortWithStatus(http.StatusOK)
+			userId = "0"
 		}
+		c.Set("user_id", userId)
+		c.Set("is_login", isLogin)
+		log.Logger.Infof("user_id: %v", userId, "is_login: %v", isLogin)
+		// 放行
+		c.Next()
 	}
 }
 
