@@ -1,8 +1,9 @@
 package user
 
 import (
-	"biu-x.org/TikTok/dal/query"
 	"biu-x.org/TikTok/dal/model"
+	"biu-x.org/TikTok/dal/query"
+	"biu-x.org/TikTok/module/random"
 	"biu-x.org/TikTok/module/response"
 	"github.com/gin-gonic/gin"
 	"golang.org/x/crypto/bcrypt"
@@ -42,9 +43,13 @@ func Signup(c *gin.Context) {
 		return
 	}
 
+	avatar, bgIMG, signature := random.GetAvatarAndBGIMGAndSignature()
 	newuser := model.User{
-		Name:     username,
-		Password: string(hash),
+		Name:            username,
+		Password:        string(hash),
+		Avatar:          avatar,
+		BackgroundImage: bgIMG,
+		Signature:       signature,
 	}
 	// pass pointer of data to Create
 	err = u.Create(&newuser)
