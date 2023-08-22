@@ -10,11 +10,11 @@ import (
 
 // FriendList /douyin/relation/friend/list/ - 用户好友列表
 func FriendList(c *gin.Context) {
-	userID := util.GetUserIDFromGinContext(c)
+	ownerID := util.GetUserIDFromGinContext(c)
 
 	var userList []response.FriendUserResponse
 
-	followerIDs, err := dao.GetFollowerIDsByUserID(userID)
+	followerIDs, err := dao.GetFollowerIDsByUserID(ownerID)
 	if err != nil {
 		log.Logger.Error(err)
 		response.ErrRespWithMsg(c, err.Error())
@@ -22,20 +22,20 @@ func FriendList(c *gin.Context) {
 	}
 
 	for _, followerID := range followerIDs {
-		userRes, err := response.GetUserResponseByID(followerID, userID)
+		userRes, err := response.GetUserResponseByID(followerID, ownerID)
 		if err != nil {
 			log.Logger.Error(err)
 			continue
 		}
 
-		message, err := dao.GetLatestBidirectionalMessage(userID, followerID)
+		message, err := dao.GetLatestBidirectionalMessage(ownerID, followerID)
 		if err != nil {
 			// 第一次加好友时，没有消息可以获取，这里忽略错误
 			log.Logger.Error(err)
 		}
 
 		var msgType int64
-		if message.FromUserID == userID {
+		if message.FromUserID == ownerID {
 			msgType = 1
 		} else {
 			msgType = 0
