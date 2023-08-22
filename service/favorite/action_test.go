@@ -3,9 +3,9 @@ package favorite
 import (
 	"testing"
 
+	"biu-x.org/TikTok/dal/model"
 	"biu-x.org/TikTok/dal/query"
 	"biu-x.org/TikTok/dao"
-	"biu-x.org/TikTok/model"
 	"biu-x.org/TikTok/module/config"
 	"biu-x.org/TikTok/module/db"
 	"biu-x.org/TikTok/module/log"
@@ -32,7 +32,7 @@ func TestActionFavorite(t *testing.T) {
 	}
 
 	// 取消点赞
-	err := dao.SetFavoriteCancelByVideoID(6, 1)
+	err := dao.SetFavoriteCancelByUserIDAndVideoID(2, 6)
 	if err != nil {
 		t.Fatal(err.Error())
 	}

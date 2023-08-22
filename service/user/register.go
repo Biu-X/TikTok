@@ -1,15 +1,15 @@
 package user
 
 import (
-	"biu-x.org/TikTok/dal/query"
 	"biu-x.org/TikTok/dal/model"
+	"biu-x.org/TikTok/dal/query"
 	"biu-x.org/TikTok/module/response"
 	"github.com/gin-gonic/gin"
 	"golang.org/x/crypto/bcrypt"
 )
 
-// Signup 用户注册 /douyin/user/signup/
-func Signup(c *gin.Context) {
+// Register /douyin/user/register/ - 用户注册接口
+func Register(c *gin.Context) {
 	// 优先从 url 中获取参数
 	username := c.Query("username")
 	password := c.Query("password")
