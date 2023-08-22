@@ -9,24 +9,23 @@ import (
 )
 
 func TestNewRedisClient(t *testing.T) {
+	defer func(c map[RType]*Client) {
+		for k, _ := range c {
+			err := c[k].C.Close()
+			if err != nil {
+				return
+			}
+		}
+	}(Clients)
 	config.Init()
 	log.Init()
 	db.Init()
 	oss.Init()
-
-	clients := map[string]*Client{
-		"IPLimit": &Client{},
-		"Feed":    &Client{},
+	Init()
+	feed := Clients[Feed]
+	result, err := feed.Ping().Result()
+	if err != nil {
+		return
 	}
-	NewRedisClients(clients)
-
-	for i, c := range clients {
-		log.Logger.Infof("client %v: %v", i, c)
-	}
-	ipLimit := clients["IPLimit"]
-	ipLimit.Set("name", "lala")
-	name := ipLimit.Get("name")
-	log.Logger.Infof("%v", name.Val())
-	name = ipLimit.C.Get(ipLimit.ctx, "name")
-	log.Logger.Infof("%v", name.Val())
+	log.Logger.Infof("Ping -> %v", result)
 }
