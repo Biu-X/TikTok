@@ -1,14 +1,11 @@
 package relation
 
 import (
-	"errors"
-
 	"biu-x.org/TikTok/dao"
 	"biu-x.org/TikTok/module/log"
 	"biu-x.org/TikTok/module/response"
 	"biu-x.org/TikTok/module/util"
 	"github.com/gin-gonic/gin"
-	"gorm.io/gorm"
 )
 
 // FriendList /douyin/relation/friend/list/ - 用户好友列表
@@ -26,20 +23,15 @@ func FriendList(c *gin.Context) {
 
 	for _, followerID := range followerIDs {
 		userRes, err := response.GetUserResponseByID(followerID, ownerID)
-
 		if err != nil {
 			log.Logger.Error(err)
 			continue
 		}
 
 		message, err := dao.GetLatestBidirectionalMessage(ownerID, followerID)
-		if errors.Is(err, gorm.ErrRecordNotFound) {
-			continue
-		}
-		// 后端数据库错误，直接返回
 		if err != nil {
+			// 第一次加好友时，没有消息可以获取，这里忽略错误
 			log.Logger.Error(err)
-			return
 		}
 
 		var msgType int64
