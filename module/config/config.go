@@ -126,7 +126,7 @@ func Init() {
 	}
 	err = config.UnmarshalKey("default", &DEFAULT)
 	if err != nil {
-		log.Fatalf("unable to decode into oss struct, %v", err)
+		log.Fatalf("unable to decode into default struct, %v", err)
 	}
 
 	// use env var to set oss config when some field is nil
