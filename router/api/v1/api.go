@@ -1,6 +1,7 @@
 package v1
 
 import (
+	"biu-x.org/TikTok/module/middleware/sensitiveguard"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -66,7 +67,9 @@ func NewAPI() *gin.Engine {
 			comment.GET("list/", comment_service.List)
 			comment.Use(jwt.RequireAuth())
 			// 评论操作
-			comment.POST("action/", comment_service.Action)
+			comment.POST("action/",
+				sensitiveguard.SensitiveGuard("comment_text"),
+				comment_service.Action)
 		}
 
 		relation := tiktok.Group("relation/")
@@ -98,7 +101,9 @@ func NewAPI() *gin.Engine {
 		{
 			message.Use(jwt.RequireAuth())
 			// 发送消息
-			message.POST("action/", message_service.Action)
+			message.POST("action/",
+				sensitiveguard.SensitiveGuard("comment_text"),
+				message_service.Action)
 			// 聊天记录
 			message.GET("chat/", message_service.Chat)
 		}
