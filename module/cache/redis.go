@@ -9,10 +9,10 @@ import (
 	"time"
 )
 
-type RType uint8
+type RDB uint8
 
 const (
-	Feed RType = iota
+	Feed RDB = iota
 	Comment
 	Favorite
 	Message
@@ -23,7 +23,7 @@ const (
 	User
 )
 
-var Clients = map[RType]*Client{
+var Clients = map[RDB]*Client{
 	Feed:     &Client{},
 	Comment:  &Client{},
 	Favorite: &Client{},
@@ -44,7 +44,7 @@ func Init() {
 	NewRedisClients(Clients)
 }
 
-func NewRedisClients(clients map[RType]*Client) {
+func NewRedisClients(clients map[RDB]*Client) {
 	poolSize, _ := strconv.ParseInt(config.GetString("redis.poolSize"), 10, 64)
 	n := 0
 	for k, _ := range clients {

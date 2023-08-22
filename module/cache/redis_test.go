@@ -9,7 +9,7 @@ import (
 )
 
 func TestNewRedisClient(t *testing.T) {
-	defer func(c map[RType]*Client) {
+	defer func(c map[RDB]*Client) {
 		for k, _ := range c {
 			err := c[k].C.Close()
 			if err != nil {
