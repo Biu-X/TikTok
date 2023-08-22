@@ -40,6 +40,8 @@ github.com/BurntSushi/toml v0.3.1/go.mod h1:xHWCNGjB5oqiDr8zfno3MHue2Ht5sIBksp03
 github.com/BurntSushi/xgb v0.0.0-20160522181843-27f122750802/go.mod h1:IVnqGOEym/WlBOVXweHU+Q+/VP0lqqI8lqeDx9IjBqo=
 github.com/Tohrusky/chinese-sensitive-go v0.0.0-20230822160126-cdde32a4a290 h1:shv9y+kNkFikPr2JWAbANlKNrC5BhWLgYcY8FWRjJn0=
 github.com/Tohrusky/chinese-sensitive-go v0.0.0-20230822160126-cdde32a4a290/go.mod h1:vH51DFLYmHzTc2YgmLeIFJV99mddemDUyZsNkGvIxIc=
+github.com/Tohrusky/chinese-sensitive-go v0.0.0-20230822171813-72600f2a36fc h1:V/VxlJVXgkZCE314JfpxR/iQN6rnDhfGEVVk1+89QCs=
+github.com/Tohrusky/chinese-sensitive-go v0.0.0-20230822171813-72600f2a36fc/go.mod h1:vH51DFLYmHzTc2YgmLeIFJV99mddemDUyZsNkGvIxIc=
 github.com/aws/aws-sdk-go v1.38.20 h1:QbzNx/tdfATbdKfubBpkt84OM6oBkxQZRw6+bW2GyeA=
 github.com/aws/aws-sdk-go v1.38.20/go.mod h1:hcU610XS61/+aQV88ixoOzUoG7v3b31pl2zKMmprdro=
 github.com/aws/aws-sdk-go-v2 v1.20.0 h1:INUDpYLt4oiPOJl0XwZDK2OVAVf0Rzo+MGVTv9f+gy8=

@@ -22,7 +22,7 @@ require (
 )
 
 require (
-	github.com/Tohrusky/chinese-sensitive-go v0.0.0-20230822160126-cdde32a4a290 // indirect
+	github.com/Tohrusky/chinese-sensitive-go v0.0.0-20230822171813-72600f2a36fc // indirect
 	github.com/aws/aws-sdk-go v1.38.20 // indirect
 	github.com/aws/aws-sdk-go-v2 v1.20.0 // indirect
 	github.com/aws/aws-sdk-go-v2/aws/protocol/eventstream v1.4.11 // indirect
