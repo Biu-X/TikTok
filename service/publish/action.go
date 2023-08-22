@@ -23,7 +23,8 @@ func Action(c *gin.Context) {
 
 	// 在完成上传视频后把临时文件都删除
 	defer func() {
-		err := os.RemoveAll(tempfolder)
+		path := c.GetString("user_id")
+		err := os.RemoveAll(fmt.Sprintf("%v/%v", tempfolder, path))
 		if err != nil {
 			log.Logger.Error(err)
 			return
