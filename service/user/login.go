@@ -11,7 +11,7 @@ import (
 	"gorm.io/gorm"
 )
 
-// Login Post /douyin/user/login/ 用户登录
+// Login /douyin/user/login/ - 用户登录
 func Login(c *gin.Context) {
 	u := query.User
 	username := c.Query("username")

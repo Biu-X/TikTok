@@ -1,44 +1,28 @@
 package feed
 
 import (
+	"strconv"
+	"time"
+
 	"biu-x.org/TikTok/dao"
 	"biu-x.org/TikTok/module/log"
 	"biu-x.org/TikTok/module/response"
-	"biu-x.org/TikTok/service/common"
+	"biu-x.org/TikTok/module/util"
 	"github.com/gin-gonic/gin"
-	"strconv"
-	"time"
 )
 
+// List /douyin/feed/ - 视频流接口
 func List(c *gin.Context) {
+	ownerID := util.GetUserIDFromGinContext(c)
 	// 获取latest_time
 	latest_time := c.Query("latest_time")
 	// 如果latest_time为 0 或者为空，则设置为当前时间的UnixMilli()
 	if latest_time == "0" || len(latest_time) == 0 {
 		latest_time = strconv.FormatInt(time.Now().UnixMilli(), 10)
 	}
-	// 判断是否登陆
-	_, ok := c.Get("is_login")
-	log.Logger.Infof("current login status: %v", ok)
 
-	var ownerID int64
-	var targetID int64
-	if !ok {
-		// 未登录
-		ownerID = 0
-		targetID = 0
-	} else {
-		// 已登录
-		// 从RequireAuth获取当前登陆的用户 id
-		ownerID, _ = strconv.ParseInt(c.GetString("user_id"), 10, 64)
-		targetID, _ = strconv.ParseInt(c.Query("user_id"), 10, 64)
-	}
-	log.Logger.Infof("owner id: %v", ownerID)
-	log.Logger.Infof("target id: %v", targetID)
-
-	videoList, err := common.GetVideoList(targetID, ownerID, latest_time)
+	videoList, err := response.GetVideoListResponseByOwnerIDAndLatestTime(ownerID, latest_time)
 	if err != nil {
-		log.Logger.Error(err)
 		response.ErrRespWithMsg(c, err.Error())
 		return
 	}

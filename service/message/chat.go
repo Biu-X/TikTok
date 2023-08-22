@@ -6,12 +6,13 @@ import (
 	"biu-x.org/TikTok/dao"
 	"biu-x.org/TikTok/module/log"
 	"biu-x.org/TikTok/module/response"
+	"biu-x.org/TikTok/module/util"
 	"github.com/gin-gonic/gin"
 )
 
-// Chat 聊天记录 /douyin/message/chat/
+// Chat /douyin/message/chat/ - 聊天记录
 func Chat(c *gin.Context) {
-	userID, _ := strconv.ParseInt(c.GetString("user_id"), 10, 64)
+	userID := util.GetUserIDFromGinContext(c)
 	toUserID, _ := strconv.ParseInt(c.Query("to_user_id"), 10, 64)
 
 	messages, err := dao.GetMessageByBoth(userID, toUserID)

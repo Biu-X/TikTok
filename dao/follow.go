@@ -165,7 +165,7 @@ func GetFollowRelation(userID int64, followerID int64) (*model.Follow, error) {
 // 我们将要判断粉丝 ID 对应的用户是否关注了指定的用户
 // 我们可以通过判断这条记录的 Cancel 字段是否为 0 得知
 func GetIsFollowByBothID(userID int64, followerID int64) (bool, error) {
-	if userID == followerID {
+	if followerID == 0 || userID == followerID {
 		return false, nil
 	}
 
