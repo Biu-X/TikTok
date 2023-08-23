@@ -26,7 +26,6 @@ func GetMessageByID(id int64) (message *model.Message, err error) {
 func GetMessageByBoth(userA int64, userB int64, preMsgTime time.Time) (messages []*model.Message, err error) {
 	f := query.Message
 	messages, err = f.Where(f.CreatedAt.Gt(preMsgTime)).Where(f.FromUserID.Eq(userA), f.ToUserID.Eq(userB)).Or(f.FromUserID.Eq(userB), f.ToUserID.Eq(userA)).Find()
-	//messages, err = f.Where(f.FromUserID.Eq(userA), f.ToUserID.Eq(userB)).Or(f.FromUserID.Eq(userB), f.ToUserID.Eq(userA)).Where(f.CreatedAt.Gt(preMsgTime)).Order(f.CreatedAt).First()
 	return messages, err
 }
 
