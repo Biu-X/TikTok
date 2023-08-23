@@ -3,6 +3,7 @@ module biu-x.org/TikTok
 go 1.20
 
 require (
+	github.com/Tohrusky/sensitive-go v0.0.2
 	github.com/charmbracelet/log v0.2.3
 	github.com/disintegration/imaging v1.6.2
 	github.com/eleven26/goss/v3 v3.0.0
@@ -22,7 +23,6 @@ require (
 )
 
 require (
-	github.com/Tohrusky/chinese-sensitive-go v0.0.0-20230822171813-72600f2a36fc // indirect
 	github.com/aws/aws-sdk-go v1.38.20 // indirect
 	github.com/aws/aws-sdk-go-v2 v1.20.0 // indirect
 	github.com/aws/aws-sdk-go-v2/aws/protocol/eventstream v1.4.11 // indirect

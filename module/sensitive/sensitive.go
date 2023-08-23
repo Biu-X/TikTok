@@ -1,7 +1,7 @@
 package sensitive
 
 import (
-	"github.com/Tohrusky/chinese-sensitive-go/sensitive"
+	"github.com/Tohrusky/sensitive-go/sensitive"
 	"sync"
 )
 
