@@ -29,6 +29,7 @@ func Chat(c *gin.Context) {
 	}
 
 	if tmpTimeStamp == preMsgTimeStamp {
+		log.Logger.Infof("------------> pre_msg_time: %v", preMsgTimeStamp)
 		response.OKResp(c)
 		return
 	}
