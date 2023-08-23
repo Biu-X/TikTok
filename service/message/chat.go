@@ -11,13 +11,35 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+var tmpTimeStamp int64
+
 // Chat /douyin/message/chat/ - 聊天记录
 func Chat(c *gin.Context) {
 	userID := util.GetUserIDFromGinContext(c)
 	toUserID, _ := strconv.ParseInt(c.Query("to_user_id"), 10, 64)
 	preMsgTimeStamp, _ := strconv.ParseInt(c.Query("pre_msg_time"), 10, 64)
+
+	if preMsgTimeStamp == 0 {
+		tmp, err := dao.GetEarliestTimeMessageByBoth(userID, toUserID)
+		if err != nil {
+			response.ErrResp(c)
+			return
+		}
+		preMsgTimeStamp = tmp.UnixMilli()
+	}
+
+	if tmpTimeStamp == preMsgTimeStamp {
+		response.OKResp(c)
+		return
+	}
+	tmpTimeStamp = preMsgTimeStamp
+
 	preMsgTime := time.Unix(preMsgTimeStamp/1000, 0)
+
 	messages, err := dao.GetMessageByBoth(userID, toUserID, preMsgTime)
+
+	log.Logger.Infof("------> ownerID: %v, targetID: %v, pre_msg_time: %v", userID, toUserID, preMsgTimeStamp)
+
 	if err != nil {
 		log.Logger.Errorf("chat: GetMessageByBoth failed, err: %v", err)
 		response.ErrRespWithMsg(c, err.Error())
@@ -30,7 +52,7 @@ func Chat(c *gin.Context) {
 			ToUserID:   message.ToUserID,
 			FromUserID: message.FromUserID,
 			Content:    message.Content,
-			CreateTime: message.CreatedAt.Format(time.DateTime),
+			CreateTime: strconv.FormatInt(message.CreatedAt.UnixMilli(), 10),
 		})
 	}
 
