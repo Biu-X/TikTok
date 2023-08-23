@@ -16,6 +16,11 @@ func CreateMessage(message *model.Message) (err error) {
 // 通过消息ID获取对应消息
 func GetMessageByID(id int64) (message *model.Message, err error) {
 	f := query.Message
+
+	if count, _ := f.Where(f.ID.Eq(id)).Count(); count == 0 {
+		return &model.Message{}, gorm.ErrRecordNotFound
+	}
+
 	message, err = f.Where(f.ID.Eq(id)).First()
 	return message, err
 }
@@ -23,6 +28,11 @@ func GetMessageByID(id int64) (message *model.Message, err error) {
 // Order By CreatedAt ASC
 func GetMessageByBoth(userA int64, userB int64) (messages []*model.Message, err error) {
 	f := query.Message
+
+	if count, _ := f.Where(f.FromUserID.Eq(userA), f.ToUserID.Eq(userB)).Or(f.FromUserID.Eq(userB), f.ToUserID.Eq(userA)).Count(); count == 0 {
+		return []*model.Message{}, gorm.ErrRecordNotFound
+	}
+
 	messages, err = f.Where(f.FromUserID.Eq(userA), f.ToUserID.Eq(userB)).Or(f.FromUserID.Eq(userB), f.ToUserID.Eq(userA)).Order(f.CreatedAt).Find()
 	return messages, err
 }
