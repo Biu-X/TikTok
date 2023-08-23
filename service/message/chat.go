@@ -2,6 +2,7 @@ package message
 
 import (
 	"strconv"
+	"time"
 
 	"biu-x.org/TikTok/dao"
 	"biu-x.org/TikTok/module/log"
@@ -14,8 +15,9 @@ import (
 func Chat(c *gin.Context) {
 	userID := util.GetUserIDFromGinContext(c)
 	toUserID, _ := strconv.ParseInt(c.Query("to_user_id"), 10, 64)
-
-	messages, err := dao.GetMessageByBoth(userID, toUserID)
+	preMsgTimeStamp, _ := strconv.ParseInt(c.Query("pre_msg_time"), 10, 64)
+	preMsgTime := time.Unix(preMsgTimeStamp, 0)
+	messages, err := dao.GetMessageByBoth(userID, toUserID, preMsgTime)
 	if err != nil {
 		log.Logger.Errorf("chat: GetMessageByBoth failed, err: %v", err)
 		response.ErrRespWithMsg(c, err.Error())
@@ -28,7 +30,7 @@ func Chat(c *gin.Context) {
 			ToUserID:   message.ToUserID,
 			FromUserID: message.FromUserID,
 			Content:    message.Content,
-			CreateTime: message.CreatedAt.Format("2006-01-02 15:04:05"),
+			CreateTime: message.CreatedAt.Format(time.DateTime),
 		})
 	}
 

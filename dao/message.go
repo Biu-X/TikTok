@@ -1,6 +1,8 @@
 package dao
 
 import (
+	"time"
+
 	"biu-x.org/TikTok/dal/model"
 	"biu-x.org/TikTok/dal/query"
 	"gorm.io/gorm"
@@ -20,10 +22,10 @@ func GetMessageByID(id int64) (message *model.Message, err error) {
 	return message, err
 }
 
-// Order By CreatedAt ASC
-func GetMessageByBoth(userA int64, userB int64) (messages []*model.Message, err error) {
+// 返回在某个时间前两个用户间的聊天记录 Order By CreatedAt ASC
+func GetMessageByBoth(userA int64, userB int64, preMsgTime time.Time) (messages []*model.Message, err error) {
 	f := query.Message
-	messages, err = f.Where(f.FromUserID.Eq(userA), f.ToUserID.Eq(userB)).Or(f.FromUserID.Eq(userB), f.ToUserID.Eq(userA)).Order(f.CreatedAt).Find()
+	messages, err = f.Where(f.FromUserID.Eq(userA), f.ToUserID.Eq(userB)).Or(f.FromUserID.Eq(userB), f.ToUserID.Eq(userA)).Where(f.CreatedAt.Gt(preMsgTime)).Order(f.CreatedAt).Find()
 	return messages, err
 }
 
