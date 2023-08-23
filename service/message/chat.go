@@ -16,7 +16,7 @@ func Chat(c *gin.Context) {
 	userID := util.GetUserIDFromGinContext(c)
 	toUserID, _ := strconv.ParseInt(c.Query("to_user_id"), 10, 64)
 	preMsgTimeStamp, _ := strconv.ParseInt(c.Query("pre_msg_time"), 10, 64)
-	preMsgTime := time.Unix(preMsgTimeStamp, 0)
+	preMsgTime := time.Unix(preMsgTimeStamp/1000, 0)
 	messages, err := dao.GetMessageByBoth(userID, toUserID, preMsgTime)
 	if err != nil {
 		log.Logger.Errorf("chat: GetMessageByBoth failed, err: %v", err)
