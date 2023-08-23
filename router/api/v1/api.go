@@ -29,6 +29,7 @@ func NewAPI() *gin.Engine {
 			"msg": "Welcome to Tiktok!",
 		})
 	})
+
 	tiktok := r.Group("/douyin/")
 	{
 		// 视频流接口

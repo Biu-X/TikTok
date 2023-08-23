@@ -7,6 +7,7 @@ import (
 	"biu-x.org/TikTok/module/middleware/cache"
 	"biu-x.org/TikTok/module/oss"
 	"biu-x.org/TikTok/router"
+	"fmt"
 	"github.com/urfave/cli/v2"
 )
 
@@ -27,6 +28,15 @@ var CmdWeb = &cli.Command{ //nolint:typecheck
 }
 
 func runWeb(ctx *cli.Context) error { //nolint:typecheck
+	defer func() {
+		for k, _ := range cache.Clients {
+			err := cache.Clients[k].C.Close()
+			if err != nil {
+				fmt.Printf("close redis: %v", err)
+				return
+			}
+		}
+	}()
 	config.Init()
 	log.Init()
 	db.Init()
