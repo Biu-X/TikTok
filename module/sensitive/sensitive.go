@@ -14,8 +14,8 @@ var (
 // Init 初始化敏感词库，单例模式
 func Init() {
 	once.Do(func() {
-		sensitiveInstance = sensitive.DefaultNew()
-		sensitiveBossInstance = sensitive.BossNew()
+		sensitiveInstance = sensitive.NewWithDefaultSDict()
+		sensitiveBossInstance = sensitive.NewWithBossSDict()
 	})
 }
 
