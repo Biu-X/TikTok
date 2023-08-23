@@ -14,14 +14,13 @@ import (
 // Action /douyin/comment/action/ - 评论操作
 func Action(c *gin.Context) {
 	userID := util.GetUserIDFromGinContext(c)
+	commentText := util.GetInsensitiveTextFromGinContext(c)
 	videoIDStr := c.Query("video_id")
 	actionTypeStr := c.Query("action_type")
 	videoID, _ := strconv.ParseInt(videoIDStr, 10, 64)
 	actionType, _ := strconv.Atoi(actionTypeStr) // 1-评论, 2-删除评论
 
 	if actionType == 1 {
-		// create comment
-		commentText := c.Query("comment_text")
 		comment := &model.Comment{
 			UserID:  userID,
 			VideoID: videoID,
