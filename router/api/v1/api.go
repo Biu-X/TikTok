@@ -1,8 +1,11 @@
 package v1
 
 import (
+	"biu-x.org/TikTok/module/cache"
+	middleware_cache "biu-x.org/TikTok/module/middleware/cache"
 	"biu-x.org/TikTok/module/middleware/sensitiveguard"
 	"net/http"
+	"time"
 
 	"github.com/gin-gonic/gin"
 
@@ -20,6 +23,7 @@ import (
 func NewAPI() *gin.Engine {
 	r := gin.New()
 	r.Use(logger.DefaultLogger(), gin.Recovery()) // 日志中间件
+	r.Use(middleware_cache.NewRateLimiter(middleware_cache.Clients[cache.IPLimit], "general", 200, 60*time.Second))
 
 	r.GET("/", func(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{

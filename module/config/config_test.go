@@ -10,4 +10,5 @@ func TestConfig(t *testing.T) {
 	fmt.Println(GetString("mysql.host"))
 	fmt.Println(MySQLDSN())
 	fmt.Printf("%#v\n", OSSConfig)
+	fmt.Printf("pool size: %v\n", GetString("redis.poolSize"))
 }
