@@ -1,7 +1,11 @@
 package v1
 
 import (
+	"biu-x.org/TikTok/module/cache"
+	middleware_cache "biu-x.org/TikTok/module/middleware/cache"
+	"biu-x.org/TikTok/module/middleware/sensitiveguard"
 	"net/http"
+	"time"
 
 	"github.com/gin-gonic/gin"
 
@@ -19,6 +23,7 @@ import (
 func NewAPI() *gin.Engine {
 	r := gin.New()
 	r.Use(logger.DefaultLogger(), gin.Recovery()) // 日志中间件
+	r.Use(middleware_cache.NewRateLimiter(middleware_cache.Clients[cache.IPLimit], "general", 200, 60*time.Second))
 
 	r.GET("/", func(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{
@@ -66,7 +71,9 @@ func NewAPI() *gin.Engine {
 			comment.GET("list/", comment_service.List)
 			comment.Use(jwt.RequireAuth())
 			// 评论操作
-			comment.POST("action/", comment_service.Action)
+			comment.POST("action/",
+				sensitiveguard.SensitiveGuard("comment_text"),
+				comment_service.Action)
 		}
 
 		relation := tiktok.Group("relation/")
@@ -98,7 +105,9 @@ func NewAPI() *gin.Engine {
 		{
 			message.Use(jwt.RequireAuth())
 			// 发送消息
-			message.POST("action/", message_service.Action)
+			message.POST("action/",
+				sensitiveguard.SensitiveGuard("content"),
+				message_service.Action)
 			// 聊天记录
 			message.GET("chat/", message_service.Chat)
 		}
