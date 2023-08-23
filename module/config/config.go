@@ -23,6 +23,7 @@ type Redis struct {
 	Host     string `yaml:"host"`
 	Port     int    `yaml:"port"`
 	Password string `yaml:"password"`
+	PoolSize int    `yaml:"poolSize"`
 	Database int    `yaml:"database"`
 }
 
@@ -102,7 +103,7 @@ func Init() {
 				"host":     "127.0.0.1",
 				"port":     6379,
 				"password": "123456",
-				"database": 0,
+				"poolSize": 10,
 			})
 
 			config.SetDefault("default", map[string]interface{}{
