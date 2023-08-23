@@ -16,7 +16,7 @@ func Action(c *gin.Context) {
 	userID := util.GetUserIDFromGinContext(c)
 	toUserID, _ := strconv.ParseInt(c.Query("to_user_id"), 10, 64)
 	actionType, _ := strconv.ParseInt(c.Query("action_type"), 10, 32) // 1-发送消息
-	content := c.Query("content")
+	content := util.GetInsensitiveTextFromGinContext(c)
 
 	if actionType == 1 {
 		err := dao.CreateMessage(&model.Message{

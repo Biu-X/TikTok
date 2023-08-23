@@ -6,6 +6,7 @@ import (
 	"biu-x.org/TikTok/module/log"
 	"biu-x.org/TikTok/module/middleware/cache"
 	"biu-x.org/TikTok/module/oss"
+	"biu-x.org/TikTok/module/sensitive"
 	"biu-x.org/TikTok/router"
 	"fmt"
 	"github.com/urfave/cli/v2"
@@ -42,6 +43,7 @@ func runWeb(ctx *cli.Context) error { //nolint:typecheck
 	db.Init()
 	oss.Init()
 	cache.Init()
+	sensitive.Init()
 	router.Init()
 	return nil
 }
