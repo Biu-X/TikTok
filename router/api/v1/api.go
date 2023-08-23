@@ -102,7 +102,7 @@ func NewAPI() *gin.Engine {
 			message.Use(jwt.RequireAuth())
 			// 发送消息
 			message.POST("action/",
-				sensitiveguard.SensitiveGuard("comment_text"),
+				sensitiveguard.SensitiveGuard("content"),
 				message_service.Action)
 			// 聊天记录
 			message.GET("chat/", message_service.Chat)
