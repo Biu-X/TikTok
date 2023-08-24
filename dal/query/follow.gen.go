@@ -42,8 +42,8 @@ type follow struct {
 
 	ALL        field.Asterisk
 	ID         field.Int64
-	UserID     field.Int64 // 用户id即被关注的用户
-	FollowerID field.Int64 // 关注者id
+	UserID     field.Int64 // 用户id
+	FollowerID field.Int64 // 被关注用户id
 	Cancel     field.Int32 // 取消关注是1，默认0
 
 	fieldMap map[string]field.Expr
