@@ -7,6 +7,10 @@ TAGS ?=
 
 default: help
 
+.PHONY: tidy
+tidy: ## go mod tidy
+	${GO} mod tidy
+
 .PHONY: build
 build: ## build tiktok binary file
 	${GO} build -o tiktok .
@@ -20,8 +24,8 @@ watch: ## live reload
 	${AIR} server
 
 .PHONY: test
-test: ## go test
-	${GO} test -v $$(${GO} list ./... | grep -v /models/gen)
+test: tidy ## go test
+	${GO} test -v $$(${GO} list ./... | grep -v /dal/query)
 
 .PHONY: clear
 clear: ## clear project
