@@ -14,7 +14,7 @@ import (
 // Action /douyin/comment/action/ - 评论操作
 func Action(c *gin.Context) {
 	userID := util.GetUserIDFromGinContext(c)
-	commentText := util.GetInsensitiveTextFromGinContext(c)
+	commentText := util.GetInsensitiveTextFromGinContext(c, "comment_text")
 	videoIDStr := c.Query("video_id")
 	actionTypeStr := c.Query("action_type")
 	videoID, _ := strconv.ParseInt(videoIDStr, 10, 64)
