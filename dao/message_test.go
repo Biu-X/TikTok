@@ -3,6 +3,7 @@ package dao
 import (
 	"reflect"
 	"testing"
+	"time"
 
 	"biu-x.org/TikTok/dal/model"
 	"biu-x.org/TikTok/module/config"
@@ -47,7 +48,7 @@ func Test_MessageDAO(t *testing.T) {
 	// ----------------------------
 	// Test for GetMessageByBoth
 	// ----------------------------
-	messages, err := GetMessageByBoth(f.FromUserID, f.ToUserID)
+	messages, err := GetMessageByBoth(f.FromUserID, f.ToUserID, time.Unix(0, 0))
 	if err != nil {
 		t.Error("DeleteMessageByID fail", err)
 		return

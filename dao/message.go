@@ -1,6 +1,8 @@
 package dao
 
 import (
+	"time"
+
 	"biu-x.org/TikTok/dal/model"
 	"biu-x.org/TikTok/dal/query"
 	"gorm.io/gorm"
@@ -20,10 +22,10 @@ func GetMessageByID(id int64) (message *model.Message, err error) {
 	return message, err
 }
 
-// Order By CreatedAt ASC
-func GetMessageByBoth(userA int64, userB int64) (messages []*model.Message, err error) {
+// 返回在某个时间前两个用户间的聊天记录 Order By CreatedAt ASC
+func GetMessageByBoth(userA int64, userB int64, preMsgTime time.Time) (messages []*model.Message, err error) {
 	f := query.Message
-	messages, err = f.Where(f.FromUserID.Eq(userA), f.ToUserID.Eq(userB)).Or(f.FromUserID.Eq(userB), f.ToUserID.Eq(userA)).Order(f.CreatedAt).Find()
+	messages, err = f.Where(f.CreatedAt.Gt(preMsgTime)).Where(f.FromUserID.Eq(userA), f.ToUserID.Eq(userB)).Or(f.FromUserID.Eq(userB), f.ToUserID.Eq(userA)).Find()
 	return messages, err
 }
 
@@ -40,4 +42,17 @@ func GetLatestBidirectionalMessage(userA int64, userB int64) (message *model.Mes
 			Or(f.FromUserID.Eq(userB), f.ToUserID.Eq(userA)).
 			Last()
 	return message, err
+}
+
+func GetEarliestTimeMessageByBoth(ownerID, targetID int64) (time.Time, error) {
+	f := query.Message
+	t, err := f.Select(f.CreatedAt).Where(f.FromUserID.Eq(ownerID), f.ToUserID.Eq(targetID)).Or(f.FromUserID.Eq(targetID), f.ToUserID.Eq(ownerID)).First()
+	return t.CreatedAt, err
+}
+
+// 返回在preMsgTime后owner发送给target的消息
+func GetUserMessagesToUser(ownerID, targetID int64, preMsgTime time.Time) (messages []*model.Message, err error) {
+	f := query.Message
+	messages, err = f.Where(f.CreatedAt.Gt(preMsgTime)).Where(f.FromUserID.Eq(ownerID), f.ToUserID.Eq(targetID)).Find()
+	return messages, err
 }
