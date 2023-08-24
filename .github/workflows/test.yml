@@ -52,8 +52,8 @@ jobs:
       - run: |
           pwd
           ls -al
-          mkdir -p /etc/tiktok
-          cp ./conf/tiktok.yml /etc/tiktok
+          sudo mkdir -p /etc/tiktok
+          sudo cp ./conf/tiktok.yml /etc/tiktok
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
