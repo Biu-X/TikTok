@@ -3,6 +3,7 @@ package jwt_test
 import (
 	"fmt"
 	"github.com/Biu-X/TikTok/module/log"
+	"github.com/Biu-X/TikTok/module/util"
 	"testing"
 
 	"github.com/Biu-X/TikTok/dal/model"
@@ -18,16 +19,18 @@ func TestSingToken1(t *testing.T) {
 	log.Init()
 	db.Init()
 
+	userName := util.GetRandomString(10) + "@gmail.com"
+
 	// 模拟注册（新建一个用户）
 	u := query.User
-	user := &model.User{Name: "newuser", Password: "abc", Signature: "newtess", Avatar: "avatar", BackgroundImage: "background"}
+	user := &model.User{Name: userName, Password: "abc", Signature: "newtess", Avatar: "avatar", BackgroundImage: "background"}
 	err := u.Create(user)
 	if err != nil {
 		t.Fatalf("create user failed, err: %v", err)
 	}
 
 	// 模拟登录（生成 JWT token）
-	token := jwt.GenerateToken("TableNewUser")
+	token := jwt.GenerateToken(userName)
 	fmt.Printf("token: %#v\n", token)
 
 	useClaims, err := jwt.ParseToken(token)
