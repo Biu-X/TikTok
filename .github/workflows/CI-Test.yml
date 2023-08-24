@@ -17,7 +17,7 @@ jobs:
   CI-Test:
     strategy:
       matrix:
-        os-version: [ "ubuntu-latest" ]
+        os-version: [ "macos-latest", "windows-latest", "ubuntu-20.04" ]
 
     runs-on: ${{ matrix.os-version }}
     steps:
@@ -63,4 +63,4 @@ jobs:
           python CreateMySQL.py
 
       - name: Test
-        run: go test -v ./...
+        run: go test -json ./...
