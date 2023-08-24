@@ -24,7 +24,8 @@ func GetUserIDFromGinContext(c *gin.Context) int64 {
 	return userID
 }
 
-// GetInsensitiveTextFromGinContext 从 SensitiveGuard 处读取 insensitive_text
-func GetInsensitiveTextFromGinContext(c *gin.Context) string {
-	return c.GetString("insensitive_text")
+// GetInsensitiveTextFromGinContext 从 SensitiveGuard 处读取和谐后的文本
+func GetInsensitiveTextFromGinContext(c *gin.Context, queryKey string) string {
+	insensitiveTextKey := "insensitive_text_" + queryKey
+	return c.GetString(insensitiveTextKey)
 }

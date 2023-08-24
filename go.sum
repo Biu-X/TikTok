@@ -38,8 +38,8 @@ cloud.google.com/go/storage v1.14.0/go.mod h1:GrKmX003DSIwi9o29oFT7YDnHYwZoctc3f
 dmitri.shuralyov.com/gpu/mtl v0.0.0-20190408044501-666a987793e9/go.mod h1:H6x//7gZCb22OMCxBHrMx7a5I7Hp++hsVxbQ4BYO7hU=
 github.com/BurntSushi/toml v0.3.1/go.mod h1:xHWCNGjB5oqiDr8zfno3MHue2Ht5sIBksp03qcyfWMU=
 github.com/BurntSushi/xgb v0.0.0-20160522181843-27f122750802/go.mod h1:IVnqGOEym/WlBOVXweHU+Q+/VP0lqqI8lqeDx9IjBqo=
-github.com/Tohrusky/sensitive-go v1.0.0 h1:R8d1RJXfLq0ha5J8cZOLja609Ewb2/Dmjj8bC8FkyU0=
-github.com/Tohrusky/sensitive-go v1.0.0/go.mod h1:xbFbsUA8VaSXKLjY74m4nNiOZlCHsScnpqmNXq2eOS0=
+github.com/Tohrusky/sensitive-go v1.0.3 h1:spiFuU3VOBRp7Gnp/lzpQa9TGeBzv+mEnKdTAZZ3hcs=
+github.com/Tohrusky/sensitive-go v1.0.3/go.mod h1:xbFbsUA8VaSXKLjY74m4nNiOZlCHsScnpqmNXq2eOS0=
 github.com/aws/aws-sdk-go v1.38.20 h1:QbzNx/tdfATbdKfubBpkt84OM6oBkxQZRw6+bW2GyeA=
 github.com/aws/aws-sdk-go v1.38.20/go.mod h1:hcU610XS61/+aQV88ixoOzUoG7v3b31pl2zKMmprdro=
 github.com/aws/aws-sdk-go-v2 v1.20.0 h1:INUDpYLt4oiPOJl0XwZDK2OVAVf0Rzo+MGVTv9f+gy8=
