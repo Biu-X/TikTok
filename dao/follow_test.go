@@ -15,6 +15,13 @@ func init() {
 	config.Init()
 	log.Init()
 	db.Init()
+
+	userId, followId := 11, 12
+	err := CreateFollow(int64(userId), int64(followId))
+	if err != nil {
+		log.Logger.Error("Create Follow fail", err)
+		return
+	}
 }
 
 // 测试正常插入关注关系和查询插入关系的逻辑
@@ -22,14 +29,7 @@ func init() {
 // Test for CreateFollow 每次测试的时候，需要修改参数的值（不允许重复关注）
 // ----------------------------
 func Test_FollowDAO(t *testing.T) {
-	userId, followId := 11, 12
-	err := CreateFollow(int64(userId), int64(followId))
-	if err != nil {
-		t.Error("Create Follow fail", err)
-		return
-	}
-
-	follow, err := GetFollowRelation(int64(userId), int64(followId))
+	follow, err := GetFollowRelation(11, 12)
 	if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
 		t.Error("GetFollowByBoth fail", err)
 		return
