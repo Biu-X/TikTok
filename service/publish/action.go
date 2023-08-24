@@ -8,7 +8,6 @@ import (
 
 	"biu-x.org/TikTok/dal/model"
 	"biu-x.org/TikTok/dao"
-	"biu-x.org/TikTok/module/config"
 	"biu-x.org/TikTok/module/ffmpeg"
 	"biu-x.org/TikTok/module/log"
 	"biu-x.org/TikTok/module/oss"
@@ -97,8 +96,8 @@ func Action(c *gin.Context) {
 
 	err = dao.CreateVideo(&model.Video{
 		AuthorID: int64(aid),
-		PlayURL:  fmt.Sprintf("%v%v", config.OSS_PREFIX, fileName),
-		CoverURL: fmt.Sprintf("%v%v", config.OSS_PREFIX, cover),
+		PlayURL:  fmt.Sprintf("%v", fileName),
+		CoverURL: fmt.Sprintf("%v", cover),
 		Title:    c.PostForm("title"),
 	})
 	if err != nil {

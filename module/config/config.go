@@ -34,7 +34,7 @@ type OSS struct {
 	Region    string `yaml:"region"`
 	Bucket    string `yaml:"bucket"`
 
-	// 如果是使用 minio，并且没有使用 https，需要设置为 true
+	// 如果是使用 minio，并且没有使用 https，需要设置为 false
 	UseSsl *bool `yaml:"useSsl"`
 	// 如果是使用 minio，需要设置为 true
 	HostnameImmutable *bool `yaml:"hostnameImmutable"`
@@ -148,14 +148,23 @@ func Init() {
 	}
 
 	ossType := config.GetString("oss.type")
+	useSsl := config.GetString("oss.useSsl")
+	var protocol string
+	if useSsl == "true" {
+		protocol = "https://"
+	} else {
+		protocol = "http://"
+	}
+
 	fmt.Printf("oss type: %v\n", ossType)
 	switch ossType {
 	case "minio":
-		OSS_PREFIX = fmt.Sprintf("http://%v/%v/", OSSConfig.Endpoint, OSSConfig.Bucket)
+		OSS_PREFIX = fmt.Sprintf("%v%v/%v/", protocol, OSSConfig.Endpoint, OSSConfig.Bucket)
 	case "cos":
 		OSS_PREFIX = fmt.Sprintf("https://%v.%v/", OSSConfig.Bucket, OSSConfig.Endpoint)
 	default:
-		OSS_PREFIX = fmt.Sprintf("http://%v/%v/", OSSConfig.Endpoint, OSSConfig.Bucket)
+		// 默认使用 minio
+		OSS_PREFIX = fmt.Sprintf("%v%v/%v/", protocol, OSSConfig.Endpoint, OSSConfig.Bucket)
 	}
 	fmt.Printf("OSS PREFIX: %v\n", OSS_PREFIX)
 
