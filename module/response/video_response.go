@@ -3,6 +3,7 @@ package response
 import (
 	"biu-x.org/TikTok/dal/model"
 	"biu-x.org/TikTok/dao"
+	"biu-x.org/TikTok/module/config"
 	"biu-x.org/TikTok/module/log"
 	"errors"
 	"gorm.io/gorm"
@@ -37,8 +38,8 @@ func GetVideoResponseByVideoAndOwnerID(video *model.Video, ownerID int64) (*Vide
 	return &VideoResponse{
 		VideoID:       video.ID,
 		Author:        *userResponse,
-		PlayURL:       video.PlayURL,
-		CoverURL:      video.CoverURL,
+		PlayURL:       config.OSS_PREFIX + video.PlayURL,
+		CoverURL:      config.OSS_PREFIX + video.CoverURL,
 		FavoriteCount: favoriteCount,
 		CommentCount:  count,
 		IsFavorite:    isFavorite,
@@ -124,7 +125,6 @@ func GetFavoriteVideoListResponseByOwnerID(ownerID int64) ([]VideoResponse, erro
 			log.Logger.Error(err)
 			continue
 		}
-
 		videoList = append(videoList, *videoRes)
 	}
 
