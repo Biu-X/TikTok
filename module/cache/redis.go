@@ -1,9 +1,9 @@
 package cache
 
 import (
-	"biu-x.org/TikTok/module/config"
 	"context"
 	"fmt"
+	"github.com/Biu-X/TikTok/module/config"
 	"github.com/redis/go-redis/v9"
 	"strconv"
 	"time"

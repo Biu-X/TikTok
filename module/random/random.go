@@ -1,10 +1,10 @@
 package random
 
 import (
-	"biu-x.org/TikTok/module/config"
-	"biu-x.org/TikTok/module/log"
 	"encoding/json"
 	"errors"
+	"github.com/Biu-X/TikTok/module/config"
+	"github.com/Biu-X/TikTok/module/log"
 	"io"
 	"net/http"
 )

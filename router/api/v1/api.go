@@ -1,23 +1,23 @@
 package v1
 
 import (
-	"biu-x.org/TikTok/module/cache"
-	middleware_cache "biu-x.org/TikTok/module/middleware/cache"
-	"biu-x.org/TikTok/module/middleware/sensitiveguard"
+	"github.com/Biu-X/TikTok/module/cache"
+	middleware_cache "github.com/Biu-X/TikTok/module/middleware/cache"
+	"github.com/Biu-X/TikTok/module/middleware/sensitiveguard"
 	"net/http"
 	"time"
 
 	"github.com/gin-gonic/gin"
 
-	"biu-x.org/TikTok/module/middleware/jwt"
-	"biu-x.org/TikTok/module/middleware/logger"
-	comment_service "biu-x.org/TikTok/service/comment"
-	favorite_service "biu-x.org/TikTok/service/favorite"
-	feed_service "biu-x.org/TikTok/service/feed"
-	message_service "biu-x.org/TikTok/service/message"
-	publish_service "biu-x.org/TikTok/service/publish"
-	relation_service "biu-x.org/TikTok/service/relation"
-	user_service "biu-x.org/TikTok/service/user"
+	"github.com/Biu-X/TikTok/module/middleware/jwt"
+	"github.com/Biu-X/TikTok/module/middleware/logger"
+	comment_service "github.com/Biu-X/TikTok/service/comment"
+	favorite_service "github.com/Biu-X/TikTok/service/favorite"
+	feed_service "github.com/Biu-X/TikTok/service/feed"
+	message_service "github.com/Biu-X/TikTok/service/message"
+	publish_service "github.com/Biu-X/TikTok/service/publish"
+	relation_service "github.com/Biu-X/TikTok/service/relation"
+	user_service "github.com/Biu-X/TikTok/service/user"
 )
 
 func NewAPI() *gin.Engine {

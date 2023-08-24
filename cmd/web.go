@@ -1,14 +1,14 @@
 package cmd
 
 import (
-	"biu-x.org/TikTok/module/config"
-	"biu-x.org/TikTok/module/db"
-	"biu-x.org/TikTok/module/log"
-	"biu-x.org/TikTok/module/middleware/cache"
-	"biu-x.org/TikTok/module/oss"
-	"biu-x.org/TikTok/module/sensitive"
-	"biu-x.org/TikTok/router"
 	"fmt"
+	"github.com/Biu-X/TikTok/module/config"
+	"github.com/Biu-X/TikTok/module/db"
+	"github.com/Biu-X/TikTok/module/log"
+	"github.com/Biu-X/TikTok/module/middleware/cache"
+	"github.com/Biu-X/TikTok/module/oss"
+	"github.com/Biu-X/TikTok/module/sensitive"
+	"github.com/Biu-X/TikTok/router"
 	"github.com/urfave/cli/v2"
 )
 

@@ -1,11 +1,11 @@
 package response
 
 import (
-	"biu-x.org/TikTok/dal/model"
-	"biu-x.org/TikTok/dao"
-	"biu-x.org/TikTok/module/config"
-	"biu-x.org/TikTok/module/log"
 	"errors"
+	"github.com/Biu-X/TikTok/dal/model"
+	"github.com/Biu-X/TikTok/dao"
+	"github.com/Biu-X/TikTok/module/config"
+	"github.com/Biu-X/TikTok/module/log"
 	"gorm.io/gorm"
 	"strconv"
 	"time"

@@ -1,7 +1,7 @@
 package ffmpeg
 
 import (
-	"biu-x.org/TikTok/module/log"
+	"github.com/Biu-X/TikTok/module/log"
 	"os/exec"
 )
 

@@ -3,9 +3,9 @@ package user
 import (
 	"errors"
 
-	"biu-x.org/TikTok/dal/query"
-	"biu-x.org/TikTok/module/middleware/jwt"
-	"biu-x.org/TikTok/module/response"
+	"github.com/Biu-X/TikTok/dal/query"
+	"github.com/Biu-X/TikTok/module/middleware/jwt"
+	"github.com/Biu-X/TikTok/module/response"
 	"github.com/gin-gonic/gin"
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"

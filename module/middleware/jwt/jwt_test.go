@@ -1,15 +1,15 @@
 package jwt_test
 
 import (
-	"biu-x.org/TikTok/module/log"
 	"fmt"
+	"github.com/Biu-X/TikTok/module/log"
 	"testing"
 
-	"biu-x.org/TikTok/dal/query"
-	"biu-x.org/TikTok/dal/model"
-	"biu-x.org/TikTok/module/config"
-	"biu-x.org/TikTok/module/db"
-	"biu-x.org/TikTok/module/middleware/jwt"
+	"github.com/Biu-X/TikTok/dal/model"
+	"github.com/Biu-X/TikTok/dal/query"
+	"github.com/Biu-X/TikTok/module/config"
+	"github.com/Biu-X/TikTok/module/db"
+	"github.com/Biu-X/TikTok/module/middleware/jwt"
 )
 
 func TestSingToken1(t *testing.T) {

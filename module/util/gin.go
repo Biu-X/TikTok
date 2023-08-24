@@ -3,7 +3,7 @@ package util
 import (
 	"strconv"
 
-	"biu-x.org/TikTok/module/log"
+	"github.com/Biu-X/TikTok/module/log"
 	"github.com/gin-gonic/gin"
 )
 

@@ -4,7 +4,7 @@ import (
 	"os"
 	"time"
 
-	"biu-x.org/TikTok/module/config"
+	"github.com/Biu-X/TikTok/module/config"
 	"github.com/charmbracelet/log"
 )
 

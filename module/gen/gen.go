@@ -1,7 +1,7 @@
 package gen
 
 import (
-	"biu-x.org/TikTok/module/db"
+	"github.com/Biu-X/TikTok/module/db"
 	"gorm.io/gen"
 )
 

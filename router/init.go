@@ -1,11 +1,11 @@
 package router
 
 import (
-	"biu-x.org/TikTok/module/config"
-	"biu-x.org/TikTok/module/log"
-	v1 "biu-x.org/TikTok/router/api/v1"
 	"context"
 	"fmt"
+	"github.com/Biu-X/TikTok/module/config"
+	"github.com/Biu-X/TikTok/module/log"
+	v1 "github.com/Biu-X/TikTok/router/api/v1"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"os/signal"

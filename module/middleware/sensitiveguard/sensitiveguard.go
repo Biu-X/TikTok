@@ -1,9 +1,9 @@
 package sensitiveguard
 
 import (
-	"biu-x.org/TikTok/module/log"
-	"biu-x.org/TikTok/module/response"
-	"biu-x.org/TikTok/module/sensitive"
+	"github.com/Biu-X/TikTok/module/log"
+	"github.com/Biu-X/TikTok/module/response"
+	"github.com/Biu-X/TikTok/module/sensitive"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )

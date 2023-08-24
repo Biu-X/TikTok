@@ -1,9 +1,9 @@
 package db
 
 import (
-	"biu-x.org/TikTok/dal/query"
-	"biu-x.org/TikTok/module/config"
-	"biu-x.org/TikTok/module/log"
+	"github.com/Biu-X/TikTok/dal/query"
+	"github.com/Biu-X/TikTok/module/config"
+	"github.com/Biu-X/TikTok/module/log"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 )

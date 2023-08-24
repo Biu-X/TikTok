@@ -1,10 +1,10 @@
 package cmd
 
 import (
-	"biu-x.org/TikTok/module/config"
-	"biu-x.org/TikTok/module/db"
-	"biu-x.org/TikTok/module/gen"
-	"biu-x.org/TikTok/module/log"
+	"github.com/Biu-X/TikTok/module/config"
+	"github.com/Biu-X/TikTok/module/db"
+	"github.com/Biu-X/TikTok/module/gen"
+	"github.com/Biu-X/TikTok/module/log"
 	"github.com/urfave/cli/v2"
 )
 

@@ -16,7 +16,7 @@ import (
 
 	"gorm.io/plugin/dbresolver"
 
-	"biu-x.org/TikTok/dal/model"
+	"github.com/Biu-X/TikTok/dal/model"
 )
 
 func newMessage(db *gorm.DB, opts ...gen.DOOption) message {

@@ -4,7 +4,7 @@ import (
 	"log"
 	"os"
 
-	"biu-x.org/TikTok/cmd"
+	"github.com/Biu-X/TikTok/cmd"
 )
 
 const version = "v0.1"
