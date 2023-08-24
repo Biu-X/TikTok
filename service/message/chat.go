@@ -4,6 +4,7 @@ import (
 	"strconv"
 	"time"
 
+	"biu-x.org/TikTok/dal/model"
 	"biu-x.org/TikTok/dao"
 	"biu-x.org/TikTok/module/log"
 	"biu-x.org/TikTok/module/response"
@@ -17,19 +18,35 @@ func Chat(c *gin.Context) {
 	toUserID, _ := strconv.ParseInt(c.Query("to_user_id"), 10, 64)
 	preMsgTimeStamp, _ := strconv.ParseInt(c.Query("pre_msg_time"), 10, 64)
 
-	// 保留精度
-	seconds := preMsgTimeStamp / 1000
-	milliseconds := preMsgTimeStamp % 1000
-	preMsgTime := time.Unix(seconds, milliseconds*int64(time.Millisecond))
-
-	messages, err := dao.GetMessageByBoth(userID, toUserID, preMsgTime)
-
-	if err != nil {
-		log.Logger.Errorf("chat: GetMessageByBoth failed, err: %v", err)
-		response.ErrRespWithMsg(c, err.Error())
-		return
-	}
 	message_list := []response.MessageResponse{}
+	messages := []*model.Message{}
+	var err error
+
+	if preMsgTimeStamp == 0 {
+		// 返回全部聊天记录
+		messages, err = dao.GetMessageByBoth(userID, toUserID, time.Unix(0, 0))
+		if err != nil {
+			log.Logger.Errorf("chat: GetMessageByBoth failed, err: %v", err)
+			response.ErrRespWithMsg(c, err.Error())
+			return
+		}
+	} else {
+		// 返回对方之后传来的消息
+		// 保留精度
+		seconds := preMsgTimeStamp / 1000
+		milliseconds := preMsgTimeStamp % 1000
+		preMsgTime := time.Unix(seconds, milliseconds*int64(time.Millisecond))
+
+		messages, err = dao.GetUserMessagesToUser(toUserID, userID, preMsgTime)
+		if err != nil {
+			log.Logger.Errorf("chat: GetMessageByBoth failed, err: %v", err)
+			response.ErrRespWithMsg(c, err.Error())
+			return
+		}
+	}
+
+	log.Logger.Infof("------------> pre_msg_time: %v", preMsgTimeStamp)
+
 	for _, message := range messages {
 		message_list = append(message_list, response.MessageResponse{
 			ID:         message.ID,

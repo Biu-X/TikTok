@@ -49,3 +49,10 @@ func GetEarliestTimeMessageByBoth(ownerID, targetID int64) (time.Time, error) {
 	t, err := f.Select(f.CreatedAt).Where(f.FromUserID.Eq(ownerID), f.ToUserID.Eq(targetID)).Or(f.FromUserID.Eq(targetID), f.ToUserID.Eq(ownerID)).First()
 	return t.CreatedAt, err
 }
+
+// 返回在preMsgTime后owner发送给target的消息
+func GetUserMessagesToUser(ownerID, targetID int64, preMsgTime time.Time) (messages []*model.Message, err error) {
+	f := query.Message
+	messages, err = f.Where(f.CreatedAt.Gt(preMsgTime)).Where(f.FromUserID.Eq(ownerID), f.ToUserID.Eq(targetID)).Find()
+	return messages, err
+}
