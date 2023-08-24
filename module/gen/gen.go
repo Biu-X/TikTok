@@ -11,7 +11,7 @@ func Init() {
 		Mode:         gen.WithDefaultQuery | gen.WithoutContext | gen.WithQueryInterface,
 		ModelPkgPath: "dal/model",
 
-		WithUnitTest: true,
+		//WithUnitTest: true,
 
 		FieldNullable:     false,
 		FieldCoverable:    true,
