@@ -1,0 +1,68 @@
+name: unit-tests
+
+on:
+  push:
+    branches:
+      - main
+      - test
+    paths-ignore:
+      - apk
+      - docs
+      - '**.md'
+      - LICENSE
+  pull_request:
+    paths-ignore:
+      - '**.md'
+      - LICENSE
+  workflow_dispatch:
+
+jobs:
+  unit-test:
+    strategy:
+      matrix:
+        os-version: [ "ubuntu-20.04" ]
+    runs-on: ${{ matrix.os-version }}
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: 123456
+          MYSQL_DATABASE: tiktok
+        ports:
+          - "3306:3306"
+      redis:
+        image: redis
+        options: >- # wait until redis has started
+          --health-cmd "redis-cli ping"
+          --health-interval 5s
+          --health-timeout 3s
+          --health-retries 10
+        ports:
+          - 6379:6379
+      minio:
+        image: bitnami/minio:latest
+        env:
+          MINIO_ACCESS_KEY: ChYm7ufIwNAOzq6PQPCA
+          MINIO_SECRET_KEY: udicP52IwRbmo2hf6lFvjUS7NP5BhlAdsGNIuDE5
+        ports:
+          - "9000:9000"
+    steps:
+      - uses: actions/checkout@v3
+      - run: |
+          mkdir -p /etc/tiktok
+          cp ./conf/tiktok.yml /etc/tiktok
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+      - name: Install CoverSnap
+        run: |
+          python -m pip install --upgrade pip
+          pip install coversnap
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: '1.20'
+      - name: Test
+        run: |
+          make test
