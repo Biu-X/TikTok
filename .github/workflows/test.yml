@@ -8,6 +8,7 @@ on:
     paths-ignore:
       - apk
       - docs
+      - script
       - '**.md'
       - LICENSE
   pull_request:
