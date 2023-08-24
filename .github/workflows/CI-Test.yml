@@ -55,6 +55,9 @@ jobs:
         run: |
           docker pull mysql:latest
           docker run -d --name mysql -p 3306:3306 -e MYSQL_ROOT_PASSWORD=123456 mysql
+
+      - name: Create MySQL Database and Table
+        run: |
           sleep 10
           cd script
           python CreateMySQL.py
