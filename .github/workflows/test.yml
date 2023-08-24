@@ -50,6 +50,8 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - run: |
+          pwd
+          ls -al
           mkdir -p /etc/tiktok
           cp ./conf/tiktok.yml /etc/tiktok
       - name: Set up Python
