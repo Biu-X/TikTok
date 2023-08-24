@@ -1,10 +1,10 @@
 package user
 
 import (
-	"biu-x.org/TikTok/dal/model"
-	"biu-x.org/TikTok/dal/query"
-	"biu-x.org/TikTok/module/random"
-	"biu-x.org/TikTok/module/response"
+	"github.com/Biu-X/TikTok/dal/model"
+	"github.com/Biu-X/TikTok/dal/query"
+	"github.com/Biu-X/TikTok/module/random"
+	"github.com/Biu-X/TikTok/module/response"
 	"github.com/gin-gonic/gin"
 	"golang.org/x/crypto/bcrypt"
 )

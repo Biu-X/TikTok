@@ -16,7 +16,7 @@ import (
 
 	"gorm.io/plugin/dbresolver"
 
-	"biu-x.org/TikTok/dal/model"
+	"github.com/Biu-X/TikTok/dal/model"
 )
 
 func newUser(db *gorm.DB, opts ...gen.DOOption) user {

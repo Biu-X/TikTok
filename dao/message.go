@@ -3,8 +3,8 @@ package dao
 import (
 	"time"
 
-	"biu-x.org/TikTok/dal/model"
-	"biu-x.org/TikTok/dal/query"
+	"github.com/Biu-X/TikTok/dal/model"
+	"github.com/Biu-X/TikTok/dal/query"
 	"gorm.io/gorm"
 )
 

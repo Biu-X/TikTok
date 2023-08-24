@@ -1,10 +1,10 @@
 package random
 
 import (
-	"biu-x.org/TikTok/module/config"
-	"biu-x.org/TikTok/module/db"
-	"biu-x.org/TikTok/module/log"
-	"biu-x.org/TikTok/module/oss"
+	"github.com/Biu-X/TikTok/module/config"
+	"github.com/Biu-X/TikTok/module/db"
+	"github.com/Biu-X/TikTok/module/log"
+	"github.com/Biu-X/TikTok/module/oss"
 	"testing"
 )
 

@@ -1,9 +1,9 @@
 package ffmpeg
 
 import (
-	"biu-x.org/TikTok/module/log"
 	"bytes"
 	"fmt"
+	"github.com/Biu-X/TikTok/module/log"
 	ffmpeg "github.com/u2takey/ffmpeg-go"
 	"io"
 )

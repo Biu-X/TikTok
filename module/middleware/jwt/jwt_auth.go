@@ -4,8 +4,8 @@ import (
 	"net/http"
 	"time"
 
-	"biu-x.org/TikTok/module/log"
-	"biu-x.org/TikTok/module/response"
+	"github.com/Biu-X/TikTok/module/log"
+	"github.com/Biu-X/TikTok/module/response"
 	"github.com/gin-gonic/gin"
 )
 

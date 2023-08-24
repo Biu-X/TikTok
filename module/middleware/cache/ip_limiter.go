@@ -1,10 +1,10 @@
 package cache
 
 import (
-	"biu-x.org/TikTok/module/cache"
-	"biu-x.org/TikTok/module/log"
-	"biu-x.org/TikTok/module/response"
 	"fmt"
+	"github.com/Biu-X/TikTok/module/cache"
+	"github.com/Biu-X/TikTok/module/log"
+	"github.com/Biu-X/TikTok/module/response"
 	"github.com/gin-gonic/gin"
 	"github.com/redis/go-redis/v9"
 	"net/http"

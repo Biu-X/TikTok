@@ -1,4 +1,4 @@
-module biu-x.org/TikTok
+module github.com/Biu-X/TikTok
 
 go 1.20
 

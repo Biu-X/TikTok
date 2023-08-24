@@ -6,10 +6,10 @@ import (
 	"strconv"
 	"time"
 
-	"biu-x.org/TikTok/module/log"
+	"github.com/Biu-X/TikTok/module/log"
 
-	"biu-x.org/TikTok/dal/model"
-	"biu-x.org/TikTok/dal/query"
+	"github.com/Biu-X/TikTok/dal/model"
+	"github.com/Biu-X/TikTok/dal/query"
 	"github.com/golang-jwt/jwt/v5"
 )
 

@@ -1,8 +1,8 @@
 package favorite
 
 import (
-	"biu-x.org/TikTok/module/response"
-	"biu-x.org/TikTok/module/util"
+	"github.com/Biu-X/TikTok/module/response"
+	"github.com/Biu-X/TikTok/module/util"
 	"github.com/gin-gonic/gin"
 )
 

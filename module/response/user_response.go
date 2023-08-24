@@ -1,6 +1,6 @@
 package response
 
-import "biu-x.org/TikTok/dao"
+import "github.com/Biu-X/TikTok/dao"
 
 // GetUserResponseByOwnerId 返回用户信息，ownerID 为当前登录用户 id
 func GetUserResponseByOwnerId(ownerID int64) (*UserResponse, error) {

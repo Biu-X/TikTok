@@ -6,12 +6,12 @@ import (
 	"strconv"
 	"strings"
 
-	"biu-x.org/TikTok/dal/model"
-	"biu-x.org/TikTok/dao"
-	"biu-x.org/TikTok/module/ffmpeg"
-	"biu-x.org/TikTok/module/log"
-	"biu-x.org/TikTok/module/oss"
-	"biu-x.org/TikTok/module/response"
+	"github.com/Biu-X/TikTok/dal/model"
+	"github.com/Biu-X/TikTok/dao"
+	"github.com/Biu-X/TikTok/module/ffmpeg"
+	"github.com/Biu-X/TikTok/module/log"
+	"github.com/Biu-X/TikTok/module/oss"
+	"github.com/Biu-X/TikTok/module/response"
 	"github.com/gin-gonic/gin"
 	"time"
 )

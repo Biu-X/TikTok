@@ -1,9 +1,9 @@
 package publish
 
 import (
-	"biu-x.org/TikTok/module/log"
-	"biu-x.org/TikTok/module/response"
-	"biu-x.org/TikTok/module/util"
+	"github.com/Biu-X/TikTok/module/log"
+	"github.com/Biu-X/TikTok/module/response"
+	"github.com/Biu-X/TikTok/module/util"
 	"github.com/gin-gonic/gin"
 	"strconv"
 )

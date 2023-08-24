@@ -1,8 +1,8 @@
 package cache
 
 import (
-	"biu-x.org/TikTok/module/cache"
 	"bytes"
+	"github.com/Biu-X/TikTok/module/cache"
 	"github.com/gin-gonic/gin"
 )
 
