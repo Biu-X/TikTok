@@ -16,8 +16,3 @@ func TestGetRandomString(t *testing.T) {
 		}
 	}
 }
-
-func TestGetRandomString2(t *testing.T) {
-	a := assert.New(t)
-	a.Equal(10, 1)
-}
