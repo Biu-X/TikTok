@@ -34,7 +34,7 @@ type OSS struct {
 	Region    string `yaml:"region"`
 	Bucket    string `yaml:"bucket"`
 
-	// 如果是使用 minio，并且没有使用 https，需要设置为 true
+	// 如果是使用 minio，并且没有使用 https，需要设置为 false
 	UseSsl *bool `yaml:"useSsl"`
 	// 如果是使用 minio，需要设置为 true
 	HostnameImmutable *bool `yaml:"hostnameImmutable"`
