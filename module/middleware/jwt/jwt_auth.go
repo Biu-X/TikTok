@@ -85,7 +85,7 @@ func RequireAuthWithoutLogin() gin.HandlerFunc {
 		}
 		c.Set("user_id", userId)
 		c.Set("is_login", isLogin)
-		log.Logger.Infof("user_id: %v", userId, "is_login: %v", isLogin)
+		log.Logger.Infof("user_id: %v, is_login: %v", userId, isLogin)
 		// 放行
 		c.Next()
 	}
