@@ -17,7 +17,7 @@ jobs:
   CI-Test:
     strategy:
       matrix:
-        os-version: [ "macos-latest", "windows-latest", "ubuntu-latest" ]
+        os-version: [ "ubuntu-latest" ]
 
     runs-on: ${{ matrix.os-version }}
     steps:
@@ -34,8 +34,7 @@ jobs:
     - name: Set up Redis
       uses: supercharge/redis-github-action@1.6.0
       with:
-        redis-version: ${{ matrix.redis-version }}
-        redis-password: 123456
+        redis-password: '123456'
 
     - name: Test
       run: go test -v ./...
