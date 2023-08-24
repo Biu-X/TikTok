@@ -58,7 +58,7 @@ jobs:
 
       - name: Create MySQL Database and Table
         run: |
-          sleep 10
+          sleep 30
           cd script
           python CreateMySQL.py
 
