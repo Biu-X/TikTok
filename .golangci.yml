@@ -2,11 +2,11 @@ linters:
   enable-all: false
   disable-all: true
   fast: false
-#  enable:
+  enable:
+    - errcheck
 #    - bodyclose
 #    - dogsled
 #    - dupl
-#    - errcheck
 #    - exportloopref
 #    - exhaustive
 #    - gochecknoinits
