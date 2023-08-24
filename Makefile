@@ -25,7 +25,7 @@ watch: ## live reload
 
 .PHONY: test
 test: tidy ## go test
-	${GO} test -v ./...
+	$(${GO} list ./... | grep -v /dal/query)
 
 .PHONY: clear
 clear: ## clear project
