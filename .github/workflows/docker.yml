@@ -25,3 +25,4 @@ jobs:
           secrets: |
             GIT_AUTH_TOKEN=${{ secrets.GH_TOKEN }}
           no-cache: true
+          github-token: ${{ secrets.GH_TOKEN }}
