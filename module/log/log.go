@@ -37,7 +37,7 @@ func Init() {
 	Logger.Debugf("log level: %v", level)
 }
 
-// HandleError 高亮错误信息
+// HandleError 高亮错误信息，单元测试时使用！！！
 func HandleError(err error) {
 	if err != nil {
 		_, file, line, _ := runtime.Caller(1)
