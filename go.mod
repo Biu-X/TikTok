@@ -5,7 +5,6 @@ go 1.20
 require (
 	github.com/Tohrusky/sensitive-go v1.0.3
 	github.com/charmbracelet/log v0.2.3
-	github.com/disintegration/imaging v1.6.2
 	github.com/eleven26/goss/v3 v3.0.0
 	github.com/fsnotify/fsnotify v1.6.0
 	github.com/gin-gonic/gin v1.9.1
@@ -13,7 +12,6 @@ require (
 	github.com/redis/go-redis/v9 v9.0.5
 	github.com/spf13/viper v1.16.0
 	github.com/stretchr/testify v1.8.4
-	github.com/u2takey/ffmpeg-go v0.4.1
 	github.com/urfave/cli/v2 v2.25.7
 	golang.org/x/crypto v0.12.0
 	gorm.io/driver/mysql v1.5.1
@@ -23,7 +21,6 @@ require (
 )
 
 require (
-	github.com/aws/aws-sdk-go v1.38.20 // indirect
 	github.com/aws/aws-sdk-go-v2 v1.20.0 // indirect
 	github.com/aws/aws-sdk-go-v2/aws/protocol/eventstream v1.4.11 // indirect
 	github.com/aws/aws-sdk-go-v2/config v1.18.32 // indirect
@@ -62,7 +59,6 @@ require (
 	github.com/hashicorp/hcl v1.0.0 // indirect
 	github.com/jinzhu/inflection v1.0.0 // indirect
 	github.com/jinzhu/now v1.1.5 // indirect
-	github.com/jmespath/go-jmespath v0.4.0 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
 	github.com/klauspost/cpuid/v2 v2.2.5 // indirect
 	github.com/leodido/go-urn v1.2.4 // indirect
@@ -85,11 +81,9 @@ require (
 	github.com/spf13/pflag v1.0.5 // indirect
 	github.com/subosito/gotenv v1.4.2 // indirect
 	github.com/twitchyliquid64/golang-asm v0.15.1 // indirect
-	github.com/u2takey/go-utils v0.3.1 // indirect
 	github.com/ugorji/go/codec v1.2.11 // indirect
 	github.com/xrash/smetrics v0.0.0-20201216005158-039620a65673 // indirect
 	golang.org/x/arch v0.4.0 // indirect
-	golang.org/x/image v0.10.0 // indirect
 	golang.org/x/mod v0.12.0 // indirect
 	golang.org/x/net v0.14.0 // indirect
 	golang.org/x/sys v0.11.0 // indirect
