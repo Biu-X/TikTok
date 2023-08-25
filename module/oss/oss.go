@@ -17,12 +17,16 @@ var (
 
 func Init() {
 	once.Do(func() {
-		cfg := &config.OSSConfig
-		oss, err = goss.New(goss.WithConfig((*goss.Config)(cfg)))
-		if err != nil {
-			log.Logger.Errorf("init goss faild: %v", err)
-		}
+		initialize()
 	})
+}
+
+func initialize() {
+	cfg := &config.OSSConfig
+	oss, err = goss.New(goss.WithConfig((*goss.Config)(cfg)))
+	if err != nil {
+		log.Logger.Errorf("init goss faild: %v", err)
+	}
 }
 
 // Put saves the content read from r to the key of oss.
