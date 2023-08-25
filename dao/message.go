@@ -37,10 +37,9 @@ func GetLatestBidirectionalMessage(userA int64, userB int64) (message *model.Mes
 		return &model.Message{}, gorm.ErrRecordNotFound
 	}
 
-	message, err =
-		f.Where(f.FromUserID.Eq(userA), f.ToUserID.Eq(userB)).
-			Or(f.FromUserID.Eq(userB), f.ToUserID.Eq(userA)).
-			Last()
+	message, err = f.Where(f.FromUserID.Eq(userA), f.ToUserID.Eq(userB)).
+		Or(f.FromUserID.Eq(userB), f.ToUserID.Eq(userA)).
+		Last()
 	return message, err
 }
 

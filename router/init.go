@@ -3,14 +3,15 @@ package router
 import (
 	"context"
 	"fmt"
-	"github.com/Biu-X/TikTok/module/config"
-	"github.com/Biu-X/TikTok/module/log"
-	v1 "github.com/Biu-X/TikTok/router/api/v1"
-	"github.com/gin-gonic/gin"
 	"net/http"
 	"os/signal"
 	"syscall"
 	"time"
+
+	"github.com/Biu-X/TikTok/module/config"
+	"github.com/Biu-X/TikTok/module/log"
+	v1 "github.com/Biu-X/TikTok/router/api/v1"
+	"github.com/gin-gonic/gin"
 )
 
 func Init() {

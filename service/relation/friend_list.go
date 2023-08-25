@@ -41,11 +41,13 @@ func FriendList(c *gin.Context) {
 			msgType = 0
 		}
 
-		userList = append(userList, response.FriendUserResponse{
-			UserResponse: *userRes,
-			Message:      message.Content,
-			MsgType:      msgType,
-		})
+		if userRes.IsFollow {
+			userList = append(userList, response.FriendUserResponse{
+				UserResponse: *userRes,
+				Message:      message.Content,
+				MsgType:      msgType,
+			})
+		}
 	}
 
 	response.OKRespWithData(c, map[string]interface{}{

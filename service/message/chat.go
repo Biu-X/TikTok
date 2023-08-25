@@ -60,5 +60,4 @@ func Chat(c *gin.Context) {
 	response.OKRespWithData(c, map[string]interface{}{
 		"message_list": message_list,
 	})
-
 }

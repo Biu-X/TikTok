@@ -1,10 +1,12 @@
 package proxy
 
 import (
-	"github.com/gin-gonic/gin"
 	"io/ioutil"
 	"net/http"
 	"strings"
+
+	"github.com/Biu-X/TikTok/module/log"
+	"github.com/gin-gonic/gin"
 )
 
 type ProxyOptions struct {
@@ -38,11 +40,13 @@ func HandleProxy(path string, proxyOption ProxyOptions) gin.HandlerFunc {
 				}
 			}
 			ctx.Status(resp.StatusCode)
-			ctx.Writer.Write(body)
-
+			_, err = ctx.Writer.Write(body)
+			if err != nil {
+				log.Logger.Error(err)
+				return
+			}
 		} else {
 			ctx.Next()
 		}
-
 	}
 }

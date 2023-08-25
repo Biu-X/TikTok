@@ -1,8 +1,9 @@
 package sensitive
 
 import (
-	"github.com/Tohrusky/sensitive-go/sensitive"
 	"sync"
+
+	"github.com/Tohrusky/sensitive-go/sensitive"
 )
 
 var (

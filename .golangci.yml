@@ -3,13 +3,12 @@ linters:
   disable-all: true
   fast: false
   enable:
-    - errcheck
+#    - errcheck
 #    - bodyclose
 #    - dogsled
 #    - dupl
 #    - exportloopref
 #    - exhaustive
-#    - gochecknoinits
 #    - goconst
 #    - gocritic
 #    - gocyclo
@@ -30,8 +29,8 @@ linters:
 #    - typecheck
 #    - unconvert
 #    - unparam
-#    - unused
-#    - whitespace
+    - unused
+    - whitespace
 #    - gofumpt
 
 run:

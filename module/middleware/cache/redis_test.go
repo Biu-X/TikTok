@@ -1,12 +1,13 @@
 package cache
 
 import (
+	"testing"
+
 	"github.com/Biu-X/TikTok/module/cache"
 	"github.com/Biu-X/TikTok/module/config"
 	"github.com/Biu-X/TikTok/module/db"
 	"github.com/Biu-X/TikTok/module/log"
 	"github.com/Biu-X/TikTok/module/oss"
-	"testing"
 )
 
 func TestNewRedisClient(t *testing.T) {

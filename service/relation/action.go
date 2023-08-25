@@ -1,12 +1,13 @@
 package relation
 
 import (
+	"strconv"
+
 	"github.com/Biu-X/TikTok/dao"
 	"github.com/Biu-X/TikTok/module/log"
 	"github.com/Biu-X/TikTok/module/response"
 	"github.com/Biu-X/TikTok/module/util"
 	"github.com/gin-gonic/gin"
-	"strconv"
 )
 
 // Action /douyin/relation/action/ - 关系操作

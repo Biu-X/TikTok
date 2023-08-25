@@ -1,13 +1,14 @@
 package dao
 
 import (
+	"reflect"
+	"testing"
+
 	"github.com/Biu-X/TikTok/dal/model"
 	"github.com/Biu-X/TikTok/dal/query"
 	"github.com/Biu-X/TikTok/module/config"
 	"github.com/Biu-X/TikTok/module/db"
 	"github.com/Biu-X/TikTok/module/log"
-	"reflect"
-	"testing"
 )
 
 func init() {

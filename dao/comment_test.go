@@ -49,5 +49,4 @@ func Test_CommentDAO(t *testing.T) {
 		t.Error("DeleteCommentByID fail", err)
 		return
 	}
-
 }

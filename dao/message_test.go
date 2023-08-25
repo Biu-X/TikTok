@@ -56,5 +56,4 @@ func Test_MessageDAO(t *testing.T) {
 	for _, message := range messages {
 		t.Log(message)
 	}
-
 }
