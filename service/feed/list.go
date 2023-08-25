@@ -21,6 +21,8 @@ func List(c *gin.Context) {
 		latest_time = strconv.FormatInt(time.Now().UnixMilli(), 10)
 	}
 
+	log.Logger.Infof("latest time: %v", latest_time)
+
 	videoList, err := response.GetVideoListResponseByOwnerIDAndLatestTime(ownerID, latest_time)
 	if err != nil {
 		response.ErrRespWithMsg(c, err.Error())
@@ -37,7 +39,7 @@ func List(c *gin.Context) {
 	}
 
 	if length > 0 {
-		log.Logger.Debugf("length: %v", length)
+		log.Logger.Debugf("length: %v", length+1)
 		t, err := dao.GetVideoCreateTimeByID(videoList[length].VideoID)
 		if err != nil {
 			log.Logger.Error(err)
