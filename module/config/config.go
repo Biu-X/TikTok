@@ -5,12 +5,16 @@ import (
 	"fmt"
 	"log"
 	"strings"
+	"sync"
 
 	"github.com/fsnotify/fsnotify"
 	"github.com/spf13/viper"
 )
 
-var config *viper.Viper
+var (
+	config *viper.Viper
+	once   sync.Once
+)
 
 type MySQL struct {
 	Host     string `yaml:"host"`
@@ -56,6 +60,12 @@ var (
 )
 
 func Init() {
+	once.Do(func() {
+		initialize()
+	})
+}
+
+func initialize() {
 	config = viper.New()
 
 	config.SetConfigName("tiktok")

@@ -7,11 +7,21 @@ import (
 	"github.com/Biu-X/TikTok/module/log"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
+	"sync"
 )
 
-var DB *gorm.DB
+var (
+	DB   *gorm.DB
+	once sync.Once
+)
 
 func Init() {
+	once.Do(func() {
+		initialize()
+	})
+}
+
+func initialize() {
 	DB = ConnectDB(config.MySQLDSN())
 	err := DB.AutoMigrate(
 		model.Comment{},

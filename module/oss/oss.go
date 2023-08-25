@@ -2,6 +2,7 @@ package oss
 
 import (
 	"io"
+	"sync"
 
 	"github.com/Biu-X/TikTok/module/config"
 	"github.com/Biu-X/TikTok/module/log"
@@ -9,11 +10,18 @@ import (
 )
 
 var (
-	oss *goss.Goss
-	err error
+	oss  *goss.Goss
+	err  error
+	once sync.Once
 )
 
 func Init() {
+	once.Do(func() {
+		initialize()
+	})
+}
+
+func initialize() {
 	cfg := &config.OSSConfig
 	oss, err = goss.New(goss.WithConfig((*goss.Config)(cfg)))
 	if err != nil {

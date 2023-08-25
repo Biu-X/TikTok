@@ -8,12 +8,22 @@ import (
 	"os"
 	"runtime"
 	"strconv"
+	"sync"
 	"time"
 )
 
-var Logger *log.Logger
+var (
+	Logger *log.Logger
+	once   sync.Once
+)
 
 func Init() {
+	once.Do(func() {
+		initialize()
+	})
+}
+
+func initialize() {
 	Logger = log.NewWithOptions(os.Stderr, log.Options{
 		ReportCaller:    true,
 		ReportTimestamp: true,
