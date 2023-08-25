@@ -24,3 +24,4 @@ jobs:
           tags: hiifong/tiktok:latest
           secrets: |
             GIT_AUTH_TOKEN=${{ secrets.GH_TOKEN }}
+          no-cache: true
