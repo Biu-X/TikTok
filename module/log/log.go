@@ -8,33 +8,39 @@ import (
 	"os"
 	"runtime"
 	"strconv"
+	"sync"
 	"time"
 )
 
-var Logger *log.Logger
+var (
+	Logger *log.Logger
+	once   sync.Once
+)
 
 func Init() {
-	Logger = log.NewWithOptions(os.Stderr, log.Options{
-		ReportCaller:    true,
-		ReportTimestamp: true,
-		TimeFormat:      time.RFC3339Nano,
-		Prefix:          "Tiktok",
-	})
+	once.Do(func() {
+		Logger = log.NewWithOptions(os.Stderr, log.Options{
+			ReportCaller:    true,
+			ReportTimestamp: true,
+			TimeFormat:      time.RFC3339Nano,
+			Prefix:          "Tiktok",
+		})
 
-	level := config.GetString("log.level")
-	switch level {
-	case "debug":
-		Logger.SetLevel(log.DebugLevel)
-	case "info":
-		Logger.SetLevel(log.InfoLevel)
-	case "warn":
-		Logger.SetLevel(log.WarnLevel)
-	case "error":
-		Logger.SetLevel(log.ErrorLevel)
-	default:
-		Logger.SetLevel(log.DebugLevel)
-	}
-	Logger.Debugf("log level: %v", level)
+		level := config.GetString("log.level")
+		switch level {
+		case "debug":
+			Logger.SetLevel(log.DebugLevel)
+		case "info":
+			Logger.SetLevel(log.InfoLevel)
+		case "warn":
+			Logger.SetLevel(log.WarnLevel)
+		case "error":
+			Logger.SetLevel(log.ErrorLevel)
+		default:
+			Logger.SetLevel(log.DebugLevel)
+		}
+		Logger.Debugf("log level: %v", level)
+	})
 }
 
 // HandleError 封装了错误打印，高亮错误信息，单元测试时使用！！！

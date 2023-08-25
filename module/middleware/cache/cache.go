@@ -2,10 +2,13 @@ package cache
 
 import (
 	"bytes"
+	"sync"
 
 	"github.com/Biu-X/TikTok/module/cache"
 	"github.com/gin-gonic/gin"
 )
+
+var once sync.Once
 
 var Clients = map[cache.RDB]*cache.Client{
 	cache.Feed:     {},
@@ -33,5 +36,7 @@ func (w responseWriter) Write(b []byte) (int, error) {
 }
 
 func Init() {
-	cache.NewRedisClients(Clients)
+	once.Do(func() {
+		cache.NewRedisClients(Clients)
+	})
 }

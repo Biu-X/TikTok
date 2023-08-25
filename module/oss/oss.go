@@ -2,6 +2,7 @@ package oss
 
 import (
 	"io"
+	"sync"
 
 	"github.com/Biu-X/TikTok/module/config"
 	"github.com/Biu-X/TikTok/module/log"
@@ -9,16 +10,19 @@ import (
 )
 
 var (
-	oss *goss.Goss
-	err error
+	oss  *goss.Goss
+	err  error
+	once sync.Once
 )
 
 func Init() {
-	cfg := &config.OSSConfig
-	oss, err = goss.New(goss.WithConfig((*goss.Config)(cfg)))
-	if err != nil {
-		log.Logger.Errorf("init goss faild: %v", err)
-	}
+	once.Do(func() {
+		cfg := &config.OSSConfig
+		oss, err = goss.New(goss.WithConfig((*goss.Config)(cfg)))
+		if err != nil {
+			log.Logger.Errorf("init goss faild: %v", err)
+		}
+	})
 }
 
 // Put saves the content read from r to the key of oss.

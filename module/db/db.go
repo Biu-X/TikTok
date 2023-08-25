@@ -7,26 +7,32 @@ import (
 	"github.com/Biu-X/TikTok/module/log"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
+	"sync"
 )
 
-var DB *gorm.DB
+var (
+	DB   *gorm.DB
+	once sync.Once
+)
 
 func Init() {
-	DB = ConnectDB(config.MySQLDSN())
-	err := DB.AutoMigrate(
-		model.Comment{},
-		model.Favorite{},
-		model.Follow{},
-		model.Message{},
-		model.User{},
-		model.Video{},
-	)
-	if err != nil {
-		log.Logger.Error(err)
-		return
-	}
-	query.SetDefault(DB)
-	log.Logger.Debugf("Set query default database")
+	once.Do(func() {
+		DB = ConnectDB(config.MySQLDSN())
+		err := DB.AutoMigrate(
+			model.Comment{},
+			model.Favorite{},
+			model.Follow{},
+			model.Message{},
+			model.User{},
+			model.Video{},
+		)
+		if err != nil {
+			log.Logger.Error(err)
+			return
+		}
+		query.SetDefault(DB)
+		log.Logger.Debugf("Set query default database")
+	})
 }
 
 func ConnectDB(dsn string) (db *gorm.DB) {
