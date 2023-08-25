@@ -27,7 +27,7 @@ RUN pip install coversnap
 WORKDIR /app
 
 # 从builder镜像中把配置文件拷贝到当前目录
-COPY ./conf/tiktok.yml /app
+COPY ./conf/tiktok.yml /app/conf
 
 # 从builder镜像中把/dist/app 拷贝到当前目录
 COPY --from=builder /build/tiktok /app
