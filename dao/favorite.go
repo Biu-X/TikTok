@@ -7,35 +7,46 @@ import (
 	"gorm.io/gorm"
 )
 
-// 创建点赞记录
-func CreateFavorite(favorite *model.Favorite) (err error) {
+// CreateFavorite 创建用户和视频之间的点赞记录
+func CreateFavorite(userID, videoID int64) error {
 	f := query.Favorite
-	err = f.Create(favorite)
-	return err
+
+	newFavorite := &model.Favorite{
+		UserID:  userID,
+		VideoID: videoID,
+	}
+
+	err := f.Create(newFavorite)
+	if err != nil {
+		log.Logger.Error(err.Error())
+		return err
+	}
+
+	return nil
 }
 
-// 获取用户是否对某视频点赞
+// GetUserIsFavoriteVideo 获取用户是否对某视频点赞
 func GetUserIsFavoriteVideo(userID int64, videoID int64) bool {
 	f := query.Favorite
 	count, _ := f.Where(f.UserID.Eq(userID), f.VideoID.Eq(videoID), f.Cancel.Eq(0)).Count()
 	return count == 1
 }
 
-// 获取用户是否曾经对某视频点赞
+// GetFavoriteIsExistByUserIDAndVideoID 获取用户是否曾经对某视频点赞
 func GetFavoriteIsExistByUserIDAndVideoID(userID int64, videoID int64) bool {
 	f := query.Favorite
 	count, _ := f.Where(f.UserID.Eq(userID), f.VideoID.Eq(videoID)).Count()
 	return count == 1
 }
 
-// 通过用户ID获取用户的所有点赞记录 cancel=0
+// GetFavoriteByUserID 通过用户ID获取用户的所有点赞记录 cancel=0
 func GetFavoriteByUserID(userID int64) (favorites []*model.Favorite, err error) {
 	f := query.Favorite
 	favorites, err = f.Where(f.UserID.Eq(userID), f.Cancel.Eq(0)).Find()
 	return favorites, err
 }
 
-// 通过 favorite id 获取对应点赞记录信息
+// GetFavoriteByID 通过 favorite id 获取对应点赞记录信息
 func GetFavoriteByID(id int64) (favorite *model.Favorite, err error) {
 	f := query.Favorite
 
@@ -49,21 +60,21 @@ func GetFavoriteByID(id int64) (favorite *model.Favorite, err error) {
 	return favorite, err
 }
 
-// 通过视频ID获取视频点赞数量
+// GetFavoriteCountByVideoID 通过视频ID获取视频点赞数量
 func GetFavoriteCountByVideoID(videoID int64) (count int64, err error) {
 	f := query.Favorite
 	count, err = f.Where(f.VideoID.Eq(videoID), f.Cancel.Eq(0)).Count()
 	return count, err
 }
 
-// 通过用户ID获取用户点赞的视频数量
+// GetFavoriteCountByUserID 通过用户ID获取用户点赞的视频数量
 func GetFavoriteCountByUserID(userID int64) (count int64, err error) {
 	f := query.Favorite
 	count, err = f.Where(f.UserID.Eq(userID), f.Cancel.Eq(0)).Count()
 	return count, err
 }
 
-// 通过点赞ID设置是否取消点赞
+// SetFavoriteCancelByID 通过点赞ID设置是否取消点赞
 func SetFavoriteCancelByID(id int64, cancel int32) (err error) {
 	f := query.Favorite
 	_, err = f.Where(f.ID.Eq(id)).Update(f.Cancel, cancel)
@@ -88,10 +99,7 @@ func SetFavoriteByUserIDAndVideoID(userID, videoID int64) (err error) {
 			return err
 		}
 	} else {
-		err = CreateFavorite(&model.Favorite{
-			UserID:  userID,
-			VideoID: videoID,
-		})
+		err = CreateFavorite(userID, videoID)
 		if err != nil {
 			log.Logger.Error(err.Error())
 			return err
