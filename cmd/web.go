@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"fmt"
+
 	"github.com/Biu-X/TikTok/module/config"
 	"github.com/Biu-X/TikTok/module/db"
 	"github.com/Biu-X/TikTok/module/log"
@@ -30,7 +31,7 @@ var CmdWeb = &cli.Command{ //nolint:typecheck
 
 func runWeb(ctx *cli.Context) error { //nolint:typecheck
 	defer func() {
-		for k, _ := range cache.Clients {
+		for k := range cache.Clients {
 			err := cache.Clients[k].C.Close()
 			if err != nil {
 				fmt.Printf("close redis: %v", err)

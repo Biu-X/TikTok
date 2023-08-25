@@ -2,14 +2,15 @@ package dao
 
 import (
 	"errors"
+	"reflect"
+	"testing"
+
 	"github.com/Biu-X/TikTok/dal/model"
 	"github.com/Biu-X/TikTok/dal/query"
 	"github.com/Biu-X/TikTok/module/config"
 	"github.com/Biu-X/TikTok/module/db"
 	"github.com/Biu-X/TikTok/module/log"
 	"gorm.io/gorm"
-	"reflect"
-	"testing"
 )
 
 func init() {
@@ -101,7 +102,11 @@ func TestActionFavorite(t *testing.T) {
 		UserID:  2,
 	}
 
-	f.Create(favorite)
+	err := f.Create(favorite)
+	if err != nil {
+		log.Logger.Error(err)
+		return
+	}
 
 	// 查看点赞数
 	count, _ := f.Where(f.VideoID.Eq(6), f.Cancel.Eq(0)).Count()
@@ -111,7 +116,7 @@ func TestActionFavorite(t *testing.T) {
 	}
 
 	// 取消点赞
-	err := SetFavoriteCancelByUserIDAndVideoID(2, 6)
+	err = SetFavoriteCancelByUserIDAndVideoID(2, 6)
 	if err != nil {
 		t.Fatal(err.Error())
 	}

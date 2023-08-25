@@ -1,8 +1,9 @@
 package ffmpeg
 
 import (
-	"github.com/Biu-X/TikTok/module/log"
 	"os/exec"
+
+	"github.com/Biu-X/TikTok/module/log"
 )
 
 // CoverSnap 使用 cv2 的方式截取视频封面，做了一些特殊处理，pip install coversnap 即可（pip默认添加到环境变量）

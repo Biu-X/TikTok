@@ -1,8 +1,8 @@
 package response
 
 type AuthResponse struct {
-	StatusCode int    `json:"status_code"`
-	StatusMessage    string `json:"status_msg"`
+	StatusCode    int    `json:"status_code"`
+	StatusMessage string `json:"status_msg"`
 }
 
 type CommentResponse struct {

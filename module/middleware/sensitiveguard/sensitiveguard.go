@@ -1,11 +1,12 @@
 package sensitiveguard
 
 import (
+	"net/http"
+
 	"github.com/Biu-X/TikTok/module/log"
 	"github.com/Biu-X/TikTok/module/response"
 	"github.com/Biu-X/TikTok/module/sensitive"
 	"github.com/gin-gonic/gin"
-	"net/http"
 )
 
 func SensitiveGuard(queryKey string) gin.HandlerFunc {

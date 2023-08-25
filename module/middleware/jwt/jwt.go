@@ -75,7 +75,6 @@ func ParseToken(tokenString string) (*jwt.RegisteredClaims, error) {
 		}
 		return mySigningKey, nil
 	})
-
 	if err != nil {
 		log.Logger.Info(err)
 	}

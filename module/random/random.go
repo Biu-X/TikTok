@@ -3,10 +3,11 @@ package random
 import (
 	"encoding/json"
 	"errors"
-	"github.com/Biu-X/TikTok/module/config"
-	"github.com/Biu-X/TikTok/module/log"
 	"io"
 	"net/http"
+
+	"github.com/Biu-X/TikTok/module/config"
+	"github.com/Biu-X/TikTok/module/log"
 )
 
 type RType int
@@ -91,7 +92,6 @@ func Random(t RType) (string, error) {
 }
 
 func req(api string, t RType) (interface{}, error) {
-
 	log.Logger.Infof("api: %v", api)
 
 	var resp *http.Response
@@ -100,12 +100,7 @@ func req(api string, t RType) (interface{}, error) {
 		log.Logger.Error(err)
 	}
 
-	defer func(Body io.ReadCloser) {
-		err := Body.Close()
-		if err != nil {
-			log.Logger.Error(err)
-		}
-	}(resp.Body)
+	defer resp.Body.Close()
 
 	all, err := io.ReadAll(resp.Body)
 	if err != nil {

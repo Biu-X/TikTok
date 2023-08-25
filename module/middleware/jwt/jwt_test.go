@@ -2,9 +2,10 @@ package jwt_test
 
 import (
 	"fmt"
+	"testing"
+
 	"github.com/Biu-X/TikTok/module/log"
 	"github.com/Biu-X/TikTok/module/util"
-	"testing"
 
 	"github.com/Biu-X/TikTok/dal/model"
 	"github.com/Biu-X/TikTok/dal/query"

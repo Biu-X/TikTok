@@ -1,11 +1,12 @@
 package publish
 
 import (
+	"strconv"
+
 	"github.com/Biu-X/TikTok/module/log"
 	"github.com/Biu-X/TikTok/module/response"
 	"github.com/Biu-X/TikTok/module/util"
 	"github.com/gin-gonic/gin"
-	"strconv"
 )
 
 // List /douyin/publish/list/ - 发布列表

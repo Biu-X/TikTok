@@ -5,6 +5,7 @@ import (
 	"os"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/Biu-X/TikTok/dal/model"
 	"github.com/Biu-X/TikTok/dao"
@@ -13,7 +14,6 @@ import (
 	"github.com/Biu-X/TikTok/module/oss"
 	"github.com/Biu-X/TikTok/module/response"
 	"github.com/gin-gonic/gin"
-	"time"
 )
 
 // Action /douyin/publish/action/ - 视频投稿
