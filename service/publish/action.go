@@ -78,7 +78,10 @@ func Action(c *gin.Context) {
 		return
 	}
 
-	ffmpeg.CoverSnap(fileName, cover)
+	err = ffmpeg.CoverSnap(fileName, cover)
+	if err != nil {
+		log.Logger.Error(err)
+	}
 
 	// 上传视频到对象存储
 	err = oss.PutFromFile(fileName, fileName)
