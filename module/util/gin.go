@@ -3,7 +3,6 @@ package util
 import (
 	"strconv"
 
-	"github.com/Biu-X/TikTok/module/log"
 	"github.com/gin-gonic/gin"
 )
 
@@ -15,11 +14,7 @@ func GetUserIDFromGinContext(c *gin.Context) int64 {
 		return 0
 	}
 	// 已登录
-	userID, err := strconv.ParseInt(userIDstr, 10, 64)
-	if err != nil {
-		log.Logger.Errorf("strconv.ParseInt failed, err: %v", err)
-		return 0
-	}
+	userID, _ := strconv.ParseInt(userIDstr, 10, 64)
 
 	return userID
 }

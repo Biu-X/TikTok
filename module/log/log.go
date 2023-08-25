@@ -1,11 +1,14 @@
 package log
 
 import (
-	"os"
-	"time"
-
+	"fmt"
 	"github.com/Biu-X/TikTok/module/config"
+	"github.com/Biu-X/TikTok/module/util"
 	"github.com/charmbracelet/log"
+	"os"
+	"runtime"
+	"strconv"
+	"time"
 )
 
 var Logger *log.Logger
@@ -32,4 +35,14 @@ func Init() {
 		Logger.SetLevel(log.DebugLevel)
 	}
 	Logger.Debugf("log level: %v", level)
+}
+
+// HandleError 封装了错误打印，高亮错误信息，单元测试时使用！！！
+// 相当于 if err != nil { Logger.Error(err) }
+func HandleError(err error) {
+	if err != nil {
+		_, file, line, _ := runtime.Caller(1)
+		logMessage := fmt.Sprintf("<%s:%s> %s", file, util.HighlightString(util.RED, strconv.Itoa(line)), err.Error())
+		Logger.Errorf(logMessage)
+	}
 }

@@ -89,9 +89,9 @@ func DefaultLogger() gin.HandlerFunc {
 		Print: func(layout LogLayout) {
 			StatusMessage := layout.RequestMethod + ": " + strconv.Itoa(layout.StatusCode)
 			if layout.Error == "" {
-				log.Logger.Info(util.HighlightString("green", StatusMessage) + " - " + util.StructToString(layout))
+				log.Logger.Info(util.HighlightString(util.GREEN, StatusMessage) + " - " + util.StructToString(layout))
 			} else {
-				log.Logger.Error(util.HighlightString("red", StatusMessage) + " - " + util.StructToString(layout))
+				log.Logger.Error(util.HighlightString(util.RED, StatusMessage) + " - " + util.StructToString(layout))
 			}
 		},
 		Source: "TikTok",
