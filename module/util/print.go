@@ -2,8 +2,10 @@ package util
 
 import "encoding/json"
 
+type Color string
+
 // 高亮颜色map
-var colorMap = map[string]string{
+var colorMap = map[Color]string{
 	"green":   "\033[97;42m",
 	"white":   "\033[90;47m",
 	"yellow":  "\033[90;43m",
@@ -14,8 +16,19 @@ var colorMap = map[string]string{
 	"reset":   "\033[0m",
 }
 
+const (
+	GREEN   Color = "green"
+	WHITE   Color = "white"
+	YELLOW  Color = "yellow"
+	RED     Color = "red"
+	BLUE    Color = "blue"
+	MAGENTA Color = "magenta"
+	CYAN    Color = "cyan"
+	RESET   Color = "reset"
+)
+
 // HighlightString 高亮字符串
-func HighlightString(color string, str string) string {
+func HighlightString(color Color, str string) string {
 	// 判断是否存在颜色，不存在返回绿色
 	if _, ok := colorMap[color]; !ok {
 		return colorMap["green"] + str + colorMap["reset"]

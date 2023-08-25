@@ -20,18 +20,12 @@ var userID, videoID int64 = 114, 514
 
 func setup() {
 	err := SetFavoriteByUserIDAndVideoID(userID, videoID)
-	if err != nil {
-		log.Logger.Error(err.Error())
-		return
-	}
+	log.HandleError(err)
 }
 
 func cleanup() {
 	err := SetFavoriteCancelByUserIDAndVideoID(userID, videoID)
-	if err != nil {
-		log.Logger.Error(err.Error())
-		return
-	}
+	log.HandleError(err)
 }
 
 func Test_GetFavoriteCountByVideoID(t *testing.T) {
