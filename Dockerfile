@@ -16,7 +16,7 @@ RUN go mod download
 # 将我们的代码编译成二进制可执行文件 tiktok
 RUN go build -o tiktok .
 
-FROM python:3.11.5-bookworm
+FROM python:3.11.5-slim-bookworm
 
 MAINTAINER hiifong<i@hiif.ong>
 
