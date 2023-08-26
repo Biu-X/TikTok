@@ -22,7 +22,7 @@ FROM python:3.10
 
 MAINTAINER hiifong<i@hiif.ong>
 
-RUN pip install coversnap
+RUN pip install coversnap && apt-get update && apt-get install libgl1-mesa-glx
 
 WORKDIR /app
 
