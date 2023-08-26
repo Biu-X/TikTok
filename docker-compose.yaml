@@ -1,0 +1,87 @@
+# Comments are provided throughout this file to help you get started.
+# If you need more help, visit the Docker compose reference guide at
+# https://docs.docker.com/compose/compose-file/
+
+# Here the instructions define your application as a service called "server".
+# This service is built from the Dockerfile in the current directory.
+# You can add other services your application may depend on here, such as a
+# database or a cache. For examples, see the Awesome Compose repository:
+# https://github.com/docker/awesome-compose
+version: "3"
+
+networks:
+  tiktok:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 192.168.2.0/24
+services:
+  tiktok:
+    image: hiifong/tiktok:latest
+    networks:
+      tiktok:
+        ipv4_address: 192.168.2.2
+    depends_on:
+      mysql:
+        condition: service_healthy
+      minio:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    volumes:
+      - ./tiktok/conf:/app/conf
+    ports:
+      - "8080:8080"
+  mysql:
+    image: mysql:latest
+    restart: always
+    command: --default-authentication-plugin=mysql_native_password --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    environment:
+      - MYSQL_ROOT_PASSWORD=123456
+      - MYSQL_USER=tiktok
+      - MYSQL_PASSWORD=123456
+      - MYSQL_DATABASE=tiktok
+    volumes:
+      - ./tiktok/mysql/conf:/etc/mysql/conf.d
+      - ./tiktok/mysql/data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+    networks:
+      tiktok:
+        ipv4_address: 192.168.2.3
+    ports:
+      - "33060:3306"
+  redis:
+    image: redis
+    restart: always
+    volumes:
+      - ./tiktok/redis/conf/:/usr/local/etc/redis/
+      - ./tiktok/redis/data:/data
+      - ./tiktok/redis/logs/:/logs/
+    healthcheck:
+      test: ["CMD", "redis-cli", "--raw", "incr", "ping"]
+    networks:
+      tiktok:
+        ipv4_address: 192.168.2.4
+    ports:
+      - "63790:6379"
+  minio:
+    image: bitnami/minio:latest
+    restart: always
+    environment:
+      - MINIO_ROOT_USER=minioadmin
+      - MINIO_ROOT_PASSWORD=minioadmin
+      - MINIO_ACCESS_KEY=ChYm7ufIwNAOzq6PQPCA
+      - MINIO_SECRET_KEY=udicP52IwRbmo2hf6lFvjUS7NP5BhlAdsGNIuDE5
+      - MINIO_DEFAULT_BUCKETS=tiktok:public
+    volumes:
+      - ./tiktok/minio/data:/data
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://127.0.0.1:9000/minio/health/live"]
+    networks:
+      tiktok:
+        ipv4_address: 192.168.2.5
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+

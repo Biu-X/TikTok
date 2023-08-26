@@ -1,7 +1,5 @@
 FROM golang:1.20.7-alpine3.18 AS builder
 
-MAINTAINER hiifong<i@hiif.ong>
-
 # 为我们的镜像设置必要的环境变量
 ENV GO111MODULE=on \
     CGO_ENABLED=0 \
@@ -22,12 +20,14 @@ RUN go build -o tiktok .
 
 FROM python:3.10
 
+MAINTAINER hiifong<i@hiif.ong>
+
 RUN pip install coversnap
 
 WORKDIR /app
 
 # 从builder镜像中把配置文件拷贝到当前目录
-COPY ./conf/tiktok.yml /app/conf
+COPY ./conf/tiktok.yml /app/conf/
 
 # 从builder镜像中把/dist/app 拷贝到当前目录
 COPY --from=builder /build/tiktok /app
