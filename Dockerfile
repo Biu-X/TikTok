@@ -26,7 +26,6 @@ RUN pip install opencv-python-headless
 
 WORKDIR /app
 
-# 从builder镜像中把配置文件拷贝到当前目录
 COPY ./conf/tiktok.yml /app/conf/
 
 # 从builder镜像中把/dist/app 拷贝到当前目录
