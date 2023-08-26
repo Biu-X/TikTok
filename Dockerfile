@@ -22,7 +22,7 @@ FROM python:3.10
 
 MAINTAINER hiifong<i@hiif.ong>
 
-RUN pip install opencv-python-headless && pip install coversnap
+RUN ppip install coversnap
 
 WORKDIR /app
 
