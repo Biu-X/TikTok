@@ -22,7 +22,7 @@ FROM python:3.10
 
 MAINTAINER hiifong<i@hiif.ong>
 
-RUN pip install coversnap && apt-get update && apt-get install libgl1-mesa-glx
+RUN pip install opencv-python-headless && pip install coversnap
 
 WORKDIR /app
 
