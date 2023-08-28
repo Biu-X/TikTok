@@ -1,6 +1,7 @@
 package v1
 
 import (
+	"github.com/Biu-X/TikTok/module/response"
 	"net/http"
 	"time"
 
@@ -35,7 +36,9 @@ func NewAPI() *gin.Engine {
 	tiktok := r.Group("/douyin/")
 	{
 		// 视频流接口
-		tiktok.GET("feed/", jwt.RequireAuthWithoutLogin(), feed_service.List)
+		tiktok.GET("feed/", jwt.RequireAuthWithoutLogin(),
+			middleware_cache.FeedMiddleware(middleware_cache.Clients[cache.Feed], feed_service.List, []response.VideoResponse{}),
+		)
 
 		user := tiktok.Group("user/")
 		{

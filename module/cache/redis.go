@@ -37,7 +37,7 @@ func NewRedisClients(clients map[RDB]*Client) {
 		r := redis.NewClient(&redis.Options{ //nolint:typecheck
 			Addr:     fmt.Sprintf("%v:%v", config.Get("redis.host"), config.Get("redis.port")),
 			Password: fmt.Sprintf("%v", config.Get("redis.password")),
-			DB:       n + 1,
+			DB:       int(k) + 1,
 			PoolSize: int(poolSize),
 		})
 		n++

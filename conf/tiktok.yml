@@ -20,11 +20,11 @@ redis:
   host: 127.0.0.1
   port: 6379
   password:
-  poolSize: 10
+  poolSize: 1000
 
 oss:
   type: minio # minio,cos 等等
-  endpoint: 127.0.0.1:9000
+  endpoint: 192.168.1.4:9000
   accessKey: ChYm7ufIwNAOzq6PQPCA
   secretKey: udicP52IwRbmo2hf6lFvjUS7NP5BhlAdsGNIuDE5
   region: local

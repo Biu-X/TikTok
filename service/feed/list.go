@@ -48,9 +48,10 @@ func List(c *gin.Context) {
 		nextTime = strconv.FormatInt(t.UnixMilli(), 10)
 	}
 	log.Logger.Debugf("nextTime: %v", nextTime)
-
+	c.Set("next_time", nextTime)
+	c.Set("feed", videoList)
 	response.OKRespWithData(c, map[string]interface{}{
-		"next_time":  nextTime,
+		"next_time":  string(nextTime),
 		"video_list": videoList,
 	})
 }
