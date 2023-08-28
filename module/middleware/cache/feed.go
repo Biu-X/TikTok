@@ -28,11 +28,17 @@ func FeedMiddleware(rc *cache.Client, service gin.HandlerFunc, empty interface{}
 			log.Logger.Infof("get feed data from MySQL database, due to %v", err)
 			service(c)
 			ret, exists := c.Get("feed")
+			log.Logger.Debugf("ret: %v", ret)
 			if !exists {
 				return
 			}
 			retData, _ := ffjson.Marshal(ret)
 			conn.SetNX(rc.Ctx, latestTime, retData, 1*time.Hour)
+			nt, exists := c.Get("nextTime")
+			log.Logger.Debugf("next_time: %v", nt)
+			if exists {
+				conn.SetNX(rc.Ctx, latestTime+"-0", nt, 1*time.Hour)
+			}
 			return
 		}
 		log.Logger.Info("get feed data from redis database")
@@ -43,8 +49,12 @@ func FeedMiddleware(rc *cache.Client, service gin.HandlerFunc, empty interface{}
 			return
 		}
 
+		nextTime, err := conn.Get(rc.Ctx, latestTime+"-0").Result()
+		if err != nil {
+			log.Logger.Error(err)
+		}
 		response.OKRespWithData(c, map[string]interface{}{
-			"next_time":  time.Now().UnixMilli(),
+			"next_time":  nextTime,
 			"video_list": empty,
 		})
 	}
