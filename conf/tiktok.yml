@@ -20,7 +20,7 @@ redis:
   host: 127.0.0.1
   port: 6379
   password:
-  poolSize: 10
+  poolSize: 1000
 
 oss:
   type: minio # minio,cos 等等

@@ -32,15 +32,13 @@ type Client struct {
 
 func NewRedisClients(clients map[RDB]*Client) {
 	poolSize, _ := strconv.ParseInt(config.GetString("redis.poolSize"), 10, 64)
-	n := 0
 	for k := range clients {
 		r := redis.NewClient(&redis.Options{ //nolint:typecheck
 			Addr:     fmt.Sprintf("%v:%v", config.Get("redis.host"), config.Get("redis.port")),
 			Password: fmt.Sprintf("%v", config.Get("redis.password")),
-			DB:       n + 1,
+			DB:       int(k) + 1,
 			PoolSize: int(poolSize),
 		})
-		n++
 		ctx := context.Background()
 		clients[k] = &Client{C: r, Ctx: ctx}
 	}
