@@ -10,14 +10,14 @@ log:
   path: ./log
 
 mysql:
-  host: 127.0.0.1
+  host: 192.168.2.3
   port: 3306
   username: root
   password: 123456
   database: tiktok
 
 redis:
-  host: 127.0.0.1
+  host: 192.168.2.4
   port: 6379
   password:
   poolSize: 1000
